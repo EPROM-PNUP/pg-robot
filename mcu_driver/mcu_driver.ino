@@ -283,6 +283,8 @@ void loop() {
 	if(current_millis - imu_millis_track > pg_ns::CMPS12::INTERVAL) {
 		imu_millis_track = current_millis;
 
+		imu_data_raw = imu.getRawData();
+
 		imu_data_raw_msg.data[0] = imu_data_raw.bearing_;
 		imu_data_raw_msg.data[1] = imu_data_raw.pitch_;
 		imu_data_raw_msg.data[2] = imu_data_raw.roll_;

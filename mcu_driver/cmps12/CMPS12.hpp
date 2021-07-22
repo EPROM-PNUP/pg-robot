@@ -11,19 +11,6 @@
 
 #define GYRO_REG 0x21
 
-#de#ifndef PG_CMPS12
-#define PG_CMPS12
-
-#include <Arduino.h>
-
-#define BEARING_REG 0x13
-#define PITCH_REG 0x14
-#define ROLL_REG 0x15
-
-#define ACCEL_REG 0x20
-
-#define GYRO_REG 0x21
-
 #define BYTE 1
 #define WORD 2
 
