@@ -3,63 +3,17 @@
 #include <std_msgs/Int16MultiArray.h>
 #include <std_msgs/Float32MultiArray.h>
 
+#include "motor/Motor.hpp"
 #include "encoder/RotaryEncoder.hpp"
 #include "cmps12/CMPS12.hpp"
-
-/* MOTOR CLASS DEFINITION */
-class Motor{
-	
-	private:
-	byte _dir_pin_1;
-	byte _dir_pin_2;
-	int16_t _duty_cycle;
-
-	public:
-
-	Motor(const byte &dir_pin_1, const byte &dir_pin_2) {
-		this->_dir_pin_1 = dir_pin_1;
-		this->_dir_pin_2 = dir_pin_2;
-	}
-
-	void init() {
-		pinMode(this->_dir_pin_1, OUTPUT);
-		pinMode(this->_dir_pin_2, OUTPUT);
-	}
-
-	int16_t _clip(const int16_t &value, const int16_t &minimum, const int16_t &maximum) {
-		if(value > maximum) {
-			return maximum;
-		}
-		else if(value < minimum) {
-			return minimum;
-		}
-		return value;
-	}
-
-	int16_t getDutyCycle() {
-		return this->_duty_cycle;
-	}
-
-	void move(const int16_t &speed) {
-		this->_duty_cycle = _clip(abs(speed), 0, 255);
-		if(speed < 0) {
-			analogWrite(this->_dir_pin_1, this->_duty_cycle);
-			analogWrite(this->_dir_pin_2, 0);
-		}
-		else {
-			analogWrite(this->_dir_pin_1, 0);
-			analogWrite(this->_dir_pin_2, this->_duty_cycle);
-		}
-	}
-};
 
 
 
 /* OBJECTS INITIALIZATION */
 // Motors A, B, C
-Motor motor_a(4, 5);
-Motor motor_b(8, 9);
-Motor motor_c(6, 7);
+pg_ns::Motor motor_a(4, 5);
+pg_ns::Motor motor_b(8, 9);
+pg_ns::Motor motor_c(6, 7);
 // Encoders A, B, C
 pg_ns::RotaryEncoder re_a(2, 3);
 pg_ns::RotaryEncoder re_b(18, 19);
