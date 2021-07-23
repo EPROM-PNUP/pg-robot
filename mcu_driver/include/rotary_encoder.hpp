@@ -9,12 +9,12 @@ namespace pg_ns {
 class RotaryEncoder {
 
 	private:
-	byte _en_c1;
-	byte _en_c2;
-	volatile long _pulse_count = 0;
-	bool _direction_cw = true;
-	const static int16_t _ENCODER_MIN = -32768;
-	const static int16_t _ENCODER_MAX = 32767;
+	byte en_c1_;
+	byte en_c2_;
+	volatile long pulse_count_ = 0;
+	bool direction_cw_ = true;
+	const static int16_t ENCODER_MIN = -32768;
+	const static int16_t ENCODER_MAX = 32767;
 
 	public:
 	const static int16_t INTERVAL = 30;

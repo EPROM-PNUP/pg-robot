@@ -1,4 +1,4 @@
-#include "cmps12/CMPS12.hpp"
+#include "include/cmps12.hpp"
 
 namespace pg_ns {
 

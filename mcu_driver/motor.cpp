@@ -1,4 +1,4 @@
-#include "motor/Motor.hpp"
+#include "include/motor.hpp"
 
 namespace pg_ns {
 

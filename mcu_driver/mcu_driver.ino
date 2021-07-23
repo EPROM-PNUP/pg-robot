@@ -3,9 +3,9 @@
 #include <std_msgs/Int16MultiArray.h>
 #include <std_msgs/Float32MultiArray.h>
 
-#include "motor/Motor.hpp"
-#include "encoder/RotaryEncoder.hpp"
-#include "cmps12/CMPS12.hpp"
+#include "include/motor.hpp"
+#include "include/rotary_encoder.hpp"
+#include "include/cmps12.hpp"
 
 
 
@@ -139,93 +139,93 @@ void loop() {
 /* ENCODERS FUNCTION INTERRUPT */
 // Wheel A interrupt
 void pg_ns::pulseInterruptA() {
-	if(digitalRead(re_a._en_c2) == LOW) {
-		re_a._direction_cw = true;
+	if(digitalRead(re_a.en_c2_) == LOW) {
+		re_a.direction_cw_ = true;
 	}
 	else {
-		re_a._direction_cw = false;
+		re_a.direction_cw_ = false;
 	}
 
-	if(re_a._direction_cw) {
-		if(re_a._pulse_count == RotaryEncoder::_ENCODER_MAX) {
-			re_a._pulse_count = RotaryEncoder::_ENCODER_MIN;
-			encoders_pulse_count.data[0] = re_a._pulse_count;
+	if(re_a.direction_cw_) {
+		if(re_a.pulse_count_ == RotaryEncoder::ENCODER_MAX) {
+			re_a.pulse_count_ = RotaryEncoder::ENCODER_MIN;
+			encoders_pulse_count.data[0] = re_a.pulse_count_;
 		}
 		else {
-			re_a._pulse_count++;
-			encoders_pulse_count.data[0] = re_a._pulse_count;
+			re_a.pulse_count_++;
+			encoders_pulse_count.data[0] = re_a.pulse_count_;
 		}
 	}
 	else {
-		if(re_a._pulse_count == RotaryEncoder::_ENCODER_MIN) {
-			re_a._pulse_count = RotaryEncoder::_ENCODER_MAX;
-			encoders_pulse_count.data[0] = re_a._pulse_count;
+		if(re_a.pulse_count_ == RotaryEncoder::ENCODER_MIN) {
+			re_a.pulse_count_ = RotaryEncoder::ENCODER_MAX;
+			encoders_pulse_count.data[0] = re_a.pulse_count_;
 		}
 		else {
-			re_a._pulse_count--;
-			encoders_pulse_count.data[0] = re_a._pulse_count;
+			re_a.pulse_count_--;
+			encoders_pulse_count.data[0] = re_a.pulse_count_;
 		}
 	}
 }
 
 // Wheel B interrupt
 void pg_ns::pulseInterruptB() {
-	if(digitalRead(re_b._en_c2) == LOW) {
-		re_b._direction_cw = true;
+	if(digitalRead(re_b.en_c2_) == LOW) {
+		re_b.direction_cw_ = true;
 	}
 	else {
-		re_b._direction_cw = false;
+		re_b.direction_cw_ = false;
 	}
 
-	if(re_b._direction_cw) {
-		if(re_b._pulse_count == RotaryEncoder::_ENCODER_MAX) {
-			re_b._pulse_count = RotaryEncoder::_ENCODER_MIN;
-			encoders_pulse_count.data[1] = re_b._pulse_count;
+	if(re_b.direction_cw_) {
+		if(re_b.pulse_count_ == RotaryEncoder::ENCODER_MAX) {
+			re_b.pulse_count_ = RotaryEncoder::ENCODER_MIN;
+			encoders_pulse_count.data[1] = re_b.pulse_count_;
 		}
 		else {
-			re_b._pulse_count++;
-			encoders_pulse_count.data[1] = re_b._pulse_count;
+			re_b.pulse_count_++;
+			encoders_pulse_count.data[1] = re_b.pulse_count_;
 		}
 	}
 	else {
-		if(re_b._pulse_count == RotaryEncoder::_ENCODER_MIN) {
-			re_b._pulse_count = RotaryEncoder::_ENCODER_MAX;
-			encoders_pulse_count.data[1] = re_b._pulse_count;
+		if(re_b.pulse_count_ == RotaryEncoder::ENCODER_MIN) {
+			re_b.pulse_count_ = RotaryEncoder::ENCODER_MAX;
+			encoders_pulse_count.data[1] = re_b.pulse_count_;
 		}
 		else {
-			re_b._pulse_count--;
-			encoders_pulse_count.data[1] = re_b._pulse_count;
+			re_b.pulse_count_--;
+			encoders_pulse_count.data[1] = re_b.pulse_count_;
 		}
 	}
 }
 
 // Wheel C interrupt
 void pg_ns::pulseInterruptC() {
-	if(digitalRead(re_c._en_c2) == LOW) {
-		re_c._direction_cw = true;
+	if(digitalRead(re_c.en_c2_) == LOW) {
+		re_c.direction_cw_ = true;
 	}
 	else {
-		re_c._direction_cw = false;
+		re_c.direction_cw_ = false;
 	}
 
-	if(re_c._direction_cw) {
-		if(re_c._pulse_count == RotaryEncoder::_ENCODER_MAX) {
-			re_c._pulse_count = RotaryEncoder::_ENCODER_MIN;
-			encoders_pulse_count.data[2] = re_c._pulse_count;
+	if(re_c.direction_cw_) {
+		if(re_c.pulse_count_ == RotaryEncoder::ENCODER_MAX) {
+			re_c.pulse_count_ = RotaryEncoder::ENCODER_MIN;
+			encoders_pulse_count.data[2] = re_c.pulse_count_;
 		}
 		else {
-			re_c._pulse_count++;
-			encoders_pulse_count.data[2] = re_c._pulse_count;
+			re_c.pulse_count_++;
+			encoders_pulse_count.data[2] = re_c.pulse_count_;
 		}
 	}
 	else {
-		if(re_c._pulse_count == RotaryEncoder::_ENCODER_MIN) {
-			re_c._pulse_count = RotaryEncoder::_ENCODER_MAX;
-			encoders_pulse_count.data[2] = re_c._pulse_count;
+		if(re_c.pulse_count_ == RotaryEncoder::ENCODER_MIN) {
+			re_c.pulse_count_ = RotaryEncoder::ENCODER_MAX;
+			encoders_pulse_count.data[2] = re_c.pulse_count_;
 		}
 		else {
-			re_c._pulse_count--;
-			encoders_pulse_count.data[2] = re_c._pulse_count;
+			re_c.pulse_count_--;
+			encoders_pulse_count.data[2] = re_c.pulse_count_;
 		}
 	}
 }
