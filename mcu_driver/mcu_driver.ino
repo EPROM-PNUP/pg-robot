@@ -3,9 +3,9 @@
 #include <std_msgs/Int16MultiArray.h>
 #include <std_msgs/Float32MultiArray.h>
 
-#include "include/motor.hpp"
-#include "include/rotary_encoder.hpp"
-#include "include/cmps12.hpp"
+#include "src/motor/motor.hpp"
+#include "src/rotary_encoder/rotary_encoder.hpp"
+#include "src/cmps12/cmps12.hpp"
 
 
 

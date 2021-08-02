@@ -1,4 +1,4 @@
-#include "include/rotary_encoder.hpp"
+#include "rotary_encoder.hpp"
 
 namespace pg_ns {
 
