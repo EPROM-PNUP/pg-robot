@@ -33,19 +33,37 @@
 #include "src/rotary_encoder/rotary_encoder.hpp"
 #include "src/cmps12/cmps12.hpp"
 
+////////////
+// MACROS //
+////////////
+
+#define MOTOR_A_PIN_1 4
+#define MOTOR_A_PIN_2 5
+#define MOTOR_B_PIN_1 8
+#define MOTOR_B_PIN_2 9
+#define MOTOR_C_PIN_1 6
+#define MOTOR_C_PIN_2 7
+
+#define ENCODER_A_PIN_C1 2
+#define ENCODER_A_PIN_C2 3
+#define ENCODER_B_PIN_C1 18
+#define ENCODER_B_PIN_C2 19
+#define ENCODER_C_PIN_C1 20
+#define ENCODER_C_PIN_C2 21
+
 
 ////////////////////////////
 // OBJECTS INITIALIZATION //
 ////////////////////////////
 
 // Motors A, B, C
-pg_ns::Motor motor_a(4, 5);
-pg_ns::Motor motor_b(8, 9);
-pg_ns::Motor motor_c(6, 7);
+pg_ns::Motor motor_a(MOTOR_A_PIN_1, MOTOR_A_PIN_2);
+pg_ns::Motor motor_b(MOTOR_B_PIN_1, MOTOR_B_PIN_2);
+pg_ns::Motor motor_c(MOTOR_C_PIN_1, MOTOR_C_PIN_2);
 // Encoders A, B, C
-pg_ns::RotaryEncoder re_a(2, 3);
-pg_ns::RotaryEncoder re_b(18, 19);
-pg_ns::RotaryEncoder re_c(20, 21);
+pg_ns::RotaryEncoder re_a(ENCODER_A_PIN_C1, ENCODER_A_PIN_C2);
+pg_ns::RotaryEncoder re_b(ENCODER_B_PIN_C1, ENCODER_B_PIN_C2);
+pg_ns::RotaryEncoder re_c(ENCODER_C_PIN_C1, ENCODER_C_PIN_C2);
 // IMU Sensor
 pg_ns::CMPS12 imu;
 
