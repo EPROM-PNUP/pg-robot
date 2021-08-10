@@ -1,0 +1,9 @@
+robot_name: "Marco"
+
+base_diameter: 0.2
+wheel_radius: 0.05
+
+rotary_encoder: {
+	pulse_per_rev: 132,
+	pulse_per_meter: 426,
+}
