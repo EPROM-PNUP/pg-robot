@@ -125,8 +125,8 @@ class Odometry {
 			dt = (current_time_ - previous_time_).toSec();
 			
 			// Calculate robot pose in the global frame
-			x += (dx * cos(theta)) + (dy * sin(theta));
-			y += (dx * (-sin(theta))) + (dy * cos(theta));
+			x += (dx * cos(theta)) + (dy * (-sin(theta)));
+			y += (dx * sin(theta)) + (dy * cos(theta));
 			theta += dth;
 			
 			// Calculate robot velocity
