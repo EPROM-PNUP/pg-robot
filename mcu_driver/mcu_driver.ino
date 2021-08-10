@@ -1,4 +1,30 @@
-/* INCLUDE HEADERS */
+// Copyright (c) 2021 EPROM PNUP
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+// Author: Wahyu Mahardika
+
+
+/////////////////////
+// INCLUDE HEADERS //
+/////////////////////
+
 #include <ros.h>
 #include <std_msgs/Int16MultiArray.h>
 #include <std_msgs/Float32MultiArray.h>
@@ -8,8 +34,10 @@
 #include "src/cmps12/cmps12.hpp"
 
 
+////////////////////////////
+// OBJECTS INITIALIZATION //
+////////////////////////////
 
-/* OBJECTS INITIALIZATION */
 // Motors A, B, C
 pg_ns::Motor motor_a(4, 5);
 pg_ns::Motor motor_b(8, 9);
@@ -22,8 +50,10 @@ pg_ns::RotaryEncoder re_c(20, 21);
 pg_ns::CMPS12 imu;
 
 
+////////////////////////
+// CALLBACK FUNCTIONS //
+////////////////////////
 
-/* CALLBACK FUNCTIONS */
 void motorCallback(const std_msgs::Int16MultiArray &speed) {
 	motor_a.move(speed.data[0]);
 	motor_b.move(speed.data[1]);
@@ -31,8 +61,10 @@ void motorCallback(const std_msgs::Int16MultiArray &speed) {
 }
 
 
+////////////////////////////
+// ROS NODE HANDLE & MSGS //
+////////////////////////////
 
-/* ROS NODE HANDLE & MSGS */
 ros::NodeHandle nh;
 ros::Subscriber<std_msgs::Int16MultiArray> motor_speed_sub("motor_pwm", &motorCallback);
 
@@ -47,8 +79,10 @@ ros::Publisher imu_pub("imu_data_raw", &imu_data_raw_msg);
 int16_t temp_9[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
+//////////////////////
+// GLOBAL VARIABLES //
+//////////////////////
 
-/* GLOBAL VARIABLES */
 static long encoders_millis_track = 0;
 static long imu_millis_track = 0;
 static long current_millis = 0;
@@ -56,10 +90,11 @@ static long current_millis = 0;
 static pg_ns::ImuDataRaw imu_data_raw;
 
 
+////////////////////////////
+// ARDUINO SETUP FUNCTION //
+////////////////////////////
 
-/* ARDUINO SETUP FUNCTION */
 void setup() {
-
 	// Initialize encoder objects
 	re_a.init();
 	re_b.init();
@@ -98,8 +133,10 @@ void setup() {
 }
 
 
+///////////////////////////
+// ARDUINO LOOP FUNCTION //
+///////////////////////////
 
-/* ARDUINO LOOP FUNCTION */
 void loop() {
 	nh.spinOnce();
 
@@ -135,8 +172,10 @@ void loop() {
 }
 
 
+/////////////////////////////////
+// ENCODERS FUNCTION INTERRUPT //
+/////////////////////////////////
 
-/* ENCODERS FUNCTION INTERRUPT */
 // Wheel A interrupt
 void pg_ns::pulseInterruptA() {
 	if(digitalRead(re_a.en_c2_) == LOW) {
