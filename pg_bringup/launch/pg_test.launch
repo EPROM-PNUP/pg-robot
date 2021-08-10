@@ -1,7 +1,7 @@
 <launch>
 	
 	<node name="serial_node" pkg="rosserial_python" type="serial_node.py" args="_port:=/dev/ttyACM0 _baud:=115200" />
-	<node name="motor_driver" pkg="pg_hardware" type="motor_driver" />
-	<node name="odometry_pub" pkg="pg_localization" type="odometry_pub" />
+	<node name="motor_driver" pkg="pg_hardware" type="motor_driver.py" />
+	<node name="odometry_node" pkg="pg_localization" type="odometry_node" />
 
 <launch>
