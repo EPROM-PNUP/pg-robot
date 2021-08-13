@@ -5,14 +5,18 @@ namespace pg_ns {
 
 class MotorDriver {
 	private:
-	double max_angular_velocity;
-	double shaft_angular_velocity_[3];
-	uint8_t pwm_[3];
+	double max_angular_velocity_;
+	double angular_velocity_;
+	uint8_t pwm_;
 
 	public:
 	MotorDriver();
+
 	void init();
+	void setMaxAngularVelocity(float max_velocity);
+	void setAngularVelocity(float velocity);
 	void calcMotorPWM();
+	void getMotorPWM();
 };
 
 }

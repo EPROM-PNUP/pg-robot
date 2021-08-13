@@ -7,19 +7,24 @@ MotorDriver::MotorDriver() {
 }
 
 void MotorDriver::init() {
-	max_speed_ = 39.0f;
+	this->angular_velocity_ = 0;
+	this->pwm_ = 0;
+}
 
-	for(int8_t i = 0; i < 3; i++) {
-		speed_[i] = 0.0;
-	}
+void MotorDriver::setMaxAngularVelocity(float max_velocity) {
+	this->max_angular_velocity_ = max_velocity;
+}
 
-	for(int8_t i = 0; i < 3; i++) {
-		pwm_[i] = 0;
-	}
+void MotorDriver::setAngularVelocity(float velocity) {
+	this->angular_velocity_ = velocity;
 }
 
 void MotorDriver::calcMotorPWM() {
-	
+	this->pwm_ = (this->angular_velocity_ / this->max_angular_velocity_) * 255;	
 }
 
-void 
+uint8_t MotorDrvier::getMotorPWM() {
+	return this->pwm_;
+}
+
+}
