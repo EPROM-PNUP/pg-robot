@@ -9,7 +9,7 @@ compile:
 	arduino-cli compile --fqbn $(BOARD) --export-binaries
 
 flash:
-	arduino-cli upload --port $(PORT) --fqbn $(BOARD) --input-dit build/arduino.avr.mega --verbose
+	arduino-cli upload --port $(PORT) --fqbn $(BOARD) --input-dir build/arduino.avr.mega --verbose
 
 clean:
 	rm -rf build/*
