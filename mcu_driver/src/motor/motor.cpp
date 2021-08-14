@@ -48,9 +48,9 @@ int16_t Motor::getDutyCycle() {
 	return this->_duty_cycle;
 }
 
-void Motor::move(const int16_t &speed) {
-	this->_duty_cycle = _clip(abs(speed), 0, 255);
-	if(speed < 0) {
+void Motor::move(int16_t pwm) {
+	this->_duty_cycle = _clip(abs(pwm), 0, 255);
+	if(pwm < 0) {
 		analogWrite(this->_dir_pin_1, this->_duty_cycle);
 		analogWrite(this->_dir_pin_2, 0);
 	}

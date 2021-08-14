@@ -27,7 +27,7 @@
 
 #include <ros.h>
 #include <std_msgs/Int16MultiArray.h>
-#include <std_msgs/Float32MultiArray.h>
+#include <pg_msgs/MotorCommand.h>
 
 #include "src/motor/motor.hpp"
 #include "src/rotary_encoder/rotary_encoder.hpp"
@@ -72,10 +72,10 @@ pg_ns::CMPS12 imu;
 // CALLBACK FUNCTIONS //
 ////////////////////////
 
-void motorCallback(const std_msgs::Int16MultiArray &speed) {
-	motor_a.move(speed.data[0]);
-	motor_b.move(speed.data[1]);
-	motor_c.move(speed.data[2]);
+void motorCallback(const pg_msgs::MotorCommand &msg) {
+	motor_a.move(msg.data[0]);
+	motor_b.move(msg.data[1]);
+	motor_c.move(msg.data[2]);
 }
 
 
@@ -84,7 +84,7 @@ void motorCallback(const std_msgs::Int16MultiArray &speed) {
 ////////////////////////////
 
 ros::NodeHandle nh;
-ros::Subscriber<std_msgs::Int16MultiArray> motor_speed_sub("motor_pwm", &motorCallback);
+ros::Subscriber<pg_msgs::MotorCommand> motor_speed_sub("motor_pwm", &motorCallback);
 
 // Encoders Publisher & msg
 std_msgs::Int16MultiArray encoders_pulse_count;
