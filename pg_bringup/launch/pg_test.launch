@@ -1,15 +1,15 @@
 <launch>
 	<group ns="marco">
 
-	<!-- Parameter server -->
-	<rosparam command="load" file="$(find pg_bringup)/config/pg_config.yaml" />
+		<!-- Parameter server -->
+		<rosparam command="load" file="$(find pg_bringup)/config/pg_config.yaml" />
 
-	<!-- pg_hardware -->
-	<node name="serial_node" pkg="rosserial_python" type="serial_node.py" args="_port:=/dev/ttyACM0 _baud:=115200" />
-	<node name="motor_driver" pkg="pg_hardware" type="motor_driver.py" />
+		<!-- pg_hardware -->
+		<node name="serial_node" pkg="rosserial_python" type="serial_node.py" args="_port:=/dev/ttyACM0 _baud:=115200" />
+		<node name="motor_driver" pkg="pg_hardware" type="motor_driver.py" />
 
-	<!-- pg_localization -->
-	<node name="odometry_node" pkg="pg_localization" type="odometry_node" />
+		<!-- pg_localization -->
+		<node name="odometry_node" pkg="pg_localization" type="odometry_node" />
 
 	</group>
 <launch>
