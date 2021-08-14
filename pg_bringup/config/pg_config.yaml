@@ -13,3 +13,9 @@ imu_sensor: {
 	accel_scale: 0.01,
 	gyro_scale: 0.0625,
 }
+
+motor_driver: {
+	max_angular_velocity: 39.0,
+	timeout: 2,
+	rate: 10,
+}
