@@ -1,15 +1,15 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
-#include <std_msgs/Int16MultiArray.h>
-#include <std_msgs/Float64MultiArray.h>
 #include <pg_hardware/motor_driver.hpp>
+#include <pg_msgs/MotorCommand.h>
+#include <pg_msgs/WheelVelocityCommand.h>
 
 class MotorDriverWrapper {
 	private:
 	ros::Subscriber refrence_velocity_sub;
 	ros::Publisher motor_pwm_pub;
 
-	std_msgs::Int16MultiArray motor_pwm_msg;
+	pg_msgs::MotorCommand motor_pwm_msg;
 
 	pg_ns::MotorDriver motor_a;
 	pg_ns::MotorDriver motor_b;
@@ -18,11 +18,13 @@ class MotorDriverWrapper {
 	public:
 	MotorDriverWrapper(ros::NodeHandle &nh) {
 		ROS_INFO("Running /motor_driver");
-
+		
+		/*
 		motor_pwm_msg.data.clear();
 		for (int8_t i = 0; i < 3; i++) {
 			motor_pwm_msg.data.push_back(0);
 		}
+		*/
 
 		double max_velocity;
 		ros::param::get("/marco/motor_driver/max_velocity",
@@ -35,13 +37,13 @@ class MotorDriverWrapper {
 		refrence_velocity_sub = nh.subscribe("/wheel_refrence_velocity",
 			10, &MotorDriverWrapper::refrenceVelocityCallback, this);
 
-		motor_pwm_pub = nh.advertise<std_msgs::Int16MultiArray>("motor_pwm", 10);
+		motor_pwm_pub = nh.advertise<pg_msgs::MotorCommand>("motor_pwm", 10);
 	}
 
-	void refrenceVelocityCallback(std_msgs::Float64MultiArray::ConstPtr &msg) {
-		motor_a.setVelocity(msg->data[0]);
-		motor_b.setVelocity(msg->data[1]);
-		motor_c.setVelocity(msg->data[2]);
+	void refrenceVelocityCallback(const pg_msgs::WheelVelocityCommand &msg) {
+		motor_a.setVelocity(msg.data[0]);
+		motor_b.setVelocity(msg.data[1]);
+		motor_c.setVelocity(msg.data[2]);
 
 		motor_a.calcMotorPWM();
 		motor_b.calcMotorPWM();
