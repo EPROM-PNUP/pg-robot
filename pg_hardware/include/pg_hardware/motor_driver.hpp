@@ -1,22 +1,24 @@
 #ifndef PG_MOTOR_DRIVER_HPP
 #define PG_MOTOR_DRIVER_HPP
 
+#include <cstdint>
+
 namespace pg_ns {
 
 class MotorDriver {
 	private:
-	double max_angular_velocity_;
-	double angular_velocity_;
-	uint8_t pwm_;
+	double max_velocity_;
+	double velocity_;
+	int16_t pwm_;
 
 	public:
 	MotorDriver();
 
 	void init();
-	void setMaxAngularVelocity(float max_velocity);
-	void setAngularVelocity(float velocity);
+	void setMaxVelocity(double max_velocity);
+	void setVelocity(double velocity);
 	void calcMotorPWM();
-	void getMotorPWM();
+	int16_t getMotorPWM();
 };
 
 }
