@@ -1,4 +1,4 @@
-cmake_minimum_required(3.0.2)
+cmake_minimum_required(VERSION 3.0.2)
 
 set(PG_LIB_DIR lib)
 

@@ -1,8 +1,8 @@
-cmake_minimum_required(3.0.2)
+cmake_minimum_required(VERSION 3.0.2)
 project(pg_arduino)
 
 
-find_package(REQUIRED COMPONENTS
+find_package(catkin REQUIRED COMPONENTS
   rosserial_arduino
   rosserial_client
 )
