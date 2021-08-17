@@ -53,6 +53,10 @@ void Odometry::calcDistanceTravelled() {
 		wheel_distance_[i] = static_cast<double>(i) / 
 			static_cast<double>(pulse_per_meter_);
 	}
+
+	for (uint8_t i = 0; i < 3; i++) {
+		last_pulse_counts_[i] = pulse_counts_[i];
+	}
 }
 
 void Odometry::calcRobotDisplacement() {
@@ -81,9 +85,6 @@ void Odometry::calcRobotGlobalPose() {
 	if (pose_[2] > PI) pose_[2] -= 2 * PI;
 	else if (pose_[2] < -PI) pose_[2] += 2 * PI;
 
-	for (uint8_t i = 0; i < 3; i++) {
-		last_pulse_counts_[i] = pulse_counts_[i];
-	}
 }
 
 void Odometry::update() {
