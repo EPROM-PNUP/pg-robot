@@ -25,6 +25,8 @@
 // INCLUDE HEADERS //
 /////////////////////
 
+#include <Arduino.h>
+
 #include <ros.h>
 #include <std_msgs/Int16MultiArray.h>
 #include <pg_msgs/MotorCommand.h>
