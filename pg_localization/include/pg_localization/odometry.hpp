@@ -16,6 +16,7 @@ class Odometry {
 	vector<double> displacement_;
 
 	vector<vector<double>> T;
+	vector<vector<double>> R;
 
 	double delta_time_;
 
@@ -38,7 +39,7 @@ class Odometry {
 	void setBaseDiameter(float base_diameter);
 	void setWheelRadius(float wheel_radius);
 	void setPulsePerMeter(uint16_t pulse_per_meter);
-	void setPulseCounts(int16_t a, int16_t b, int16_t c);
+	void setPulseCounts(const vector<int16_t> &pulse_counts);
 
 	void calcDistanceTravelled();
 	void calcRobotDisplacement();
@@ -47,8 +48,8 @@ class Odometry {
 
 	void update();
 
-	vector<double> getRobotPose(uint8_t index);
-	vector<double> getRobotVelocity(uint8_t index);
+	double getRobotPose(uint8_t index);
+	double getRobotVelocity(uint8_t index);
 };
 
 }
