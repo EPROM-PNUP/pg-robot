@@ -6,7 +6,7 @@
 
   <maintainer email="marco@todo.todo">marco</maintainer>
 
-  <license>TODO</license>
+  <license>MIT</license>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>geometry_msgs</build_depend>
