@@ -28,59 +28,49 @@
 
 class MotorDriverWrapper {
 	private:
-	ros::Subscriber refrence_velocity_sub;
-	ros::Publisher motor_pwm_pub;
+	ros::Subscriber refrence_velocity_sub_;
+	ros::Publisher motor_pwm_pub_;
 
-	pg_msgs::MotorCommand motor_pwm_msg;
+	pg_msgs::MotorCommand motor_pwm_msg_;
 
-	pg_ns::MotorDriver motor_a;
-	pg_ns::MotorDriver motor_b;
-	pg_ns::MotorDriver motor_c;
+	std::vector<pg_ns::MotorDriver> motor_driver_;
 
 	public:
 	MotorDriverWrapper(ros::NodeHandle &nh) {
 		ROS_INFO("Running /motor_driver");
 		
-		/*
-		motor_pwm_msg.data.clear();
-		for (int8_t i = 0; i < 3; i++) {
-			motor_pwm_msg.data.push_back(0);
-		}
-		*/
+		motor_driver_.assign(3, pg_ns::MotorDriver());
 
 		double max_velocity;
 		ros::param::get("/marco/motor_driver/max_velocity",
 			max_velocity);
 
-		motor_a.setMaxVelocity(max_velocity);
-		motor_b.setMaxVelocity(max_velocity);
-		motor_c.setMaxVelocity(max_velocity);
+		for (auto &i : motor_driver_) {
+			i.setMaxVelocity(max_velocity);
+		}
 
-		refrence_velocity_sub = nh.subscribe("/wheel_refrence_velocity",
+		refrence_velocity_sub_ = nh.subscribe("/wheel_refrence_velocity",
 			10, &MotorDriverWrapper::refrenceVelocityCallback, this);
 
-		motor_pwm_pub = nh.advertise<pg_msgs::MotorCommand>("motor_pwm", 10);
+		motor_pwm_pub_ = nh.advertise<pg_msgs::MotorCommand>("motor_pwm", 10);
 	}
 
 	void refrenceVelocityCallback(const pg_msgs::WheelVelocityCommand &msg) {
-		motor_a.setVelocity(msg.data[0]);
-		motor_b.setVelocity(msg.data[1]);
-		motor_c.setVelocity(msg.data[2]);
-
-		motor_a.calcMotorPWM();
-		motor_b.calcMotorPWM();
-		motor_c.calcMotorPWM();
+		for (uint8_t i = 0; i < 3; i++) {
+			motor_driver_[i].setVelocity(msg.data[i]);
+			motor_driver_[i].calcMotorPWM();
+		}
 	}
 
 	void run() {
 		ros::Rate rate(50);
 
 		while (ros::ok()) {
-			motor_pwm_msg.data[0] = motor_a.getMotorPWM();
-			motor_pwm_msg.data[1] = motor_b.getMotorPWM();
-			motor_pwm_msg.data[2] = motor_c.getMotorPWM();
+			for (uint8_t i = 0; i < 3; i++) {
+				motor_pwm_msg_.data[i] = motor_driver_[i].getMotorPWM();
+			}
 
-			motor_pwm_pub.publish(motor_pwm_msg);
+			motor_pwm_pub_.publish(motor_pwm_msg_);
 
 			ros::spinOnce();
 			rate.sleep();
