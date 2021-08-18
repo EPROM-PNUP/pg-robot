@@ -33,7 +33,7 @@ class MotorDriver:
 	# Constructor
 	def __init__(self):
 		rospy.loginfo("Initializing node")
-		rospy.init_node('motor_driver')
+		rospy.init_node('base_controller')
 
 		self._last_received = rospy.get_time()
 		self._timeout = rospy.get_param('~timeout', 2)
@@ -76,7 +76,7 @@ class MotorDriver:
 
 	# Ros run function
 	def run(self):
-		rospy.loginfo("Running /motor_driver node")
+		rospy.loginfo("Running /base_controller node")
 		rate = rospy.Rate(self._rate)
 
 		while not rospy.is_shutdown():
