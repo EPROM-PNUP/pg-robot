@@ -2,7 +2,8 @@
 	<group ns="marco">
 
 		<!-- Parameter server -->
-		<rosparam command="load" file="$(find pg_bringup)/config/pg_config.yaml" />
+		<rosparam command="load" file="$(find pg_bringup)/config/common_config.yaml" />
+		<rosparam command="load" file="$(find pg_bringup)/config/sensors_config.yaml" />
 
 		<!-- pg_hardware -->
 		<node name="serial_node" pkg="rosserial_python" type="serial_node.py" args="_port:=/dev/ttyACM0 _baud:=115200" />
@@ -12,4 +13,4 @@
 		<node name="odometry_node" pkg="pg_localization" type="odometry_node" />
 
 	</group>
-<launch>
+</launch>

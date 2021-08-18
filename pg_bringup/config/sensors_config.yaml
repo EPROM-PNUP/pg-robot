@@ -1,0 +1,10 @@
+rotary_encoder: {
+  pulse_per_rev: 132,
+  pulse_per_meter: 426,
+}
+
+imu_sensor: {
+  bearing_scale: 10,
+  accel_scale: 0.01,
+  gyro_scale: 0.0625,
+}
