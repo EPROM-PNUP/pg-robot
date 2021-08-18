@@ -7,7 +7,9 @@
 
 		<!-- pg_hardware -->
 		<node name="serial_node" pkg="rosserial_python" type="serial_node.py" args="_port:=/dev/ttyACM0 _baud:=115200" />
-		<node name="motor_driver" pkg="pg_hardware" type="motor_driver.py" />
+
+		<!-- pg_control -->
+		<node name="base_controller" pkg="pg_control" type="base_controller.py" />
 
 		<!-- pg_localization -->
 		<node name="odometry_node" pkg="pg_localization" type="odometry_node" />
