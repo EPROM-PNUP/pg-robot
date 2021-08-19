@@ -50,7 +50,7 @@ class OdometryWrapper {
 
 	public:
 	OdometryWrapper(ros::NodeHandle &nh) {
-		ROS_INFO("Running /odometry_pub");
+		ROS_INFO("Running /odometry");
 
 		current_time_ = ros::Time::now();
 		previous_time_ = ros::Time::now();
@@ -127,11 +127,11 @@ class OdometryWrapper {
 ///////////////////
 
 int main(int argc, char** argv) {
-	ros::init(argc, argv, "odometry_pub");
+	ros::init(argc, argv, "odometry");
 	ros::NodeHandle nh;
 	
-	OdometryWrapper od(nh);
-	od.run();
+	OdometryWrapper odometry_wrapper(nh);
+	odometry_wrapper.run();
 
 	return 0;
 }

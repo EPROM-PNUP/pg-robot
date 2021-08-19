@@ -20,6 +20,7 @@
 //
 // Author: Wahyu Mahardika
 
+
 #include <ros/ros.h>
 #include <std_msgs/Int16MultiArray.h>
 #include <sensor_msgs/Imu.h>
@@ -28,6 +29,11 @@
 #include <tf2/LinearMath/Quaternion.h>
 
 #include "pg_hardware/imu_filter.hpp"
+
+
+////////////////////////
+// IMU Filter Wrapper //
+////////////////////////
 
 class ImuFilterWrapper {
 	private:
@@ -61,6 +67,7 @@ class ImuFilterWrapper {
 		ros::Rate rate(5);
 
 		while (ros::ok()) {
+			// Create Quaternion representation from Euler Angles
 			quat_tf.setRPY(
 				imu_filter.getRoll(),
 				imu_filter.getPitch(),
@@ -69,6 +76,7 @@ class ImuFilterWrapper {
 
 			quat = tf2::toMsg(quat_tf);
 
+			// Pass IMU filtered data to msg object
 			imu_filtered_msg.orientation = quat;
 
 			imu_filtered_msg.angular_velocity.x = imu_filter.getGyroX();
@@ -79,6 +87,7 @@ class ImuFilterWrapper {
 			imu_filtered_msg.linear_acceleration.y = imu_filter.getAccelY();
 			imu_filtered_msg.linear_acceleration.z = imu_filter.getAccelZ();
 
+			// Publish filtered IMU data
 			imu_filtered_pub.publish(imu_filtered_msg);
 
 			ros::spinOnce();
@@ -87,9 +96,13 @@ class ImuFilterWrapper {
 	}
 };
 
+
+///////////////////
+// MAIN FUNCTION //
+///////////////////
+
 int main(int argc, char** argv) {
-	
-	ros::init(argc, argv, "imu_filter_node");
+	ros::init(argc, argv, "imu_filter");
 	ros::NodeHandle nh;
 
 	ImuFilterWrapper imu_filter_wrapper(nh);

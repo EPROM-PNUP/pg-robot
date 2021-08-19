@@ -20,11 +20,17 @@
 //
 // Author: Wahyu Mahardika
 
+
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <pg_hardware/motor_driver.hpp>
 #include <pg_msgs/MotorCommand.h>
 #include <pg_msgs/WheelVelocityCommand.h>
+
+
+//////////////////////////
+// MOTOR DRIVER WRAPPER //
+//////////////////////////
 
 class MotorDriverWrapper {
 	private:
@@ -42,9 +48,10 @@ class MotorDriverWrapper {
 		motor_driver_.assign(3, pg_ns::MotorDriver());
 
 		double max_velocity;
-		ros::param::get("/marco/motor_driver/max_velocity",
+		ros::param::get("/motor_driver/max_velocity",
 			max_velocity);
 
+		// Set maximum velocity for each motor
 		for (auto &i : motor_driver_) {
 			i.setMaxVelocity(max_velocity);
 		}
@@ -79,7 +86,6 @@ class MotorDriverWrapper {
 };
 
 int main(int argc, char** argv) {
-	
 	ros::init(argc, argv, "motor_driver");
 	ros::NodeHandle nh;
 
