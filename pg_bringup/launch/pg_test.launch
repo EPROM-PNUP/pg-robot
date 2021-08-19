@@ -1,20 +1,22 @@
 <launch>
 	<group ns="marco">
 
-		<!-- Parameter server -->
+		<!-- Parameter Servers -->
 		<rosparam command="load" file="$(find pg_bringup)/config/common_config.yaml" />
 		<rosparam command="load" file="$(find pg_bringup)/config/sensors_config.yaml" />
 
-		<!-- pg_hardware -->
+		<!-- Arduino Firmware -->
 		<node name="serial_node" pkg="rosserial_python" type="serial_node.py" args="_port:=/dev/ttyACM0 _baud:=115200" />
+
+		<!-- Hardware Drivers -->
 		<node name="imu_filter" pkg="pg_hardware" type="imu_filter_node"/>
 		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node"/>
 
-		<!-- pg_control -->
+		<!-- Control -->
 		<node name="base_controller" pkg="pg_control" type="base_controller.py" />
 
-		<!-- pg_localization -->
-		<node name="odometry_node" pkg="pg_localization" type="odometry_node" />
+		<!-- Localization -->
+		<node name="odometry" pkg="pg_localization" type="odometry_node" />
 
 	</group>
 </launch>
