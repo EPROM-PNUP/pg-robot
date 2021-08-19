@@ -7,6 +7,8 @@
 
 		<!-- pg_hardware -->
 		<node name="serial_node" pkg="rosserial_python" type="serial_node.py" args="_port:=/dev/ttyACM0 _baud:=115200" />
+		<node name="imu_filter" pkg="pg_hardware" type="imu_filter_node"/>
+		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node"/>
 
 		<!-- pg_control -->
 		<node name="base_controller" pkg="pg_control" type="base_controller.py" />
