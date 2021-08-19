@@ -16,7 +16,6 @@ class Odometry {
 	vector<double> displacement_;
 
 	vector<vector<double>> T;
-	vector<vector<double>> R;
 
 	double delta_time_;
 

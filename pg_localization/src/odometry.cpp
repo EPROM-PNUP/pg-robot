@@ -76,15 +76,21 @@ void Odometry::calcRobotVelocity() {
 }
 
 void Odometry::calcRobotGlobalPose() {
-	pose_[0] += displacement_[0] * cos(pose_[2]);
-	pose_[0] += displacement_[1] * (-cos(pose_[2]));
-	pose_[1] += displacement_[0] * sin(pose_[2]);
-	pose_[1] += displacement_[1] * cos(pose_[2]);
-	pose_[2] += displacement_[2];
+	vector<vector<double>> R =
+	{
+		{cos(pose_[2]), -cos(pose_[2]), 0},
+		{sin(pose_[2]),  sin(pose_[2]), 0},
+		{0, 0, 1}
+	};
+
+	for (uint8_t i = 0; i < 3; i++) {
+		for (uint8_t j = 0; j < 3; j++) {
+			pose_[i] += R[i][j] * displacement_[j];
+		}
+	}
 
 	if (pose_[2] > PI) pose_[2] -= 2 * PI;
 	else if (pose_[2] < -PI) pose_[2] += 2 * PI;
-
 }
 
 void Odometry::update() {
