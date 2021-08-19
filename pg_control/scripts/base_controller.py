@@ -25,7 +25,7 @@
 # IMPORT HEADERS
 import rospy
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Int16MultiArray
+from pg_msgs.msg import MotorCommand
 
 # Driver class
 class MotorDriver:
@@ -44,11 +44,11 @@ class MotorDriver:
 		self._motor_2_speed = 0
 		self._motor_3_speed = 0
 
-		self._motors_speed = Int16MultiArray() 
+		self._motors_speed = MotorCommand() 
 
 		rospy.Subscriber('cmd_vel', Twist, self._velocity_callback)
 
-		self.motor_speed_pub = rospy.Publisher('motor_pwm', Int16MultiArray, queue_size=10)
+		self.motor_speed_pub = rospy.Publisher('motor_pwm', MotorCommand, queue_size=10)
 
 	# Velocity callback function
 	def _velocity_callback(self, message):
