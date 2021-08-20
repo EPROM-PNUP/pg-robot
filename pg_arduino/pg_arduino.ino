@@ -93,7 +93,7 @@ int16_t temp_3[3] = {0, 0, 0};
 
 // IMU Publisher & msg
 std_msgs::Int16MultiArray imu_data_raw_msg;
-ros::Publisher imu_pub("imu_data_raw", &imu_data_raw_msg);
+ros::Publisher imu_pub("imu_raw", &imu_data_raw_msg);
 int16_t temp_9[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
