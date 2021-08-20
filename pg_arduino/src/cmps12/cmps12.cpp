@@ -38,21 +38,21 @@ void CMPS12::getBearing() {
 	byte_high_ = Serial3.read();
 	byte_low_ = Serial3.read();
 
-	bearing_ = ((byte_high_ << 8) + byte_low_) / 10;
+	data_raw.bearing_ = ((byte_high_ << 8) + byte_low_) / 10;
 }
 
 void CMPS12::getPitch() {
 	Serial3.write(PITCH_REG);
 	while(Serial3.available() < BYTE);
 
-	pitch_ = Serial3.read();
+	data_raw.pitch_ = Serial3.read();
 }
 
 void CMPS12::getRoll() {
 	Serial3.write(ROLL_REG);
 	while(Serial3.available() < BYTE);
 
-	roll_ = Serial3.read();
+	data_raw.roll_ = Serial3.read();
 }
 
 void CMPS12::getAccel() {
