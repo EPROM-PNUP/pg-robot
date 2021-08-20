@@ -3,6 +3,11 @@ robot_name: "Marco"
 base_diameter: 0.2
 wheel_radius: 0.05
 
+base_controller: {
+  timeout: 2,
+  rate: 10,
+)
+
 motor_driver: {
   max_angular_velocity: 39.0,
   timeout: 2,
