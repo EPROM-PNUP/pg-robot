@@ -55,7 +55,7 @@ class OdometryWrapper {
 		current_time_ = ros::Time::now();
 		previous_time_ = ros::Time::now();
 
-		pulse_counts_sub = nh.subscribe("/encoders_pulse_count", 1, 
+		pulse_counts_sub = nh.subscribe("encoders_pulse_count", 1, 
 			&OdometryWrapper::pulseCountsCallback, this);
 
 		odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 10);

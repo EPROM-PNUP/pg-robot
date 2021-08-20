@@ -48,7 +48,7 @@ class MotorDriverWrapper {
 		motor_driver_.assign(3, pg_ns::MotorDriver());
 
 		double max_velocity;
-		ros::param::get("/motor_driver/max_velocity",
+		ros::param::get("motor_driver/max_velocity",
 			max_velocity);
 
 		// Set maximum velocity for each motor
@@ -56,7 +56,7 @@ class MotorDriverWrapper {
 			i.setMaxVelocity(max_velocity);
 		}
 
-		refrence_velocity_sub_ = nh.subscribe("/wheel_refrence_velocity",
+		refrence_velocity_sub_ = nh.subscribe("wheel_refrence_velocity",
 			10, &MotorDriverWrapper::refrenceVelocityCallback, this);
 
 		motor_pwm_pub_ = nh.advertise<pg_msgs::MotorCommand>("motor_pwm", 10);

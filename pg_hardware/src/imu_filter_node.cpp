@@ -51,7 +51,7 @@ class ImuFilterWrapper {
 	ImuFilterWrapper(ros::NodeHandle &nh) {
 		ROS_INFO("Running /imu_filter");
 
-		imu_raw_sub = nh.subscribe("/imu_raw", 1,
+		imu_raw_sub = nh.subscribe("imu_raw", 1,
 			&ImuFilterWrapper::imuRawCallback, this);
 
 		imu_filtered_pub = nh.advertise<sensor_msgs::Imu>("imu_filtered", 10);
