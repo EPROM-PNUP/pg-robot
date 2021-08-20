@@ -25,7 +25,7 @@
 import numpy as np
 import rospy
 from geometry_msgs.msg import Twist
-from pg_msgs.msg import MotorCommand
+from pg_msgs.msg import WheelVelocityCommand
 
 # Driver class
 class MotorDriver:
@@ -43,14 +43,14 @@ class MotorDriver:
 		self._wheel_velocity = [0.0, 0.0, 0.0]
 		self._body_twist = [0.0, 0.0, 0.0]
 
-		self._wheel_velocity_msg = MotorCommand() 
+		self._wheel_velocity_msg = WheelVelocityCommand() 
 		self._wheel_velocity_msg.data = [0.0, 0.0, 0.0]
 
 		rospy.Subscriber('cmd_vel', Twist, self._velocity_callback)
 
 		self._wheel_velocity_pub = rospy.Publisher(
 			'wheel_refrence_velocity', 
-			MotorCommand, 
+			WheelVelocityComand, 
 			queue_size=10)
 
 	# Velocity callback function
