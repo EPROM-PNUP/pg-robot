@@ -65,7 +65,7 @@ class MotorDriver:
 			[np.sin(np.pi/3), 1/2, 0.2],
 			[-np.sin(np.pi/3), 1/2, 0.2],
 			[0, -1, 0.2]
-			]
+		]
 
 		for (i in range(H)):
 			for (j in range(i):
