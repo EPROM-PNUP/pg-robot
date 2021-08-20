@@ -67,8 +67,8 @@ class MotorDriver:
 			[0, -1, 0.2]
 		]
 
-		for (i in range(H)):
-			for (j in range(i):
+		for (i in H):
+			for (j in i):
 				j = j / self._wheel_radius
 
 		for (i in range(len(self._wheel_velocity))):
