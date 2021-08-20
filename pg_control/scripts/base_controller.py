@@ -48,7 +48,7 @@ class MotorDriver:
 
 		rospy.Subscriber('cmd_vel', Twist, self._velocity_callback)
 
-		self.motor_speed_pub = rospy.Publisher(
+		self._wheel_velocity_pub = rospy.Publisher(
 			'wheel_refrence_velocity', 
 			MotorCommand, 
 			queue_size=10)
@@ -67,15 +67,15 @@ class MotorDriver:
 			[0, -1, 0.2]
 		]
 
-		for (i in H):
-			for (j in i):
+		for i in H:
+			for j in i:
 				j = j / self._wheel_radius
 
-		for (i in range(len(self._wheel_velocity))):
-			for (j in range(len(self._body_twist))):
+		for i in range(len(self._wheel_velocity)):
+			for j in range(len(self._body_twist)):
 				self._wheel_velocity[i] += H[i][j] * self._body_twist[j]
 
-		for (i in range(len(self._wheel_velocity_msg.data))):
+		for i in range(len(self._wheel_velocity_msg.data)):
 			self._wheel_velocity_msg.data[i] = self._wheel_velocity[i]
 
 		rospy.loginfo(self._wheel_velocity)
@@ -88,10 +88,10 @@ class MotorDriver:
 		while not rospy.is_shutdown():
 			delay = rospy.get_time() - self._last_received
 			if (delay < self._timeout):
-				self.motor_speed_pub.publish(self._motors_speed)
+				self._wheel_velocity_pub.publish(self._wheel_velocity_msg)
 			else:
-				self._motors_speed.data = [0, 0, 0]
-				self.motor_speed_pub.publish(self._motors_speed)
+				self._wheel_velocity_msg.data = [0, 0, 0]
+				self._wheel_velocity_pub.publish(self._wheel_velocity_msg)
 			rate.sleep()
 
 def main():
