@@ -37,8 +37,8 @@ class MotorDriver:
 
 		self._last_received = rospy.get_time()
 		self._wheel_radius = rospy.get_param('wheel_radius')
-		self._timeout = rospy.get_param('/base_controller/timeout')
-		self._rate = rospy.get_param('/base_controller/rate')
+		self._timeout = rospy.get_param('base_controller/timeout')
+		self._rate = rospy.get_param('base_controller/rate')
 
 		self._wheel_velocity = [0.0, 0.0, 0.0]
 		self._body_twist = [0.0, 0.0, 0.0]
