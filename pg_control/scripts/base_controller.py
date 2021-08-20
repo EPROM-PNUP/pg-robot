@@ -50,7 +50,7 @@ class MotorDriver:
 
 		self._wheel_velocity_pub = rospy.Publisher(
 			'wheel_refrence_velocity', 
-			WheelVelocityComand, 
+			WheelVelocityCommand, 
 			queue_size=10)
 
 	# Velocity callback function
