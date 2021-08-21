@@ -30,7 +30,7 @@ from pg_msgs.msg import WheelVelocityCommand
 # BASE CONTROLLER.
 # Receive body twist command and transform it
 # into angular velocities for each wheels.
-class MotorDriver:
+class BaseController:
 
 	def __init__(self):
 		rospy.loginfo("Initializing node ...")
@@ -107,9 +107,9 @@ class MotorDriver:
 			rate.sleep()
 
 def main():
-	md = MotorDriver()
-	md.run()
-	del md
+	base_controller = BaseController()
+	base_controller.run()
+	del base_controller
 
 if (__name__ == '__main__'):
 	main()
