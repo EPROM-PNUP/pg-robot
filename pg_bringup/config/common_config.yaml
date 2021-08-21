@@ -5,7 +5,7 @@ wheel_radius: 0.05
 
 base_controller: {
   timeout: 2,
-  rate: 10,
+  rate: 20,
 }
 
 motor_driver: {
