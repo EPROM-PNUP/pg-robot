@@ -27,12 +27,13 @@ import rospy
 from geometry_msgs.msg import Twist
 from pg_msgs.msg import WheelVelocityCommand
 
-# Driver class
+# BASE CONTROLLER.
+# Receive body twist command and transform it
+# into angular velocities for each wheels.
 class MotorDriver:
-	
-	# Constructor
+
 	def __init__(self):
-		rospy.loginfo("Initializing node")
+		rospy.loginfo("Initializing node ...")
 		rospy.init_node('base_controller')
 
 		self._last_received = rospy.get_time()
@@ -46,12 +47,14 @@ class MotorDriver:
 		self._wheel_velocity_msg = WheelVelocityCommand() 
 		self._wheel_velocity_msg.data = [0.0, 0.0, 0.0]
 
+		rospy.loginfo("Subscribing to topics ...")
 		rospy.Subscriber('cmd_vel', Twist, self._velocity_callback)
 
+		rospy.loginfo("Setting up publishers ...")
 		self._wheel_velocity_pub = rospy.Publisher(
 			'wheel_refrence_velocity', 
 			WheelVelocityCommand, 
-			queue_size=10)
+			queue_size=1)
 
 	# Velocity callback function
 	def _velocity_callback(self, message):
@@ -61,37 +64,46 @@ class MotorDriver:
 		self._body_twist[1] = message.linear.y
 		self._body_twist[2] = message.angular.z
 
+		# Chassis to wheel velocity transformation matrix
 		H = [
 			[np.sin(np.pi/3), 1/2, 0.2],
 			[-np.sin(np.pi/3), 1/2, 0.2],
 			[0, -1, 0.2]
 		]
 
+		# Divide each elements of H with wheel radius
 		for i in H:
 			for j in i:
 				j = j / self._wheel_radius
 
+		self._wheel_velocity = [0.0, 0.0, 0.0]
+
+		# Calculate each wheel velocities
 		for i in range(len(self._wheel_velocity)):
 			for j in range(len(self._body_twist)):
 				self._wheel_velocity[i] += H[i][j] * self._body_twist[j]
 
+		# Set wheel velocity message for publish
 		for i in range(len(self._wheel_velocity_msg.data)):
 			self._wheel_velocity_msg.data[i] = self._wheel_velocity[i]
 
-		rospy.loginfo(self._wheel_velocity)
+		rospy.logdebug(self._wheel_velocity)
 
-	# Ros run function
 	def run(self):
-		rospy.loginfo("Running /base_controller node")
+		rospy.loginfo("Successfully started base_controller node")
 		rate = rospy.Rate(self._rate)
 
 		while not rospy.is_shutdown():
 			delay = rospy.get_time() - self._last_received
+
+			# If not received body twist command for 2 seconds
+			# stop the robot, else publish wheel velocities.
 			if (delay < self._timeout):
 				self._wheel_velocity_pub.publish(self._wheel_velocity_msg)
 			else:
 				self._wheel_velocity_msg.data = [0, 0, 0]
 				self._wheel_velocity_pub.publish(self._wheel_velocity_msg)
+
 			rate.sleep()
 
 def main():
