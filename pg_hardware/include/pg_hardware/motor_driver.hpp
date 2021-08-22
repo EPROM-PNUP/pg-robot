@@ -14,10 +14,10 @@ class MotorDriver {
 	public:
 	MotorDriver();
 
-	void init();
 	void setMaxVelocity(double max_velocity);
 	void setVelocity(double velocity);
 	void calcMotorPWM();
+	double getVelocity();
 	int16_t getMotorPWM();
 };
 

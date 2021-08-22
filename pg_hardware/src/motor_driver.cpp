@@ -3,12 +3,9 @@
 namespace pg_ns {
 
 MotorDriver::MotorDriver() {
-	init();
-}
-
-void MotorDriver::init() {
-	this->velocity_ = 0;
-	this->pwm_ = 0;
+	this->max_velocity_ = 39.0;
+	this->velocity_ = 0.0;
+	this->pwm_ = 0.0;
 }
 
 void MotorDriver::setMaxVelocity(double max_velocity) {
@@ -20,7 +17,14 @@ void MotorDriver::setVelocity(double velocity) {
 }
 
 void MotorDriver::calcMotorPWM() {
-	this->pwm_ = (this->velocity_ / this->max_velocity_) * 255;	
+	this->pwm_ = static_cast<int16_t>
+	(
+		(this->velocity_ / this->max_velocity_) * 255.0
+	);
+}
+
+double MotorDriver::getVelocity() {
+	return this->velocity_;
 }
 
 int16_t MotorDriver::getMotorPWM() {

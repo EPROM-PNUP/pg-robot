@@ -63,7 +63,8 @@ class BaseController:
 		self._body_twist[0] = message.linear.x
 		self._body_twist[1] = message.linear.y
 		self._body_twist[2] = message.angular.z
-
+	
+	def _update(self):
 		# Chassis to wheel velocity transformation matrix
 		H = [
 			[np.sin(np.pi/3), 1/2, 0.2],
@@ -72,9 +73,9 @@ class BaseController:
 		]
 
 		# Divide each elements of H with wheel radius
-		for i in H:
-			for j in i:
-				j = j / self._wheel_radius
+		for i in range(3):
+			for j in range(3):
+				H[i][j] /= self._wheel_radius
 
 		self._wheel_velocity = [0.0, 0.0, 0.0]
 
@@ -95,6 +96,8 @@ class BaseController:
 
 		while not rospy.is_shutdown():
 			delay = rospy.get_time() - self._last_received
+
+			self._update()
 
 			# If not received body twist command for 2 seconds
 			# stop the robot, else publish wheel velocities.

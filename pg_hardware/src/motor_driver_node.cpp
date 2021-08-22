@@ -22,6 +22,7 @@
 
 
 #include <ros/ros.h>
+#include <ros/console.h>
 #include <geometry_msgs/Twist.h>
 #include <pg_hardware/motor_driver.hpp>
 #include <pg_msgs/MotorCommand.h>
@@ -48,7 +49,7 @@ class MotorDriverWrapper {
 		motor_driver_.assign(3, pg_ns::MotorDriver());
 
 		double max_velocity;
-		ros::param::get("motor_driver/max_velocity",
+		ros::param::get("motor_driver/max_angular_velocity",
 			max_velocity);
 
 		// Set maximum velocity for each motor
@@ -65,17 +66,34 @@ class MotorDriverWrapper {
 	void refrenceVelocityCallback(const pg_msgs::WheelVelocityCommand &msg) {
 		for (uint8_t i = 0; i < 3; i++) {
 			motor_driver_[i].setVelocity(msg.data[i]);
-			motor_driver_[i].calcMotorPWM();
 		}
 	}
 
 	void run() {
-		ros::Rate rate(50);
+		ros::Rate rate(20);
 
 		while (ros::ok()) {
+			for (auto &i : motor_driver_) {
+				i.calcMotorPWM();
+			}
+
 			for (uint8_t i = 0; i < 3; i++) {
 				motor_pwm_msg_.data[i] = motor_driver_[i].getMotorPWM();
 			}
+
+			ROS_DEBUG_NAMED("motor_pwm",
+				"PWM:=   %3i   %3i   %3i",
+				motor_driver_[0].getMotorPWM(),
+				motor_driver_[1].getMotorPWM(),
+				motor_driver_[2].getMotorPWM()
+			);
+
+			ROS_DEBUG_NAMED("motor_vel",
+				"VEL:=   %6.3lf   %6.3lf   %6.3lf",
+				motor_driver_[0].getVelocity(),
+				motor_driver_[1].getVelocity(),
+				motor_driver_[2].getVelocity()
+			);
 
 			motor_pwm_pub_.publish(motor_pwm_msg_);
 
