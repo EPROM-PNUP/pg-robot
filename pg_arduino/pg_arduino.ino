@@ -160,15 +160,15 @@ void loop() {
 
 	current_millis = millis();
 	
-	// Publish encoders pulse counts every 30 ms
-	if(current_millis - encoders_millis_track > pg_ns::RotaryEncoder::INTERVAL) {
+	// Publish encoders pulse counts every 20 ms
+	if(current_millis - encoders_millis_track > 20) {
 		encoders_millis_track = current_millis;
 
 		encoders_pulse_count_pub.publish(&encoders_pulse_count);
 	}
 
-	// Publish imu sensor raw data every 30 ms
-	if(current_millis - imu_millis_track > pg_ns::CMPS12::INTERVAL) {
+	// Publish imu sensor raw data every 20 ms
+	if(current_millis - imu_millis_track > 20) {
 		imu_millis_track = current_millis;
 
 		imu_data_raw = imu.getRawData();

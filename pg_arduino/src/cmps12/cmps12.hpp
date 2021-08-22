@@ -58,12 +58,7 @@ class CMPS12 {
 
 	ImuDataRaw data_raw;
 
-	const float accel_scale_ = 1.0f / 100.f;
-	const float gyro_scale_ = 1.0f / 16.f;
-
 	public:
-	const static int16_t INTERVAL = 30;
-
 	CMPS12();
 
 	void init();
