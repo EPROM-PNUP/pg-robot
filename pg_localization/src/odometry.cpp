@@ -10,7 +10,7 @@ Odometry::Odometry() {
 	T =
 	{
 		{cos(PI/6), -cos(PI/6), 0},
-		{sin(PI/6),  sin(PI/6), 0},
+		{sin(PI/6),  sin(PI/6),-1},
 		{1.0/base_diameter_, 1.0/base_diameter_, 1.0/base_diameter_}
 	};
 

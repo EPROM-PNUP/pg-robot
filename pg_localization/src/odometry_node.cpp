@@ -20,11 +20,6 @@
 //
 // Author: Wahyu Mahardika
 
-
-/////////////////////
-// INCLUDE HEADERS //
-/////////////////////
-
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/Odometry.h>
@@ -32,11 +27,7 @@
 #include <std_msgs/Int16MultiArray.h>
 #include "pg_localization/odometry.hpp"
 
-
-///////////////////////////////
-// ODOMETRY CLASS DEFINITION //
-///////////////////////////////
-
+// ODOMETRY WRAPPER CLASS
 class OdometryWrapper {
 	private:
 	ros::Subscriber pulse_counts_sub;
@@ -121,11 +112,7 @@ class OdometryWrapper {
 	}
 };
 
-
-///////////////////
-// MAIN FUNCTION //
-///////////////////
-
+// MAIN FUNCTION
 int main(int argc, char** argv) {
 	ros::init(argc, argv, "odometry");
 	ros::NodeHandle nh;
