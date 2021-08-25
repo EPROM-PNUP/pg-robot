@@ -45,11 +45,57 @@ class OdometryWrapper {
 
 		current_time_ = ros::Time::now();
 		previous_time_ = ros::Time::now();
+		
+		if (loadParameters()) {
+			ROS_INFO("Successfully loaded all parameters");
+		}
+		else {
+			ROS_WARN("Unable to load all parameters, using defaults");
+		}
 
 		pulse_counts_sub = nh.subscribe("encoders_pulse_count", 1, 
 			&OdometryWrapper::pulseCountsCallback, this);
 
 		odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 10);
+	}
+
+	bool loadParameters() {
+		if (ros::param::has("base_diameter")) {
+			float base_diameter;
+			ros::param::get("base_diameter", base_diameter);
+			odometry.setBaseDiameter(base_diameter);
+			ROS_INFO("Loaded base_diameter");
+		}
+		else {
+			ROS_WARN("Failed to load base_diameter parameter");
+			odometry.setBaseDiameter(0.2);
+			return false;
+		}
+
+		if (ros::param::has("wheel_radius")) {
+			float wheel_radius;
+			ros::param::get("wheel_radius", wheel_radius);
+			odometry.setWheelRadius(wheel_radius);
+			ROS_INFO("Loaded wheel_radius");
+		}
+		else {
+			ROS_WARN("Failed to load wheel_radius paramter");
+			odometry.setWheelRadius(0.05);
+			return false;
+		}
+
+		if (ros::param::has("rotary_encoder/pulse_per_meter")) {
+			float pulse_per_meter;
+			ros::param::get("rotary_encoder/pulse_per_meter", pulse_per_meter);
+			odometry.setPulsePerMeter(pulse_per_meter);
+			ROS_INFO("Load pulse_per_meter");
+		}
+		else {
+			ROS_WARN("Failed to load pulse_per_meter parameter");
+			odometry.setPulsePerMeter(426);
+			return false;
+		}
+		return true;
 	}
 	
 	// Callback function for encoders pulse counts
