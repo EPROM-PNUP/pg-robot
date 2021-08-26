@@ -27,7 +27,6 @@
 #include <std_msgs/Int16MultiArray.h>
 #include "pg_localization/odometry.hpp"
 
-// ODOMETRY WRAPPER CLASS
 class OdometryWrapper {
 	private:
 	ros::Subscriber pulse_counts_sub;
@@ -158,7 +157,6 @@ class OdometryWrapper {
 	}
 };
 
-// MAIN FUNCTION
 int main(int argc, char** argv) {
 	ros::init(argc, argv, "odometry");
 	ros::NodeHandle nh;

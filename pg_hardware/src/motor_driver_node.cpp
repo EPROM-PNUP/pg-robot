@@ -20,18 +20,12 @@
 //
 // Author: Wahyu Mahardika
 
-
 #include <ros/ros.h>
 #include <ros/console.h>
 #include <geometry_msgs/Twist.h>
 #include <pg_hardware/motor_driver.hpp>
 #include <pg_msgs/MotorCommand.h>
 #include <pg_msgs/WheelVelocityCommand.h>
-
-
-//////////////////////////
-// MOTOR DRIVER WRAPPER //
-//////////////////////////
 
 class MotorDriverWrapper {
 	private:

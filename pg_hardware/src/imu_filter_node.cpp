@@ -20,7 +20,6 @@
 //
 // Author: Wahyu Mahardika
 
-
 #include <ros/ros.h>
 #include <std_msgs/Int16MultiArray.h>
 #include <sensor_msgs/Imu.h>
@@ -29,11 +28,6 @@
 #include <tf2/LinearMath/Quaternion.h>
 
 #include "pg_hardware/imu_filter.hpp"
-
-
-////////////////////////
-// IMU Filter Wrapper //
-////////////////////////
 
 class ImuFilterWrapper {
 	private:
@@ -95,11 +89,6 @@ class ImuFilterWrapper {
 		}
 	}
 };
-
-
-///////////////////
-// MAIN FUNCTION //
-///////////////////
 
 int main(int argc, char** argv) {
 	ros::init(argc, argv, "imu_filter");
