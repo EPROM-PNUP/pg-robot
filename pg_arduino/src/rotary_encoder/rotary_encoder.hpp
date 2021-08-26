@@ -27,9 +27,7 @@
 
 namespace pg_ns {
 
-// ROTARY ENCODER CLASS //
 class RotaryEncoder {
-
 	private:
 	byte en_c1_;
 	byte en_c2_;
@@ -39,9 +37,8 @@ class RotaryEncoder {
 	const static int16_t ENCODER_MAX = 32767;
 
 	public:
-	const static int16_t INTERVAL = 30;
-
 	RotaryEncoder(const byte &en_c1, const byte &en_c2);
+
 	void init();
 	byte getC1Pin();
 

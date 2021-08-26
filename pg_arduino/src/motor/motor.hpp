@@ -27,16 +27,13 @@
 
 namespace pg_ns {
 
-// MOTOR CLASS DEFINITION //
 class Motor{
-	
 	private:
 	byte _dir_pin_1;
 	byte _dir_pin_2;
 	int16_t _duty_cycle;
 
 	public:
-
 	Motor(const byte &dir_pin_1, const byte &dir_pin_2);
 
 	void init();
@@ -44,7 +41,6 @@ class Motor{
 	int16_t getDutyCycle();
 	void move(int16_t pwm);
 };
-
 
 }
 

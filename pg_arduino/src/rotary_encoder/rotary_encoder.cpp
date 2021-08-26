@@ -29,11 +29,16 @@ RotaryEncoder::RotaryEncoder(const byte &en_c1, const byte &en_c2) {
 	this->en_c2_ = en_c2;
 }
 
+// INIT FUNCTION
+// Set encoders pins as INPUT.
 void RotaryEncoder::init() {
 	pinMode(this->en_c1_, INPUT_PULLUP);
 	pinMode(this->en_c2_, INPUT);
 }
 
+// GET C1
+// Used to pass encoder c1 pin to
+// interrupt.
 byte RotaryEncoder::getC1Pin() {
 	return this->en_c1_;
 }

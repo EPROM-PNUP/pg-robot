@@ -29,12 +29,17 @@ Motor::Motor(const byte &dir_pin_1, const byte &dir_pin_2) {
 	this->_dir_pin_2 = dir_pin_2;
 }
 
+// INIT FUNCTION
+// Set both pins as OUTPUT to controll motor.
 void Motor::init() {
 	pinMode(this->_dir_pin_1, OUTPUT);
 	pinMode(this->_dir_pin_2, OUTPUT);
 }
 
-int16_t Motor::_clip(const int16_t &value, const int16_t &minimum, const int16_t &maximum) {
+// CLIP FUNCTION
+// Used to clip pwm value to given maximum and
+// and minimum value.
+int16_t Motor::clip(const int16_t &value, const int16_t &minimum, const int16_t &maximum) {
 	if(value > maximum) {
 		return maximum;
 	}
@@ -44,12 +49,12 @@ int16_t Motor::_clip(const int16_t &value, const int16_t &minimum, const int16_t
 	return value;
 }
 
-int16_t Motor::getDutyCycle() {
-	return this->_duty_cycle;
-}
-
+// MOVE FUNCTION
+// Move motor by sending PWM signals to motor drivers.
 void Motor::move(int16_t pwm) {
+	// Clip pwm values to 0 - 255.
 	this->_duty_cycle = _clip(abs(pwm), 0, 255);
+	// Control rotation direction using if statement.
 	if(pwm < 0) {
 		analogWrite(this->_dir_pin_1, this->_duty_cycle);
 		analogWrite(this->_dir_pin_2, 0);
