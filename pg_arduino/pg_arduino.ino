@@ -33,6 +33,7 @@
 #include "src/rotary_encoder/rotary_encoder.hpp"
 #include "src/cmps12/cmps12.hpp"
 
+
 ////////////
 // MACROS //
 ////////////
@@ -286,21 +287,4 @@ void pg_ns::pulseInterruptC() {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

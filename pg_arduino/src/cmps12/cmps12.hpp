@@ -25,17 +25,25 @@
 
 #include <Arduino.h>
 
+// REGISTER ADDRESS.
+// Addresses used to request data from sensor reading.
 #define BEARING_REG 0x13
 #define PITCH_REG 0x14
 #define ROLL_REG 0x15
 #define ACCEL_REG 0x20
 #define GYRO_REG 0x21
 
+// DATA SIZE.
+// Used to check the number of data received in the serial buffer
+// from the sensor.
 #define BYTE 1
 #define WORD 2
 
+
 namespace pg_ns {
 
+// RAW DATA STRUCTURE.
+// Used to store raw data from sensor reading.
 struct ImuDataRaw {
 	int16_t bearing_;
 	int8_t pitch_;
@@ -52,7 +60,6 @@ struct ImuDataRaw {
 
 class CMPS12 {
 	private:
-	
 	int8_t byte_high_;
 	int8_t byte_low_;
 

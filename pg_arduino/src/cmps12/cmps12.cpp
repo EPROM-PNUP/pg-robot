@@ -27,10 +27,16 @@ namespace pg_ns {
 CMPS12::CMPS12() {
 }
 
+// INIT FUNCTION.
+// Starts UART communication on Serial3 with
+// 9600 baudrate.
 void CMPS12::init() {
 	Serial3.begin(9600);
+	delay(10);
 }
 
+// GET BEARING READING.
+// Read 1 byte at a time (total of 2 bytes).
 void CMPS12::getBearing() {
 	Serial3.write(BEARING_REG);
 	while(Serial3.available() < WORD);
@@ -38,9 +44,12 @@ void CMPS12::getBearing() {
 	byte_high_ = Serial3.read();
 	byte_low_ = Serial3.read();
 
+	// Shift fist byte by 8 then add the second byte.
 	data_raw.bearing_ = ((byte_high_ << 8) + byte_low_) / 10;
 }
 
+// GET PITCH READING
+// Read 1 byte (total of 1 byte).
 void CMPS12::getPitch() {
 	Serial3.write(PITCH_REG);
 	while(Serial3.available() < BYTE);
@@ -48,6 +57,8 @@ void CMPS12::getPitch() {
 	data_raw.pitch_ = Serial3.read();
 }
 
+// GET ROLL READING.
+// Read 1 byte (total of 1 byte).
 void CMPS12::getRoll() {
 	Serial3.write(ROLL_REG);
 	while(Serial3.available() < BYTE);
@@ -55,6 +66,9 @@ void CMPS12::getRoll() {
 	data_raw.roll_ = Serial3.read();
 }
 
+// GET ACCELEROMETER READING.
+// Read 1 byte at a time. 2 bytes for acceleration in x axis,
+// 2 for y axis and 2 for z axis (total 6 bytes).
 void CMPS12::getAccel() {
 	Serial3.write(ACCEL_REG);
 	while(Serial3.available() < 6);
@@ -75,6 +89,9 @@ void CMPS12::getAccel() {
 	data_raw.accel_z_ = ((byte_high_ << 8) + byte_low_);
 }
 
+// GET GYRO READING.
+// Read 1 byte at a time. 2 bytes for gyro in x axis,
+// 2 for y axis and 2 for z axis (total 6 bytes).
 void CMPS12::getGyro() {
 	Serial3.write(GYRO_REG);
 	while(Serial3.available() < 6);
@@ -95,6 +112,9 @@ void CMPS12::getGyro() {
 	data_raw.gyro_z_ = ((byte_high_ << 8) + byte_low_);
 }
 
+// GET ALL DATA
+// Used to return all data from reading by calling all
+// 'get' function.
 ImuDataRaw CMPS12::getRawData() {
 	getBearing();
 	getPitch();
