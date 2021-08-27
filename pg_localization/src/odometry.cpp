@@ -82,6 +82,10 @@ void Odometry::calcDistanceTravelled() {
 }
 
 void Odometry::calcRobotDisplacement() {
+	for (auto &i : displacement_) {
+		i = 0.0;
+	}
+
 	for (uint8_t i = 0; i < 3; i++) {
 		for (uint8_t j = 0; j < 3; j++) {
 			displacement_[i] += (T[i][j] * wheel_distance_[j]);
@@ -116,10 +120,6 @@ void Odometry::calcRobotGlobalPose() {
 	}
 	else if (pose_[2] < -PI) {
 		pose_[2] += 2 * PI;
-	}
-
-	for (auto &i : displacement_) {
-		i = 0.0;
 	}
 }
 
