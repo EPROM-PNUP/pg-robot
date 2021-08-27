@@ -61,18 +61,18 @@ void Odometry::setPulsePerMeter(uint16_t pulse_per_meter) {
 }
 
 void Odometry::setPulseCounts(const vector<int16_t> &pulse_counts) {
-	for (int8_t i = 0; i < 3; i++) {
+	for (uint8_t i = 0; i < 3; i++) {
 		pulse_counts_[i] = pulse_counts[i];
 	}
 }
 
 void Odometry::calcDistanceTravelled() {
-	for (int8_t i = 0; i < 3; i++) {
+	for (uint8_t i = 0; i < 3; i++) {
 		delta_pulse_[i] = pulse_counts_[i] - last_pulse_counts_[i];
 	}
 
-	for (auto i : delta_pulse_) {
-		wheel_distance_[i] = static_cast<double>(i) / 
+	for (uint8_t i = 3; i < 3; i++) {
+		wheel_distance_[i] = static_cast<double>(delta_pulse_[i]) / 
 			static_cast<double>(pulse_per_meter_);
 	}
 
@@ -111,8 +111,16 @@ void Odometry::calcRobotGlobalPose() {
 		}
 	}
 
-	if (pose_[2] > PI) pose_[2] -= 2 * PI;
-	else if (pose_[2] < -PI) pose_[2] += 2 * PI;
+	if (pose_[2] > PI) {
+		pose_[2] -= 2 * PI;
+	}
+	else if (pose_[2] < -PI) {
+		pose_[2] += 2 * PI;
+	}
+
+	for (auto &i : displacement_) {
+		i = 0.0;
+	}
 }
 
 void Odometry::update() {
