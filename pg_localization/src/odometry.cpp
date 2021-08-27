@@ -100,8 +100,8 @@ void Odometry::calcRobotVelocity() {
 void Odometry::calcRobotGlobalPose() {
 	vector<vector<double>> R =
 	{
-		{cos(pose_[2]), -cos(pose_[2]), 0},
-		{sin(pose_[2]),  sin(pose_[2]), 0},
+		{cos(pose_[2]), -sin(pose_[2]), 0},
+		{sin(pose_[2]),  cos(pose_[2]), 0},
 		{0, 0, 1}
 	};
 
