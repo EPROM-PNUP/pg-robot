@@ -58,6 +58,9 @@ class OdometryWrapper {
 		odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 10);
 	}
 
+	// LOAD PARAMETERS FUNCTION.
+	// Load necessary parameters from parameter server
+	// (set to defaults if failed).
 	bool loadParameters() {
 		if (ros::param::has("base_diameter")) {
 			float base_diameter;
@@ -102,24 +105,27 @@ class OdometryWrapper {
 		odometry.setPulseCounts(msg.data);
 	}
 
-	// Main loop to run
+	// RUN FUNCTION
+	// Continuously running, updating odometry info
+	// every 500 ms.
 	void run() {
 		ros::Rate rate(2);
 		
 		while(ros::ok()) {
 			current_time_ = ros::Time::now();
 
+			// update odometry for current cycle.
 			odometry.setDeltaTime((current_time_ - previous_time_).toSec());
 			odometry.update();
 
 			vector<double> base_pose = odometry.getBasePose();
 			vector<double> base_twist = odometry.getBaseTwist();
 			
-			// Get quaternion from theta
+			// Get quaternion from theta.
 			geometry_msgs::Quaternion odom_quat = 
 				tf::createQuaternionMsgFromYaw(base_pose[2]);
 
-			// Broadcast transformation
+			// Broadcast transformation.
 			geometry_msgs::TransformStamped odom_trans;
 			
 			odom_trans.header.stamp = current_time_;
@@ -133,7 +139,7 @@ class OdometryWrapper {
 
 			odom_broadcaster.sendTransform(odom_trans);
 
-			// Publish to /odom topic
+			// Publish to /odom topic.
 			nav_msgs::Odometry odom;
 
 			odom.header.stamp = current_time_;
@@ -152,7 +158,7 @@ class OdometryWrapper {
 
 			odom_pub.publish(odom);
 
-			// Set previous time value to current time
+			// Set previous time value to current time.
 			previous_time_ = current_time_;
 
 			ros::spinOnce();

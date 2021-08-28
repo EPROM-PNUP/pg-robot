@@ -26,6 +26,7 @@
 namespace pg_ns {
 
 Odometry::Odometry() {
+	// Set all attributes to 0.
 	pose_.assign(3, 0.0);
 	twist_.assign(3, 0.0);
 	displacement_.assign(3, 0.0);
@@ -33,7 +34,6 @@ Odometry::Odometry() {
 	pulse_counts_.assign(3, 0.0);
 	last_pulse_counts_.assign(3, 0.0);
 	delta_pulse_.assign(3, 0.0);
-
 	wheel_distance_.assign(3, 0.0);
 
 	delta_time_ = 0.0;
@@ -55,12 +55,16 @@ void Odometry::setPulsePerMeter(uint16_t pulse_per_meter) {
 	pulse_per_meter_ = pulse_per_meter;
 }
 
+// SET PULSE.
+// Store pulse counts from encoders readings.
 void Odometry::setPulseCounts(const vector<int16_t> &pulse_counts) {
 	for (uint8_t i = 0; i < 3; i++) {
 		pulse_counts_[i] = pulse_counts[i];
 	}
 }
 
+// WHEEL TRAVELLED DISTANCE.
+// Calculate distance travelled by each wheels.
 void Odometry::calcWheelDistance() {
 	for (uint8_t i = 0; i < 3; i++) {
 		delta_pulse_[i] = pulse_counts_[i] - last_pulse_counts_[i];
@@ -76,6 +80,8 @@ void Odometry::calcWheelDistance() {
 	}
 }
 
+// BASE LINK DISPLACEMENT.
+// Calculate base_link displacement at one cycle.
 void Odometry::calcBaseDisplacement() {
 	vector<vector<double>> T =
 	{
@@ -95,6 +101,8 @@ void Odometry::calcBaseDisplacement() {
 	}
 }
 
+// BASE LINK TWIST.
+// Calculate base_link twist at one cycle.
 void Odometry::calcBaseTwist() {
 	if (delta_time_ > 0) {
 		for (uint8_t i = 0; i < 3; i++) {
@@ -103,6 +111,8 @@ void Odometry::calcBaseTwist() {
 	}
 }
 
+// BASE LINK POSE.
+// Calculate base_link pose in the odom frame.
 void Odometry::calcBasePose() {
 	vector<vector<double>> R =
 	{
@@ -117,6 +127,7 @@ void Odometry::calcBasePose() {
 		}
 	}
 
+	// Make sure theta is in the correct range.
 	if (pose_[2] > PI) {
 		pose_[2] -= 2 * PI;
 	}
@@ -125,6 +136,9 @@ void Odometry::calcBasePose() {
 	}
 }
 
+// UPDATE FUNCTION.
+// Calculate all odometry info by calling all
+// 'calc' functions.
 void Odometry::update() {
 	calcWheelDistance();
 	calcBaseDisplacement();
