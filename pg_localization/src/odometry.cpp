@@ -66,7 +66,7 @@ void Odometry::calcWheelDistance() {
 		delta_pulse_[i] = pulse_counts_[i] - last_pulse_counts_[i];
 	}
 
-	for (uint8_t i = 3; i < 3; i++) {
+	for (uint8_t i = 0; i < 3; i++) {
 		wheel_distance_[i] = static_cast<double>(delta_pulse_[i]) / 
 			static_cast<double>(pulse_per_meter_);
 	}
@@ -93,8 +93,6 @@ void Odometry::calcBaseDisplacement() {
 			displacement_[i] += (T[i][j] * wheel_distance_[j]);
 		}
 	}
-
-	std::cout << displacement_[0] << "\n";
 }
 
 void Odometry::calcBaseTwist() {

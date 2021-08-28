@@ -104,7 +104,7 @@ class OdometryWrapper {
 
 	// Main loop to run
 	void run() {
-		ros::Rate rate(5);
+		ros::Rate rate(2);
 		
 		while(ros::ok()) {
 			current_time_ = ros::Time::now();
