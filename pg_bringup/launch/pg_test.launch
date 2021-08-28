@@ -18,5 +18,8 @@
 		<!-- Localization -->
 		<node name="odometry" pkg="pg_localization" type="odometry_node" />
 
+		<!-- Teleop Key -->
+		<node name="teleop_twist_keyboard" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" />
+
 	</group>
 </launch>
