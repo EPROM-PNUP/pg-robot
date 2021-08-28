@@ -20,25 +20,20 @@
 //
 // Author: Wahyu Mahardika
 
+#include <iostream>
 #include "pg_localization/odometry.hpp"
 
 namespace pg_ns {
 
 Odometry::Odometry() {
 	pose_.assign(3, 0.0);
-	velocity_.assign(3, 0.0);
+	twist_.assign(3, 0.0);
 	displacement_.assign(3, 0.0);
-
-	T =
-	{
-		{cos(PI/6), -cos(PI/6), 0},
-		{sin(PI/6),  sin(PI/6),-1},
-		{1.0/base_diameter_, 1.0/base_diameter_, 1.0/base_diameter_}
-	};
 
 	pulse_counts_.assign(3, 0.0);
 	last_pulse_counts_.assign(3, 0.0);
 	delta_pulse_.assign(3, 0.0);
+
 	wheel_distance_.assign(3, 0.0);
 
 	delta_time_ = 0.0;
@@ -66,7 +61,7 @@ void Odometry::setPulseCounts(const vector<int16_t> &pulse_counts) {
 	}
 }
 
-void Odometry::calcDistanceTravelled() {
+void Odometry::calcWheelDistance() {
 	for (uint8_t i = 0; i < 3; i++) {
 		delta_pulse_[i] = pulse_counts_[i] - last_pulse_counts_[i];
 	}
@@ -81,7 +76,14 @@ void Odometry::calcDistanceTravelled() {
 	}
 }
 
-void Odometry::calcRobotDisplacement() {
+void Odometry::calcBaseDisplacement() {
+	vector<vector<double>> T =
+	{
+		{cos(PI/6), -cos(PI/6), 0},
+		{sin(PI/6),  sin(PI/6),-1},
+		{1.0/base_diameter_, 1.0/base_diameter_, 1.0/base_diameter_}
+	};
+
 	for (auto &i : displacement_) {
 		i = 0.0;
 	}
@@ -91,17 +93,19 @@ void Odometry::calcRobotDisplacement() {
 			displacement_[i] += (T[i][j] * wheel_distance_[j]);
 		}
 	}
+
+	std::cout << displacement_[0] << "\n";
 }
 
-void Odometry::calcRobotVelocity() {
+void Odometry::calcBaseTwist() {
 	if (delta_time_ > 0) {
 		for (uint8_t i = 0; i < 3; i++) {
-			velocity_[i] = displacement_[i] / delta_time_;
+			twist_[i] = displacement_[i] / delta_time_;
 		}
 	}
 }
 
-void Odometry::calcRobotGlobalPose() {
+void Odometry::calcBasePose() {
 	vector<vector<double>> R =
 	{
 		{cos(pose_[2]), -sin(pose_[2]), 0},
@@ -124,13 +128,18 @@ void Odometry::calcRobotGlobalPose() {
 }
 
 void Odometry::update() {
-	calcDistanceTravelled();
-	calcRobotDisplacement();
-	calcRobotVelocity();
-	calcRobotGlobalPose();
+	calcWheelDistance();
+	calcBaseDisplacement();
+	calcBaseTwist();
+	calcBasePose();
 }
 
-double Odometry::getRobotPose(uint8_t index) {return pose_[index];}
-double Odometry::getRobotVelocity(uint8_t index) {return velocity_[index];}
+vector<double> Odometry::getBasePose() {
+	return pose_;
+}
+
+vector<double> Odometry::getBaseTwist() {
+	return twist_;
+}
 
 }

@@ -111,10 +111,13 @@ class OdometryWrapper {
 
 			odometry.setDeltaTime((current_time_ - previous_time_).toSec());
 			odometry.update();
+
+			vector<double> base_pose = odometry.getBasePose();
+			vector<double> base_twist = odometry.getBaseTwist();
 			
 			// Get quaternion from theta
 			geometry_msgs::Quaternion odom_quat = 
-				tf::createQuaternionMsgFromYaw(odometry.getRobotPose(2));
+				tf::createQuaternionMsgFromYaw(base_pose[2]);
 
 			// Broadcast transformation
 			geometry_msgs::TransformStamped odom_trans;
@@ -123,8 +126,8 @@ class OdometryWrapper {
 			odom_trans.header.frame_id = "odom";
 			odom_trans.child_frame_id = "base_link";
 
-			odom_trans.transform.translation.x = odometry.getRobotPose(0);
-			odom_trans.transform.translation.y = odometry.getRobotPose(1);
+			odom_trans.transform.translation.x = base_pose[0];
+			odom_trans.transform.translation.y = base_pose[1];
 			odom_trans.transform.translation.z = 0.0;
 			odom_trans.transform.rotation = odom_quat;
 
@@ -136,15 +139,16 @@ class OdometryWrapper {
 			odom.header.stamp = current_time_;
 			odom.header.frame_id = "odom";
 			odom.child_frame_id = "base_link";
+			
 
-			odom.pose.pose.position.x = odometry.getRobotPose(0);
-			odom.pose.pose.position.y = odometry.getRobotPose(1);
+			odom.pose.pose.position.x = base_pose[0];
+			odom.pose.pose.position.y = base_pose[1];
 			odom.pose.pose.position.z = 0.0;
 			odom.pose.pose.orientation = odom_quat;
 
-			odom.twist.twist.linear.x = odometry.getRobotVelocity(0);
-			odom.twist.twist.linear.y = odometry.getRobotVelocity(1);
-			odom.twist.twist.angular.z = odometry.getRobotVelocity(2);
+			odom.twist.twist.linear.x = base_twist[0];
+			odom.twist.twist.linear.y = base_twist[1];
+			odom.twist.twist.angular.z = base_twist[2];
 
 			odom_pub.publish(odom);
 

@@ -34,10 +34,8 @@ namespace pg_ns {
 class Odometry {
 	private:
 	vector<double> pose_;
-	vector<double> velocity_;
+	vector<double> twist_;
 	vector<double> displacement_;
-
-	vector<vector<double>> T;
 
 	double delta_time_;
 
@@ -62,15 +60,15 @@ class Odometry {
 	void setPulsePerMeter(uint16_t pulse_per_meter);
 	void setPulseCounts(const vector<int16_t> &pulse_counts);
 
-	void calcDistanceTravelled();
-	void calcRobotDisplacement();
-	void calcRobotVelocity();
-	void calcRobotGlobalPose();
+	void calcWheelDistance();
+	void calcBaseDisplacement();
+	void calcBaseTwist();
+	void calcBasePose();
 
 	void update();
 
-	double getRobotPose(uint8_t index);
-	double getRobotVelocity(uint8_t index);
+	vector<double> getBasePose();
+	vector<double> getBaseTwist();
 };
 
 }
