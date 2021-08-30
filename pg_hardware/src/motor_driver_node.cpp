@@ -42,13 +42,13 @@ class MotorDriverWrapper {
 		
 		motor_driver_.assign(3, pg_ns::MotorDriver());
 
-		double max_velocity;
-		ros::param::get("motor_driver/max_angular_velocity",
-			max_velocity);
+		int max_pwm;
+		ros::param::get("motor_driver/max_pwm",
+			max_pwm);
 
-		// Set maximum velocity for each motor
+		// Set maximum pwm signal for each motor
 		for (auto &i : motor_driver_) {
-			i.setMaxVelocity(max_velocity);
+			i.setMaxPWM(max_pwm);
 		}
 
 		refrence_velocity_sub_ = nh.subscribe("wheel_refrence_velocity",
@@ -59,7 +59,7 @@ class MotorDriverWrapper {
 
 	void refrenceVelocityCallback(const pg_msgs::WheelVelocityCommand &msg) {
 		for (uint8_t i = 0; i < 3; i++) {
-			motor_driver_[i].setVelocity(msg.data[i]);
+			motor_driver_[i].setReferenceVelocity(msg.data[i]);
 		}
 	}
 
@@ -68,26 +68,27 @@ class MotorDriverWrapper {
 
 		while (ros::ok()) {
 			for (auto &i : motor_driver_) {
-				i.calcMotorPWM();
+				i.updateVelocityControl();
 			}
 
 			for (uint8_t i = 0; i < 3; i++) {
-				motor_pwm_msg_.data[i] = motor_driver_[i].getMotorPWM();
+				motor_pwm_msg_.data[i] = 
+					motor_driver_[i].getControlledSignal();
 			}
 
-			ROS_DEBUG_NAMED("motor_pwm",
+			ROS_DEBUG_NAMED("controlled_pwm",
 				"PWM:=   %3i   %3i   %3i",
-				motor_driver_[0].getMotorPWM(),
-				motor_driver_[1].getMotorPWM(),
-				motor_driver_[2].getMotorPWM()
-			);
+				motor_driver_[0].getControlledSignal(),
+				motor_driver_[1].getControlledSignal(),
+				motor_driver_[2].getControlledSignal()
+				);
 
-			ROS_DEBUG_NAMED("motor_vel",
+			ROS_DEBUG_NAMED("velocity_error",
 				"VEL:=   %6.3lf   %6.3lf   %6.3lf",
-				motor_driver_[0].getVelocity(),
-				motor_driver_[1].getVelocity(),
-				motor_driver_[2].getVelocity()
-			);
+				motor_driver_[0].getErrorValue(),
+				motor_driver_[1].getErrorValue(),
+				motor_driver_[2].getErrorValue()
+				);
 
 			motor_pwm_pub_.publish(motor_pwm_msg_);
 

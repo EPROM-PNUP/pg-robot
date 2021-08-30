@@ -29,18 +29,37 @@ namespace pg_ns {
 
 class MotorDriver {
 	private:
-	double max_velocity_;
-	double velocity_;
+	double reference_velocity_;
+	double actual_velocity_;
+
+	double error_;
+	double previous_error_;
+	double sum_of_errors_;
+
+	double proportional_;
+	double integral_;
+	double derivative_;
+
 	int16_t pwm_;
+	int16_t max_pwm_;
 
 	public:
 	MotorDriver();
 
-	void setMaxVelocity(double max_velocity);
-	void setVelocity(double velocity);
-	void calcMotorPWM();
-	double getVelocity();
-	int16_t getMotorPWM();
+	void setControllerConstants(
+		double proportional,
+		double integral,
+		double derivative
+		);
+
+	void setReferenceVelocity(double reference_velocity);
+	void setActualVelocity(double actual_velocity);
+	void setMaxPWM(int16_t max_pwm);
+
+	void updateVelocityControl();
+
+	double getErrorValue();
+	int16_t getControlledSignal();
 };
 
 }

@@ -9,7 +9,7 @@ base_controller: {
 }
 
 motor_driver: {
-  max_angular_velocity: 39.0,
+  max_pwm: 255,
   timeout: 2,
   rate: 10,
 }
