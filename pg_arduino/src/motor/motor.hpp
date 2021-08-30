@@ -37,7 +37,7 @@ class Motor{
 	Motor(const byte &dir_pin_1, const byte &dir_pin_2);
 
 	void init();
-	int16_t _clip(const int16_t &value, const int16_t &minimum, const int16_t &maximum);
+	int16_t clip(const int16_t &value, const int16_t &minimum, const int16_t &maximum);
 	int16_t getDutyCycle();
 	void move(int16_t pwm);
 };

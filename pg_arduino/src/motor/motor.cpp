@@ -53,7 +53,7 @@ int16_t Motor::clip(const int16_t &value, const int16_t &minimum, const int16_t 
 // Move motor by sending PWM signals to motor drivers.
 void Motor::move(int16_t pwm) {
 	// Clip pwm values to 0 - 255.
-	this->_duty_cycle = _clip(abs(pwm), 0, 255);
+	this->_duty_cycle = clip(abs(pwm), 0, 255);
 	// Control rotation direction using if statement.
 	if(pwm < 0) {
 		analogWrite(this->_dir_pin_1, this->_duty_cycle);
