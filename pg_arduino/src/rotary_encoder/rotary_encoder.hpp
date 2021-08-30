@@ -31,8 +31,10 @@ class RotaryEncoder {
 	private:
 	byte en_c1_;
 	byte en_c2_;
-	volatile long pulse_count_ = 0;
 	bool direction_cw_ = true;
+	volatile long pulse_count_ = 0;
+	long previous_pulse_count_ = 0;
+	float angular_velocity_ = 0;
 	const static int16_t ENCODER_MIN = -32768;
 	const static int16_t ENCODER_MAX = 32767;
 
@@ -41,6 +43,7 @@ class RotaryEncoder {
 
 	void init();
 	byte getC1Pin();
+	float getAngularVelocity();
 
 	friend void pulseInterruptA();
 	friend void pulseInterruptB();

@@ -27,6 +27,7 @@
 
 #include <ros.h>
 #include <std_msgs/Int16MultiArray.h>
+#include <std_msgs/Float32MultiArray.h>
 #include <pg_msgs/MotorCommand.h>
 
 #include "src/motor/motor.hpp"
@@ -85,24 +86,34 @@ void motorCallback(const pg_msgs::MotorCommand &msg) {
 ////////////////////////////
 
 ros::NodeHandle nh;
-ros::Subscriber<pg_msgs::MotorCommand> motor_speed_sub("motor_pwm", &motorCallback);
+ros::Subscriber<pg_msgs::MotorCommand> motor_speed_sub(
+	"motor_pwm", &motorCallback);
 
 // Encoders Publisher & msg
 std_msgs::Int16MultiArray encoders_pulse_count;
-ros::Publisher encoders_pulse_count_pub("encoders_pulse_count", &encoders_pulse_count);
-int16_t temp_3[3] = {0, 0, 0};
+ros::Publisher encoders_pulse_count_pub(
+	"encoders_pulse_count",
+	&encoders_pulse_count
+	);
+
+// Wheel Actual Velocity Publisher & msg
+std_msgs::Float32MultiArray wheel_actual_velocity;
+ros::Publisher wheel_actual_velocity_pub(
+	"wheel_actual_velocity",
+	&wheel_actual_velocity
+	);
 
 // IMU Publisher & msg
 std_msgs::Int16MultiArray imu_data_raw_msg;
 ros::Publisher imu_pub("imu_raw", &imu_data_raw_msg);
-int16_t temp_9[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
 //////////////////////
 // GLOBAL VARIABLES //
 //////////////////////
 
-static long encoders_millis_track = 0;
+static long pulse_counts_millis_track = 0;
+static long angular_velocity_millis_track = 0;
 static long imu_millis_track = 0;
 static long current_millis = 0;
 
@@ -141,12 +152,19 @@ void setup() {
 
 	// Initialize publishers
 	nh.advertise(encoders_pulse_count_pub);
+	nh.advertise(wheel_actual_velocity_pub);
 	nh.advertise(imu_pub);
 
 	// Initialize msgs data length
+	int16_t temp_3[3] = {0, 0, 0};
 	encoders_pulse_count.data_length = 3;
 	encoders_pulse_count.data = temp_3;
 
+	float temp_float_3[3] = {0.0f, 0.0f, 0.0f};
+	wheel_actual_velocity.data_length = 3;
+	wheel_actual_velocity.data = temp_float_3; 
+
+	int16_t temp_9[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 	imu_data_raw_msg.data_length = 9;
 	imu_data_raw_msg.data = temp_9;
 }
@@ -162,10 +180,21 @@ void loop() {
 	current_millis = millis();
 	
 	// Publish encoders pulse counts every 20 ms
-	if(current_millis - encoders_millis_track > 20) {
-		encoders_millis_track = current_millis;
+	if(current_millis - pulse_counts_millis_track > 20) {
+		pulse_counts_millis_track = current_millis;
 
 		encoders_pulse_count_pub.publish(&encoders_pulse_count);
+	}
+
+	// Publish wheel actual velocity every 100 ms
+	if(current_millis - angular_velocity_millis_track > 100) {
+		angular_velocity_millis_track = current_millis;
+
+		wheel_actual_velocity.data[0] = re_a.getAngularVelocity();
+		wheel_actual_velocity.data[1] = re_b.getAngularVelocity();
+		wheel_actual_velocity.data[2] = re_c.getAngularVelocity();
+
+		wheel_actual_velocity_pub.publish(&wheel_actual_velocity);
 	}
 
 	// Publish imu sensor raw data every 20 ms
