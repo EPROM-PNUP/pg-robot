@@ -25,7 +25,7 @@
 namespace pg_ns {
 
 MotorDriver::MotorDriver() {
-	this->proportional_ = 0.0;
+	this->proportional_ = 0.1;
 	this->integral_ = 0.0;
 	this->derivative_ = 0.0;
 

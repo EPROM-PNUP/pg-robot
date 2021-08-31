@@ -22,6 +22,7 @@
 
 #include <ros/ros.h>
 #include <ros/console.h>
+#include <std_msgs/Float32MultiArray.h>
 #include <geometry_msgs/Twist.h>
 #include <pg_hardware/motor_driver.hpp>
 #include <pg_msgs/MotorCommand.h>
@@ -30,6 +31,8 @@
 class MotorDriverWrapper {
 	private:
 	ros::Subscriber refrence_velocity_sub_;
+	ros::Subscriber actual_velocity_sub_;
+
 	ros::Publisher motor_pwm_pub_;
 
 	pg_msgs::MotorCommand motor_pwm_msg_;
@@ -43,16 +46,32 @@ class MotorDriverWrapper {
 		motor_driver_.assign(3, pg_ns::MotorDriver());
 
 		int max_pwm;
-		ros::param::get("motor_driver/max_pwm",
-			max_pwm);
+		ros::param::get("motor_driver/max_pwm", max_pwm);
 
 		// Set maximum pwm signal for each motor
 		for (auto &i : motor_driver_) {
 			i.setMaxPWM(max_pwm);
 		}
 
+		double controller_constants[3];
+		ros::param::get("motor_driver/proportional", controller_constants[0]);
+		ros::param::get("motor_driver/integral", controller_constants[1]);
+		ros::param::get("motor_driver/derivative", controller_constants[2]);
+
+		// Set PID controller constants
+		for (auto &i : motor_driver_) {
+			i.setControllerConstants(
+				controller_constants[0],
+				controller_constants[1],
+				controller_constants[2]
+				);
+		}
+
 		refrence_velocity_sub_ = nh.subscribe("wheel_refrence_velocity",
 			10, &MotorDriverWrapper::refrenceVelocityCallback, this);
+
+		actual_velocity_sub_ = nh.subscribe("wheel_actual_velocity",
+			10, &MotorDriverWrapper::actualVelocityCallback, this);
 
 		motor_pwm_pub_ = nh.advertise<pg_msgs::MotorCommand>("motor_pwm", 10);
 	}
@@ -60,6 +79,12 @@ class MotorDriverWrapper {
 	void refrenceVelocityCallback(const pg_msgs::WheelVelocityCommand &msg) {
 		for (uint8_t i = 0; i < 3; i++) {
 			motor_driver_[i].setReferenceVelocity(msg.data[i]);
+		}
+	}
+
+	void actualVelocityCallback(const std_msgs::Float32MultiArray &msg) {
+		for (uint8_t i = 0; i < 3; i++) {
+			motor_driver_[i].setActualVelocity(msg.data[i]);
 		}
 	}
 
