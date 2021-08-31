@@ -131,9 +131,23 @@ void setup() {
 	re_c.init();
 
 	// Attach interrupt on every encoder C1 pins
-	attachInterrupt(digitalPinToInterrupt(re_a.getC1Pin()), pg_ns::pulseInterruptA, RISING);
-	attachInterrupt(digitalPinToInterrupt(re_b.getC1Pin()), pg_ns::pulseInterruptB, RISING);
-	attachInterrupt(digitalPinToInterrupt(re_c.getC1Pin()), pg_ns::pulseInterruptC, RISING);
+	attachInterrupt(
+		digitalPinToInterrupt(re_a.getC1Pin()), 
+		pg_ns::pulseInterruptA, 
+		RISING
+		);
+
+	attachInterrupt(
+		digitalPinToInterrupt(re_b.getC1Pin()), 
+		pg_ns::pulseInterruptB, 
+		RISING
+		);
+
+	attachInterrupt(
+		digitalPinToInterrupt(re_c.getC1Pin()), 
+		pg_ns::pulseInterruptC, 
+		RISING
+		);
 
 	// Initialize dc motor objects
 	motor_a.init();
