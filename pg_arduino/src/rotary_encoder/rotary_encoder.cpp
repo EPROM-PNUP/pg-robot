@@ -43,16 +43,5 @@ byte RotaryEncoder::getC1Pin() {
 	return this->en_c1_;
 }
 
-// GET ANGULAR VEL
-// Used to get angular velocity from
-// each motors.
-float RotaryEncoder::getAngularVelocity() {
-	long delta_pulse = this->pulse_count_ - this->previous_pulse_count_;
-	this->angular_velocity_ = (float)((delta_pulse * 600) / 134);
-	this->previous_pulse_count_ = this->pulse_count_;
-
-	return this->angular_velocity_;
-}
-
 }
 

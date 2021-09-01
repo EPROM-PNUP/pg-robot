@@ -26,9 +26,8 @@
 /////////////////////
 
 #include <ros.h>
+#include <std_msgs/Int16.h>
 #include <std_msgs/Int16MultiArray.h>
-#include <std_msgs/Float32MultiArray.h>
-#include <pg_msgs/MotorCommand.h>
 
 #include "src/motor/motor.hpp"
 #include "src/rotary_encoder/rotary_encoder.hpp"
@@ -39,33 +38,33 @@
 // MACROS //
 ////////////
 
-#define MOTOR_A_PIN_1 4
-#define MOTOR_A_PIN_2 5
-#define MOTOR_B_PIN_1 8
-#define MOTOR_B_PIN_2 9
-#define MOTOR_C_PIN_1 6
-#define MOTOR_C_PIN_2 7
+#define MOTOR_1_PIN_A 4
+#define MOTOR_1_PIN_B 5
+#define MOTOR_2_PIN_A 8
+#define MOTOR_2_PIN_B 9
+#define MOTOR_3_PIN_A 6
+#define MOTOR_3_PIN_B 7
 
-#define ENCODER_A_PIN_C1 2
-#define ENCODER_A_PIN_C2 3
-#define ENCODER_B_PIN_C1 18
-#define ENCODER_B_PIN_C2 19
-#define ENCODER_C_PIN_C1 20
-#define ENCODER_C_PIN_C2 21
+#define ENCODER_1_PIN_C1 2
+#define ENCODER_1_PIN_C2 3
+#define ENCODER_2_PIN_C1 18
+#define ENCODER_2_PIN_C2 19
+#define ENCODER_3_PIN_C1 20
+#define ENCODER_3_PIN_C2 21
 
 
 ////////////////////////////
 // OBJECTS INITIALIZATION //
 ////////////////////////////
 
-// Motors A, B, C
-pg_ns::Motor motor_a(MOTOR_A_PIN_1, MOTOR_A_PIN_2);
-pg_ns::Motor motor_b(MOTOR_B_PIN_1, MOTOR_B_PIN_2);
-pg_ns::Motor motor_c(MOTOR_C_PIN_1, MOTOR_C_PIN_2);
-// Encoders A, B, C
-pg_ns::RotaryEncoder re_a(ENCODER_A_PIN_C1, ENCODER_A_PIN_C2);
-pg_ns::RotaryEncoder re_b(ENCODER_B_PIN_C1, ENCODER_B_PIN_C2);
-pg_ns::RotaryEncoder re_c(ENCODER_C_PIN_C1, ENCODER_C_PIN_C2);
+// Motors 1, 2, 3
+pg_ns::Motor motor_1(MOTOR_1_PIN_A, MOTOR_1_PIN_B);
+pg_ns::Motor motor_2(MOTOR_2_PIN_A, MOTOR_2_PIN_B);
+pg_ns::Motor motor_3(MOTOR_3_PIN_A, MOTOR_3_PIN_B);
+// Encoders 1, 2, 3
+pg_ns::RotaryEncoder re_1(ENCODER_1_PIN_C1, ENCODER_1_PIN_C2);
+pg_ns::RotaryEncoder re_2(ENCODER_2_PIN_C1, ENCODER_2_PIN_C2);
+pg_ns::RotaryEncoder re_3(ENCODER_3_PIN_C1, ENCODER_3_PIN_C2);
 // IMU Sensor
 pg_ns::CMPS12 imu;
 
@@ -74,10 +73,16 @@ pg_ns::CMPS12 imu;
 // CALLBACK FUNCTIONS //
 ////////////////////////
 
-void motorCallback(const pg_msgs::MotorCommand &msg) {
-	motor_a.move(msg.data[0]);
-	motor_b.move(msg.data[1]);
-	motor_c.move(msg.data[2]);
+void motor1Callback(const std_msgs::Int16 &msg) {
+	motor_1.move(msg.data);
+}
+
+void motor2Callback(const std_msgs::Int16 &msg) {
+	motor_2.move(msg.data);
+}
+
+void motor3Callback(const std_msgs::Int16 &msg) {
+	motor_3.move(msg.data);
 }
 
 
@@ -86,21 +91,34 @@ void motorCallback(const pg_msgs::MotorCommand &msg) {
 ////////////////////////////
 
 ros::NodeHandle nh;
-ros::Subscriber<pg_msgs::MotorCommand> motor_speed_sub(
-	"motor_pwm", &motorCallback);
+
+// Motor PWM Subscriber
+ros::Subscriber<std_msgs::Int16> motor_1_pwm_sub(
+	"wheel_1/motor_pwm", &motor1Callback);
+
+ros::Subscriber<std_msgs::Int16> motor_2_pwm_sub(
+	"wheel_2/motor_pwm", &motor2Callback);
+
+ros::Subscriber<std_msgs::Int16> motor_3_pwm_sub(
+	"wheel_3/motor_pwm", &motor3Callback);
 
 // Encoders Publisher & msg
-std_msgs::Int16MultiArray encoders_pulse_count;
-ros::Publisher encoders_pulse_count_pub(
-	"encoders_pulse_count",
-	&encoders_pulse_count
+std_msgs::Int16 encoder_1_pulse;
+ros::Publisher encoder_1_pulse_pub(
+	"wheel_1/encoder_pulse",
+	&encoder_1_pulse
 	);
 
-// Wheel Actual Velocity Publisher & msg
-std_msgs::Float32MultiArray wheel_actual_velocity;
-ros::Publisher wheel_actual_velocity_pub(
-	"wheel_actual_velocity",
-	&wheel_actual_velocity
+std_msgs::Int16 encoder_2_pulse;
+ros::Publisher encoder_2_pulse_pub(
+	"wheel_2/encoder_pulse",
+	&encoder_2_pulse
+	);
+
+std_msgs::Int16 encoder_3_pulse;
+ros::Publisher encoder_3_pulse_pub(
+	"wheel_3/encoder_pulse",
+	&encoder_3_pulse
 	);
 
 // IMU Publisher & msg
@@ -113,7 +131,6 @@ ros::Publisher imu_pub("imu_raw", &imu_data_raw_msg);
 //////////////////////
 
 static long pulse_counts_millis_track = 0;
-static long angular_velocity_millis_track = 0;
 static long imu_millis_track = 0;
 static long current_millis = 0;
 
@@ -126,33 +143,33 @@ static pg_ns::ImuDataRaw imu_data_raw;
 
 void setup() {
 	// Initialize encoder objects
-	re_a.init();
-	re_b.init();
-	re_c.init();
+	re_1.init();
+	re_2.init();
+	re_3.init();
 
 	// Attach interrupt on every encoder C1 pins
 	attachInterrupt(
-		digitalPinToInterrupt(re_a.getC1Pin()), 
+		digitalPinToInterrupt(re_1.getC1Pin()), 
 		pg_ns::pulseInterruptA, 
 		RISING
 		);
 
 	attachInterrupt(
-		digitalPinToInterrupt(re_b.getC1Pin()), 
+		digitalPinToInterrupt(re_2.getC1Pin()), 
 		pg_ns::pulseInterruptB, 
 		RISING
 		);
 
 	attachInterrupt(
-		digitalPinToInterrupt(re_c.getC1Pin()), 
+		digitalPinToInterrupt(re_3.getC1Pin()), 
 		pg_ns::pulseInterruptC, 
 		RISING
 		);
 
 	// Initialize dc motor objects
-	motor_a.init();
-	motor_b.init();
-	motor_c.init();
+	motor_1.init();
+	motor_2.init();
+	motor_3.init();
 
 	// Initialize imu sensor object
 	imu.init();
@@ -162,22 +179,17 @@ void setup() {
 	nh.initNode();
 
 	// Initialize subscribers 
-	nh.subscribe(motor_speed_sub);
+	nh.subscribe(motor_1_pwm_sub);
+	nh.subscribe(motor_2_pwm_sub);
+	nh.subscribe(motor_3_pwm_sub);
 
 	// Initialize publishers
-	nh.advertise(encoders_pulse_count_pub);
-	nh.advertise(wheel_actual_velocity_pub);
+	nh.advertise(encoder_1_pulse_pub);
+	nh.advertise(encoder_2_pulse_pub);
+	nh.advertise(encoder_3_pulse_pub);
 	nh.advertise(imu_pub);
 
-	// Initialize msgs data length
-	int16_t temp_3[3] = {0, 0, 0};
-	encoders_pulse_count.data_length = 3;
-	encoders_pulse_count.data = temp_3;
-
-	float temp_float_3[3] = {0.0f, 0.0f, 0.0f};
-	wheel_actual_velocity.data_length = 3;
-	wheel_actual_velocity.data = temp_float_3; 
-
+	// Initialize imu msg data length
 	int16_t temp_9[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 	imu_data_raw_msg.data_length = 9;
 	imu_data_raw_msg.data = temp_9;
@@ -197,18 +209,9 @@ void loop() {
 	if(current_millis - pulse_counts_millis_track > 20) {
 		pulse_counts_millis_track = current_millis;
 
-		encoders_pulse_count_pub.publish(&encoders_pulse_count);
-	}
-
-	// Publish wheel actual velocity every 100 ms
-	if(current_millis - angular_velocity_millis_track > 100) {
-		angular_velocity_millis_track = current_millis;
-
-		wheel_actual_velocity.data[0] = re_a.getAngularVelocity();
-		wheel_actual_velocity.data[1] = re_b.getAngularVelocity();
-		wheel_actual_velocity.data[2] = re_c.getAngularVelocity();
-
-		wheel_actual_velocity_pub.publish(&wheel_actual_velocity);
+		encoder_1_pulse_pub.publish(&encoder_1_pulse);
+		encoder_2_pulse_pub.publish(&encoder_2_pulse);
+		encoder_3_pulse_pub.publish(&encoder_3_pulse);
 	}
 
 	// Publish imu sensor raw data every 20 ms
@@ -240,94 +243,94 @@ void loop() {
 
 // Wheel A interrupt
 void pg_ns::pulseInterruptA() {
-	if(digitalRead(re_a.en_c2_) == LOW) {
-		re_a.direction_cw_ = true;
+	if(digitalRead(re_1.en_c2_) == LOW) {
+		re_1.direction_cw_ = true;
 	}
 	else {
-		re_a.direction_cw_ = false;
+		re_1.direction_cw_ = false;
 	}
 
-	if(re_a.direction_cw_) {
-		if(re_a.pulse_count_ == RotaryEncoder::ENCODER_MAX) {
-			re_a.pulse_count_ = RotaryEncoder::ENCODER_MIN;
-			encoders_pulse_count.data[0] = re_a.pulse_count_;
+	if(re_1.direction_cw_) {
+		if(re_1.pulse_count_ == RotaryEncoder::ENCODER_MAX) {
+			re_1.pulse_count_ = RotaryEncoder::ENCODER_MIN;
+			encoder_1_pulse.data = re_1.pulse_count_;
 		}
 		else {
-			re_a.pulse_count_++;
-			encoders_pulse_count.data[0] = re_a.pulse_count_;
+			re_1.pulse_count_++;
+			encoder_1_pulse.data = re_1.pulse_count_;
 		}
 	}
 	else {
-		if(re_a.pulse_count_ == RotaryEncoder::ENCODER_MIN) {
-			re_a.pulse_count_ = RotaryEncoder::ENCODER_MAX;
-			encoders_pulse_count.data[0] = re_a.pulse_count_;
+		if(re_1.pulse_count_ == RotaryEncoder::ENCODER_MIN) {
+			re_1.pulse_count_ = RotaryEncoder::ENCODER_MAX;
+			encoder_1_pulse.data = re_1.pulse_count_;
 		}
 		else {
-			re_a.pulse_count_--;
-			encoders_pulse_count.data[0] = re_a.pulse_count_;
+			re_1.pulse_count_--;
+			encoder_1_pulse.data = re_1.pulse_count_;
 		}
 	}
 }
 
-// Wheel B interrupt
 void pg_ns::pulseInterruptB() {
-	if(digitalRead(re_b.en_c2_) == LOW) {
-		re_b.direction_cw_ = true;
+	if(digitalRead(re_2.en_c2_) == LOW) {
+		re_2.direction_cw_ = true;
 	}
 	else {
-		re_b.direction_cw_ = false;
+		re_2.direction_cw_ = false;
 	}
 
-	if(re_b.direction_cw_) {
-		if(re_b.pulse_count_ == RotaryEncoder::ENCODER_MAX) {
-			re_b.pulse_count_ = RotaryEncoder::ENCODER_MIN;
-			encoders_pulse_count.data[1] = re_b.pulse_count_;
+	if(re_2.direction_cw_) {
+		if(re_2.pulse_count_ == RotaryEncoder::ENCODER_MAX) {
+			re_2.pulse_count_ = RotaryEncoder::ENCODER_MIN;
+			encoder_2_pulse.data = re_2.pulse_count_;
 		}
 		else {
-			re_b.pulse_count_++;
-			encoders_pulse_count.data[1] = re_b.pulse_count_;
+			re_2.pulse_count_++;
+			encoder_2_pulse.data = re_2.pulse_count_;
 		}
 	}
 	else {
-		if(re_b.pulse_count_ == RotaryEncoder::ENCODER_MIN) {
-			re_b.pulse_count_ = RotaryEncoder::ENCODER_MAX;
-			encoders_pulse_count.data[1] = re_b.pulse_count_;
+		if(re_2.pulse_count_ == RotaryEncoder::ENCODER_MIN) {
+			re_2.pulse_count_ = RotaryEncoder::ENCODER_MAX;
+			encoder_2_pulse.data = re_2.pulse_count_;
 		}
 		else {
-			re_b.pulse_count_--;
-			encoders_pulse_count.data[1] = re_b.pulse_count_;
+			re_2.pulse_count_--;
+			encoder_2_pulse.data = re_2.pulse_count_;
 		}
 	}
 }
 
 // Wheel C interrupt
 void pg_ns::pulseInterruptC() {
-	if(digitalRead(re_c.en_c2_) == LOW) {
-		re_c.direction_cw_ = true;
+	if(digitalRead(re_3.en_c2_) == LOW) {
+		re_3.direction_cw_ = true;
 	}
 	else {
-		re_c.direction_cw_ = false;
+		re_3.direction_cw_ = false;
 	}
 
-	if(re_c.direction_cw_) {
-		if(re_c.pulse_count_ == RotaryEncoder::ENCODER_MAX) {
-			re_c.pulse_count_ = RotaryEncoder::ENCODER_MIN;
-			encoders_pulse_count.data[2] = re_c.pulse_count_;
+	if(re_3.direction_cw_) {
+		if(re_3.pulse_count_ == RotaryEncoder::ENCODER_MAX) {
+			re_3.pulse_count_ = RotaryEncoder::ENCODER_MIN;
+			encoder_3_pulse.data = re_3.pulse_count_;
 		}
 		else {
-			re_c.pulse_count_++;
-			encoders_pulse_count.data[2] = re_c.pulse_count_;
+			re_3.pulse_count_++;
+			encoder_3_pulse.data = re_3.pulse_count_;
 		}
 	}
 	else {
-		if(re_c.pulse_count_ == RotaryEncoder::ENCODER_MIN) {
-			re_c.pulse_count_ = RotaryEncoder::ENCODER_MAX;
-			encoders_pulse_count.data[2] = re_c.pulse_count_;
+		if(re_3.pulse_count_ == RotaryEncoder::ENCODER_MIN) {
+			re_3.pulse_count_ = RotaryEncoder::ENCODER_MAX;
+			encoder_3_pulse.data = re_3.pulse_count_;
 		}
 		else {
-			re_c.pulse_count_--;
-			encoders_pulse_count.data[2] = re_c.pulse_count_;
+			re_3.pulse_count_--;
+			encoder_3_pulse.data = re_3.pulse_count_;
 		}
 	}
 }
+
 
