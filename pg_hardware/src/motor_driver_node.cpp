@@ -61,7 +61,7 @@ class MotorDriverWrapper {
 		motor_state_pub_ = nh.advertise<std_msgs::Float64>("motor_state", 10);
 	}
 
-	void controllerOutputCallback(const std_msgs::Int16 &msg) {
+	void controllerOutputCallback(const std_msgs::Float64 &msg) {
 		motor_driver_.setPWM(msg.data);
 	}
 

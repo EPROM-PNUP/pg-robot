@@ -41,7 +41,7 @@ class MotorDriver {
 	MotorDriver();
 
 	void setMaxPWM(int16_t max_pwm);
-	void setPWM(int16_t pwm);
+	void setPWM(double pwm);
 	void setEncoderPulse(int16_t encoder_pulse);
 
 	int16_t getPWM();

@@ -34,8 +34,8 @@ void MotorDriver::setMaxPWM(int16_t max_pwm) {
 	max_pwm_ = max_pwm;
 }
 
-void MotorDriver::setPWM(int16_t pwm) {
-	pwm_ = pwm;
+void MotorDriver::setPWM(double pwm) {
+	pwm_ = static_cast<int16_t>(pwm);
 }
 
 void MotorDriver::setEncoderPulse(int16_t encoder_pulse) {
