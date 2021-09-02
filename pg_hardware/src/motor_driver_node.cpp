@@ -25,97 +25,56 @@
 #include <std_msgs/Float32MultiArray.h>
 #include <geometry_msgs/Twist.h>
 #include <pg_hardware/motor_driver.hpp>
-#include <pg_msgs/MotorCommand.h>
-#include <pg_msgs/WheelVelocityCommand.h>
 
 class MotorDriverWrapper {
 	private:
-	ros::Subscriber refrence_velocity_sub_;
-	ros::Subscriber actual_velocity_sub_;
+	ros::Subscriber controller_output_sub_;
+	rosLLSubscriber encoder_pulse_sub_;
 
 	ros::Publisher motor_pwm_pub_;
+	ros::Publisher motor_state_pub_;
 
-	pg_msgs::MotorCommand motor_pwm_msg_;
+	std_msgs::Int16 motor_pwm_msg_;
+	std_msgs::Float64 motor_state_msg_;
 
-	std::vector<pg_ns::MotorDriver> motor_driver_;
+	pg_ns::MotorDriver motor_driver_;
 
 	public:
 	MotorDriverWrapper(ros::NodeHandle &nh) {
 		ROS_INFO("Running /motor_driver");
 		
-		motor_driver_.assign(3, pg_ns::MotorDriver());
-
 		int max_pwm;
 		ros::param::get("motor_driver/max_pwm", max_pwm);
 
 		// Set maximum pwm signal for each motor
-		for (auto &i : motor_driver_) {
-			i.setMaxPWM(max_pwm);
-		}
+		motor_driver_.setMaxPWM(max_pwm);
 
-		double controller_constants[3];
-		ros::param::get("motor_driver/proportional", controller_constants[0]);
-		ros::param::get("motor_driver/integral", controller_constants[1]);
-		ros::param::get("motor_driver/derivative", controller_constants[2]);
+		controller_output_sub_ = nh.subscribe("controller_output",
+			10, &MotorDriverWrapper::controllerOutputCallback, this);
 
-		// Set PID controller constants
-		for (auto &i : motor_driver_) {
-			i.setControllerConstants(
-				controller_constants[0],
-				controller_constants[1],
-				controller_constants[2]
-				);
-		}
+		encoder_pulse_sub_ = nh.subscribe("encoder_pulse",
+			10, &MotorDriverWrapper::encoderPulseCallback, this);
 
-		refrence_velocity_sub_ = nh.subscribe("wheel_refrence_velocity",
-			10, &MotorDriverWrapper::refrenceVelocityCallback, this);
-
-		actual_velocity_sub_ = nh.subscribe("wheel_actual_velocity",
-			10, &MotorDriverWrapper::actualVelocityCallback, this);
-
-		motor_pwm_pub_ = nh.advertise<pg_msgs::MotorCommand>("motor_pwm", 10);
+		motor_pwm_pub_ = nh.advertise<std_msgs::Int16>("motor_pwm", 10);
 	}
 
-	void refrenceVelocityCallback(const pg_msgs::WheelVelocityCommand &msg) {
-		for (uint8_t i = 0; i < 3; i++) {
-			motor_driver_[i].setReferenceVelocity(msg.data[i]);
-		}
+	void controllerOutputCallback(const std_msgs::Int16 &msg) {
+		motor_driver_.setPWM(msg.data);
 	}
 
-	void actualVelocityCallback(const std_msgs::Float32MultiArray &msg) {
-		for (uint8_t i = 0; i < 3; i++) {
-			motor_driver_[i].setActualVelocity(msg.data[i]);
-		}
+	void encoderPulseCallback(const std_msgs::Int16 &msg) {
+		motor_driver_.setEncoderPulse(msg.data);
 	}
 
 	void run() {
-		ros::Rate rate(20);
+		ros::Rate rate(10);
 
 		while (ros::ok()) {
-			for (auto &i : motor_driver_) {
-				i.updateVelocityControl();
-			}
+			motor_state_msg_.data = motor_driver_.getState();
+			motor_state_pub_.publish(motor_state_msg_);
 
-			for (uint8_t i = 0; i < 3; i++) {
-				motor_pwm_msg_.data[i] = 
-					motor_driver_[i].getControlledSignal();
-			}
-
-			ROS_DEBUG_NAMED("controlled_pwm",
-				"PWM:=   %3i   %3i   %3i",
-				motor_driver_[0].getControlledSignal(),
-				motor_driver_[1].getControlledSignal(),
-				motor_driver_[2].getControlledSignal()
-				);
-
-			ROS_DEBUG_NAMED("velocity_error",
-				"VEL:=   %6.3lf   %6.3lf   %6.3lf",
-				motor_driver_[0].getErrorValue(),
-				motor_driver_[1].getErrorValue(),
-				motor_driver_[2].getErrorValue()
-				);
-
-			motor_pwm_pub_.publish(motor_pwm_msg_);
+			motor_pwm_msg_.data = motor_driver_.getPWM();
+			motor_pwm_pub_.publish(pwm_msg_);
 
 			ros::spinOnce();
 			rate.sleep();
