@@ -58,6 +58,7 @@ class MotorDriverWrapper {
 			10, &MotorDriverWrapper::encoderPulseCallback, this);
 
 		motor_pwm_pub_ = nh.advertise<std_msgs::Int16>("motor_pwm", 10);
+		motor_state_pub_ = nh.advertise<std_msgs::Float64>("motor_state", 10);
 	}
 
 	void controllerOutputCallback(const std_msgs::Int16 &msg) {
