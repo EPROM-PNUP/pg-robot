@@ -57,10 +57,8 @@ void Odometry::setPulsePerMeter(uint16_t pulse_per_meter) {
 
 // SET PULSE.
 // Store pulse counts from encoders readings.
-void Odometry::setPulseCounts(const vector<int16_t> &pulse_counts) {
-	for (uint8_t i = 0; i < 3; i++) {
-		pulse_counts_[i] = pulse_counts[i];
-	}
+void Odometry::setPulseCounts(int16_t pulse_count, int8_t index) {
+	pulse_counts_[index] = pulse_count;
 }
 
 // WHEEL TRAVELLED DISTANCE.

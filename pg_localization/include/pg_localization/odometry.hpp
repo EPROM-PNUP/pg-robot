@@ -58,7 +58,7 @@ class Odometry {
 	void setBaseDiameter(float base_diameter);
 	void setWheelRadius(float wheel_radius);
 	void setPulsePerMeter(uint16_t pulse_per_meter);
-	void setPulseCounts(const vector<int16_t> &pulse_counts);
+	void setPulseCounts(int16_t pulse_count, int8_t index);
 
 	void calcWheelDistance();
 	void calcBaseDisplacement();
