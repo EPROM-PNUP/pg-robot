@@ -1,25 +1,80 @@
 <launch>
 	<group ns="marco">
 
+
 		<!-- Parameter Servers -->
 		<rosparam command="load" file="$(find pg_bringup)/config/common_config.yaml" />
 		<rosparam command="load" file="$(find pg_bringup)/config/sensors_config.yaml" />
 
+
 		<!-- Arduino Firmware -->
 		<node name="serial_node" pkg="rosserial_python" type="serial_node.py" args="_port:=/dev/ttyACM0 _baud:=115200" />
 
+
 		<!-- Hardware Drivers -->
+		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node" ns="wheel_1" />
+		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node" ns="wheel_2" />
+		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node" ns="wheel_3" />
+
+		<node name="controller" pkg="pid" type="controller" ns="wheel_1" >
+			<param name="node_name" value="wheel_1_pid" />
+			<param name="setpoint_topic" value"reference_velocity" />
+			<param name="topic_from_controller" value"controller_output" />
+			<param name="topic_from_plant" value"motor_state" />
+			<param name="Kp" value="1.0" />
+			<param name="Ki" value="0.0" />
+			<param name="Kd" value="0.0" />
+			<param name="upper_limit" value="255" />
+			<param name="lower_limit" value="-255" />
+			<param name="windup_limit" value="255" />
+			<param name="max_loop_frequency" value="10.0" />
+			<param name="min_loop_frequency" value="10.0" />
+		<node/>
+
+		<node name="controller" pkg="pid" type="controller" ns="wheel_2" >
+			<param name="node_name" value="wheel_1_pid" />
+			<param name="setpoint_topic" value"reference_velocity" />
+			<param name="topic_from_controller" value"controller_output" />
+			<param name="topic_from_plant" value"motor_state" />
+			<param name="Kp" value="1.0" />
+			<param name="Ki" value="0.0" />
+			<param name="Kd" value="0.0" />
+			<param name="upper_limit" value="255" />
+			<param name="lower_limit" value="-255" />
+			<param name="windup_limit" value="255" />
+			<param name="max_loop_frequency" value="10.0" />
+			<param name="min_loop_frequency" value="10.0" />
+		<node/>
+
+		<node name="controller" pkg="pid" type="controller" ns="wheel_3" >
+			<param name="node_name" value="wheel_1_pid" />
+			<param name="setpoint_topic" value"reference_velocity" />
+			<param name="topic_from_controller" value"controller_output" />
+			<param name="topic_from_plant" value"motor_state" />
+			<param name="Kp" value="1.0" />
+			<param name="Ki" value="0.0" />
+			<param name="Kd" value="0.0" />
+			<param name="upper_limit" value="255" />
+			<param name="lower_limit" value="-255" />
+			<param name="windup_limit" value="255" />
+			<param name="max_loop_frequency" value="10.0" />
+			<param name="min_loop_frequency" value="10.0" />
+		<node/>
+
 		<node name="imu_filter" pkg="pg_hardware" type="imu_filter_node"/>
-		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node"/>
+
 
 		<!-- Control -->
 		<node name="base_controller" pkg="pg_control" type="base_controller.py" />
 
+
 		<!-- Localization -->
 		<node name="odometry" pkg="pg_localization" type="odometry_node" />
 
+
 		<!-- Teleop Key -->
 		<node name="teleop_twist_keyboard" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" />
+
 
 	</group>
 </launch>
