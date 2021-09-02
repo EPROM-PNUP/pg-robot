@@ -18,48 +18,48 @@
 
 		<node name="controller" pkg="pid" type="controller" ns="wheel_1" >
 			<param name="node_name" value="wheel_1_pid" />
-			<param name="setpoint_topic" value"reference_velocity" />
-			<param name="topic_from_controller" value"controller_output" />
-			<param name="topic_from_plant" value"motor_state" />
-			<param name="Kp" value="1.0" />
-			<param name="Ki" value="0.0" />
-			<param name="Kd" value="0.0" />
+			<param name="setpoint_topic" value="reference_velocity" />
+			<param name="topic_from_controller" value="controller_output" />
+			<param name="topic_from_plant" value="motor_state" />
+			<param name="Kp" value="0.9" />
+			<param name="Ki" value="0.001" />
+			<param name="Kd" value="0.02" />
 			<param name="upper_limit" value="255" />
 			<param name="lower_limit" value="-255" />
 			<param name="windup_limit" value="255" />
 			<param name="max_loop_frequency" value="10.0" />
 			<param name="min_loop_frequency" value="10.0" />
-		<node/>
+		</node>
 
 		<node name="controller" pkg="pid" type="controller" ns="wheel_2" >
 			<param name="node_name" value="wheel_1_pid" />
-			<param name="setpoint_topic" value"reference_velocity" />
-			<param name="topic_from_controller" value"controller_output" />
-			<param name="topic_from_plant" value"motor_state" />
-			<param name="Kp" value="1.0" />
-			<param name="Ki" value="0.0" />
-			<param name="Kd" value="0.0" />
+			<param name="setpoint_topic" value="reference_velocity" />
+			<param name="topic_from_controller" value="controller_output" />
+			<param name="topic_from_plant" value="motor_state" />
+			<param name="Kp" value="0.9" />
+			<param name="Ki" value="0.001" />
+			<param name="Kd" value="0.02" />
 			<param name="upper_limit" value="255" />
 			<param name="lower_limit" value="-255" />
 			<param name="windup_limit" value="255" />
 			<param name="max_loop_frequency" value="10.0" />
 			<param name="min_loop_frequency" value="10.0" />
-		<node/>
+		</node>
 
 		<node name="controller" pkg="pid" type="controller" ns="wheel_3" >
 			<param name="node_name" value="wheel_1_pid" />
-			<param name="setpoint_topic" value"reference_velocity" />
-			<param name="topic_from_controller" value"controller_output" />
-			<param name="topic_from_plant" value"motor_state" />
-			<param name="Kp" value="1.0" />
-			<param name="Ki" value="0.0" />
-			<param name="Kd" value="0.0" />
+			<param name="setpoint_topic" value="reference_velocity" />
+			<param name="topic_from_controller" value="controller_output" />
+			<param name="topic_from_plant" value="motor_state" />
+			<param name="Kp" value="0.9" />
+			<param name="Ki" value="0.001" />
+			<param name="Kd" value="0.02" />
 			<param name="upper_limit" value="255" />
 			<param name="lower_limit" value="-255" />
 			<param name="windup_limit" value="255" />
 			<param name="max_loop_frequency" value="10.0" />
 			<param name="min_loop_frequency" value="10.0" />
-		<node/>
+		</node>
 
 		<node name="imu_filter" pkg="pg_hardware" type="imu_filter_node"/>
 
