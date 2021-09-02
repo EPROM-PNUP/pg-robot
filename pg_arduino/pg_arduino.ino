@@ -241,7 +241,7 @@ void loop() {
 // ENCODERS FUNCTION INTERRUPT //
 /////////////////////////////////
 
-// Wheel A interrupt
+// Wheel 1 encoder interrupt
 void pg_ns::pulseInterruptA() {
 	if(digitalRead(re_1.en_c2_) == LOW) {
 		re_1.direction_cw_ = true;
@@ -272,6 +272,7 @@ void pg_ns::pulseInterruptA() {
 	}
 }
 
+// Wheel 2 encoder interrupt
 void pg_ns::pulseInterruptB() {
 	if(digitalRead(re_2.en_c2_) == LOW) {
 		re_2.direction_cw_ = true;
@@ -302,7 +303,7 @@ void pg_ns::pulseInterruptB() {
 	}
 }
 
-// Wheel C interrupt
+// Wheel 3 encoder interrupt
 void pg_ns::pulseInterruptC() {
 	if(digitalRead(re_3.en_c2_) == LOW) {
 		re_3.direction_cw_ = true;
