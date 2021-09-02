@@ -48,7 +48,7 @@ int16_t MotorDriver::getPWM() {
 
 double MotorDriver::getState() {
 	int16_t delta_pulse = encoder_pulse_ - previous_encoder_pulse_;
-	state = static_cast<double>((delta_pulse * 600) / 134);
+	state_ = static_cast<double>((delta_pulse * 600) / 134);
 	previous_encoder_pulse_ = encoder_pulse_;
 
 	return state_;

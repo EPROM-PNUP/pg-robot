@@ -22,14 +22,16 @@
 
 #include <ros/ros.h>
 #include <ros/console.h>
-#include <std_msgs/Float32MultiArray.h>
+#include <std_msgs/Float64.h>
+#include <std_msgs/Int16.h>
 #include <geometry_msgs/Twist.h>
-#include <pg_hardware/motor_driver.hpp>
+
+#include "pg_hardware/motor_driver.hpp"
 
 class MotorDriverWrapper {
 	private:
 	ros::Subscriber controller_output_sub_;
-	rosLLSubscriber encoder_pulse_sub_;
+	ros::Subscriber encoder_pulse_sub_;
 
 	ros::Publisher motor_pwm_pub_;
 	ros::Publisher motor_state_pub_;
@@ -74,7 +76,7 @@ class MotorDriverWrapper {
 			motor_state_pub_.publish(motor_state_msg_);
 
 			motor_pwm_msg_.data = motor_driver_.getPWM();
-			motor_pwm_pub_.publish(pwm_msg_);
+			motor_pwm_pub_.publish(motor_pwm_msg_);
 
 			ros::spinOnce();
 			rate.sleep();
