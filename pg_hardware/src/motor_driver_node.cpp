@@ -70,7 +70,7 @@ class MotorDriverWrapper {
 	}
 
 	void run() {
-		ros::Rate rate(10);
+		ros::Rate rate(50);
 
 		while (ros::ok()) {
 			motor_state_msg_.data = motor_driver_.getState();
