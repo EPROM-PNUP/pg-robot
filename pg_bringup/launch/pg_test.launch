@@ -61,7 +61,7 @@
 			<param name="min_loop_frequency" value="50.0" />
 		</node>
 
-		<node name="imu_filter" pkg="pg_hardware" type="imu_filter_node"/>
+		<node name="imu_filter" pkg="pg_hardware" type="imu_filter_node" />
 
 
 		<!-- Control -->
@@ -71,6 +71,8 @@
 		<!-- Localization -->
 		<node name="odometry" pkg="pg_localization" type="odometry_node" />
 
+		<!-- Go-To-Goal Control -->
+		<node name="go_to_goal" pkg="pg_control" type="go_to_goal.py" />
 
 	</group>
 </launch>
