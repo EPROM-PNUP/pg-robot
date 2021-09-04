@@ -111,8 +111,10 @@ class GoToGoal:
 			self._distance_from_goal
 			)
 
-	def execute(self):
+	def execute(self, goal):
 		rate = rospy.Rate(10)
+
+		self._goal_pose = goal
 
 		while self._distance_from_goal > self._tolerance_distance:
 			self._euclidian_distance()
