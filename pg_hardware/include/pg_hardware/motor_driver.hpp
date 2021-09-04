@@ -37,18 +37,23 @@ namespace pg_ns {
 
 class MotorDriver {
 	private:
-	double max_velocity_;
-	double velocity_;
 	int16_t pwm_;
+	int16_t max_pwm_;
+
+	int16_t encoder_pulse_;
+	int16_t previous_encoder_pulse_;
+
+	double state_;
 
 	public:
 	MotorDriver();
 
-	void setMaxVelocity(double max_velocity);
-	void setVelocity(double velocity);
-	void calcMotorPWM();
-	double getVelocity();
-	int16_t getMotorPWM();
+	void setMaxPWM(int16_t max_pwm);
+	void setPWM(double pwm);
+	void setEncoderPulse(int16_t encoder_pulse);
+
+	int16_t getPWM();
+	double getState();
 };
 
 }

@@ -4,6 +4,7 @@ project(pg_msgs)
 add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
+  actionlib_msgs
   geometry_msgs
   std_msgs
   message_generation
@@ -13,11 +14,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## Declare ROS messages, services and actions ##
 ################################################
 
-add_message_files(
-  FILES
-  MotorCommand.msg
-  WheelVelocityCommand.msg
-)
+# add_message_files(
+#  FILES
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -27,19 +26,19 @@ add_message_files(
 # )
 
 ## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
+add_action_files(
+  FILES
+  GoToGoal.action
+)
 
 generate_messages(
   DEPENDENCIES
-  std_msgs
+  actionlib_msgs
+  geometry_msgs
 )
 
 catkin_package(
-  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS actionlib_msgs geometry_msgs message_runtime
 )
 
 ###########

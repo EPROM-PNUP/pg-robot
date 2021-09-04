@@ -33,32 +33,33 @@
 namespace pg_ns {
 
 MotorDriver::MotorDriver() {
-	this->max_velocity_ = 39.0;
-	this->velocity_ = 0.0;
-	this->pwm_ = 0.0;
+	pwm_ = 0;
+	encoder_pulse_ = 0;
+	state_ = 0.0;
 }
 
-void MotorDriver::setMaxVelocity(double max_velocity) {
-	this->max_velocity_ = max_velocity;
+void MotorDriver::setMaxPWM(int16_t max_pwm) {
+	max_pwm_ = max_pwm;
 }
 
-void MotorDriver::setVelocity(double velocity) {
-	this->velocity_ = velocity;
+void MotorDriver::setPWM(double pwm) {
+	pwm_ = static_cast<int16_t>(pwm);
 }
 
-void MotorDriver::calcMotorPWM() {
-	this->pwm_ = static_cast<int16_t>
-	(
-		(this->velocity_ / this->max_velocity_) * 255.0
-	);
+void MotorDriver::setEncoderPulse(int16_t encoder_pulse) {
+	encoder_pulse_ = encoder_pulse;
 }
 
-double MotorDriver::getVelocity() {
-	return this->velocity_;
+int16_t MotorDriver::getPWM() {
+	return pwm_;
 }
 
-int16_t MotorDriver::getMotorPWM() {
-	return this->pwm_;
+double MotorDriver::getState() {
+	int16_t delta_pulse = encoder_pulse_ - previous_encoder_pulse_;
+	state_ = static_cast<double>((delta_pulse * 3000) / 134);
+	previous_encoder_pulse_ = encoder_pulse_;
+
+	return state_;
 }
 
 }

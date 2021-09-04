@@ -32,8 +32,8 @@
 
 import numpy as np
 import rospy
+from std_msgs.msg import Float64
 from geometry_msgs.msg import Twist
-from pg_msgs.msg import WheelVelocityCommand
 
 # BASE CONTROLLER.
 # Receive body twist command and transform it
@@ -52,16 +52,32 @@ class BaseController:
 		self._wheel_velocity = [0.0, 0.0, 0.0]
 		self._body_twist = [0.0, 0.0, 0.0]
 
-		self._wheel_velocity_msg = WheelVelocityCommand() 
-		self._wheel_velocity_msg.data = [0.0, 0.0, 0.0]
+		self._wheel_1_velocity_msg = Float64() 
+		self._wheel_1_velocity_msg.data = 0.0
+
+		self._wheel_2_velocity_msg = Float64() 
+		self._wheel_2_velocity_msg.data = 0.0
+
+		self._wheel_3_velocity_msg = Float64() 
+		self._wheel_3_velocity_msg.data = 0.0
 
 		rospy.loginfo("Subscribing to topics ...")
 		rospy.Subscriber('cmd_vel', Twist, self._velocity_callback)
 
 		rospy.loginfo("Setting up publishers ...")
-		self._wheel_velocity_pub = rospy.Publisher(
-			'wheel_refrence_velocity', 
-			WheelVelocityCommand, 
+		self._wheel_1_velocity_pub = rospy.Publisher(
+			'wheel_1/reference_velocity', 
+			Float64, 
+			queue_size=1)
+
+		self._wheel_2_velocity_pub = rospy.Publisher(
+			'wheel_2/reference_velocity', 
+			Float64, 
+			queue_size=1)
+
+		self._wheel_3_velocity_pub = rospy.Publisher(
+			'wheel_3/reference_velocity', 
+			Float64, 
 			queue_size=1)
 
 	# Velocity callback function
@@ -93,8 +109,9 @@ class BaseController:
 				self._wheel_velocity[i] += H[i][j] * self._body_twist[j]
 
 		# Set wheel velocity message for publish
-		for i in range(len(self._wheel_velocity_msg.data)):
-			self._wheel_velocity_msg.data[i] = self._wheel_velocity[i]
+		self._wheel_1_velocity_msg.data = self._wheel_velocity[0]
+		self._wheel_2_velocity_msg.data = self._wheel_velocity[1]
+		self._wheel_3_velocity_msg.data = self._wheel_velocity[2]
 
 		rospy.logdebug(self._wheel_velocity)
 
@@ -110,10 +127,17 @@ class BaseController:
 			# If not received body twist command for 2 seconds
 			# stop the robot, else publish wheel velocities.
 			if (delay < self._timeout):
-				self._wheel_velocity_pub.publish(self._wheel_velocity_msg)
+				self._wheel_1_velocity_pub.publish(self._wheel_1_velocity_msg)
+				self._wheel_2_velocity_pub.publish(self._wheel_2_velocity_msg)
+				self._wheel_3_velocity_pub.publish(self._wheel_3_velocity_msg)
 			else:
-				self._wheel_velocity_msg.data = [0, 0, 0]
-				self._wheel_velocity_pub.publish(self._wheel_velocity_msg)
+				self._wheel_1_velocity_msg.data = 0.0
+				self._wheel_2_velocity_msg.data = 0.0
+				self._wheel_3_velocity_msg.data = 0.0
+
+				self._wheel_1_velocity_pub.publish(self._wheel_1_velocity_msg)
+				self._wheel_2_velocity_pub.publish(self._wheel_2_velocity_msg)
+				self._wheel_3_velocity_pub.publish(self._wheel_3_velocity_msg)
 
 			rate.sleep()
 

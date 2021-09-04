@@ -30,73 +30,61 @@
 
 #include <ros/ros.h>
 #include <ros/console.h>
+#include <std_msgs/Float64.h>
+#include <std_msgs/Int16.h>
 #include <geometry_msgs/Twist.h>
-#include <pg_hardware/motor_driver.hpp>
-#include <pg_msgs/MotorCommand.h>
-#include <pg_msgs/WheelVelocityCommand.h>
+
+#include "pg_hardware/motor_driver.hpp"
 
 class MotorDriverWrapper {
 	private:
-	ros::Subscriber refrence_velocity_sub_;
+	ros::Subscriber controller_output_sub_;
+	ros::Subscriber encoder_pulse_sub_;
+
 	ros::Publisher motor_pwm_pub_;
+	ros::Publisher motor_state_pub_;
 
-	pg_msgs::MotorCommand motor_pwm_msg_;
+	std_msgs::Int16 motor_pwm_msg_;
+	std_msgs::Float64 motor_state_msg_;
 
-	std::vector<pg_ns::MotorDriver> motor_driver_;
+	pg_ns::MotorDriver motor_driver_;
 
 	public:
 	MotorDriverWrapper(ros::NodeHandle &nh) {
 		ROS_INFO("Running /motor_driver");
 		
-		motor_driver_.assign(3, pg_ns::MotorDriver());
+		int max_pwm;
+		ros::param::get("motor_driver/max_pwm", max_pwm);
 
-		double max_velocity;
-		ros::param::get("motor_driver/max_angular_velocity",
-			max_velocity);
+		// Set maximum pwm signal for each motor
+		motor_driver_.setMaxPWM(max_pwm);
 
-		// Set maximum velocity for each motor
-		for (auto &i : motor_driver_) {
-			i.setMaxVelocity(max_velocity);
-		}
+		controller_output_sub_ = nh.subscribe("controller_output",
+			10, &MotorDriverWrapper::controllerOutputCallback, this);
 
-		refrence_velocity_sub_ = nh.subscribe("wheel_refrence_velocity",
-			10, &MotorDriverWrapper::refrenceVelocityCallback, this);
+		encoder_pulse_sub_ = nh.subscribe("encoder_pulse",
+			10, &MotorDriverWrapper::encoderPulseCallback, this);
 
-		motor_pwm_pub_ = nh.advertise<pg_msgs::MotorCommand>("motor_pwm", 10);
+		motor_pwm_pub_ = nh.advertise<std_msgs::Int16>("motor_pwm", 10);
+		motor_state_pub_ = nh.advertise<std_msgs::Float64>("motor_state", 10);
 	}
 
-	void refrenceVelocityCallback(const pg_msgs::WheelVelocityCommand &msg) {
-		for (uint8_t i = 0; i < 3; i++) {
-			motor_driver_[i].setVelocity(msg.data[i]);
-		}
+	void controllerOutputCallback(const std_msgs::Float64 &msg) {
+		motor_driver_.setPWM(msg.data);
+	}
+
+	void encoderPulseCallback(const std_msgs::Int16 &msg) {
+		motor_driver_.setEncoderPulse(msg.data);
 	}
 
 	void run() {
-		ros::Rate rate(20);
+		ros::Rate rate(50);
 
 		while (ros::ok()) {
-			for (auto &i : motor_driver_) {
-				i.calcMotorPWM();
-			}
+			motor_state_msg_.data = motor_driver_.getState();
+			motor_state_pub_.publish(motor_state_msg_);
 
-			for (uint8_t i = 0; i < 3; i++) {
-				motor_pwm_msg_.data[i] = motor_driver_[i].getMotorPWM();
-			}
-
-			ROS_DEBUG_NAMED("motor_pwm",
-				"PWM:=   %3i   %3i   %3i",
-				motor_driver_[0].getMotorPWM(),
-				motor_driver_[1].getMotorPWM(),
-				motor_driver_[2].getMotorPWM()
-			);
-
-			ROS_DEBUG_NAMED("motor_vel",
-				"VEL:=   %6.3lf   %6.3lf   %6.3lf",
-				motor_driver_[0].getVelocity(),
-				motor_driver_[1].getVelocity(),
-				motor_driver_[2].getVelocity()
-			);
-
+			motor_pwm_msg_.data = motor_driver_.getPWM();
 			motor_pwm_pub_.publish(motor_pwm_msg_);
 
 			ros::spinOnce();

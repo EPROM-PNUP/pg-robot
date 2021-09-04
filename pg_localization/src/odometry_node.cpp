@@ -30,21 +30,27 @@
 
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
+#include <std_msgs/Int16.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Quaternion.h>
-#include <std_msgs/Int16MultiArray.h>
+
 #include "pg_localization/odometry.hpp"
+
+using std::vector;
 
 class OdometryWrapper {
 	private:
-	ros::Subscriber pulse_counts_sub;
-	ros::Publisher odom_pub;
+	ros::Subscriber encoder_1_pulse_sub_;
+	ros::Subscriber encoder_2_pulse_sub_;
+	ros::Subscriber encoder_3_pulse_sub_;
+
+	ros::Publisher odom_pub_;
 
 	ros::Time current_time_, previous_time_;
 
-	tf::TransformBroadcaster odom_broadcaster;
+	tf::TransformBroadcaster odom_broadcaster_;
 
-	pg_ns::Odometry odometry;
+	pg_ns::Odometry odometry_;
 
 	public:
 	OdometryWrapper(ros::NodeHandle &nh) {
@@ -60,10 +66,16 @@ class OdometryWrapper {
 			ROS_WARN("Unable to load all parameters, using defaults");
 		}
 
-		pulse_counts_sub = nh.subscribe("encoders_pulse_count", 1, 
-			&OdometryWrapper::pulseCountsCallback, this);
+		encoder_1_pulse_sub_ = nh.subscribe("wheel_1/encoder_pulse", 1, 
+			&OdometryWrapper::encoder1PulseCallback, this);
 
-		odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 10);
+		encoder_2_pulse_sub_ = nh.subscribe("wheel_2/encoder_pulse", 1, 
+			&OdometryWrapper::encoder1PulseCallback, this);
+
+		encoder_3_pulse_sub_ = nh.subscribe("wheel_3/encoder_pulse", 1, 
+			&OdometryWrapper::encoder1PulseCallback, this);
+
+		odom_pub_ = nh.advertise<nav_msgs::Odometry>("odom", 10);
 	}
 
 	// LOAD PARAMETERS FUNCTION.
@@ -73,44 +85,52 @@ class OdometryWrapper {
 		if (ros::param::has("base_diameter")) {
 			float base_diameter;
 			ros::param::get("base_diameter", base_diameter);
-			odometry.setBaseDiameter(base_diameter);
+			odometry_.setBaseDiameter(base_diameter);
 			ROS_INFO("Loaded base_diameter");
 		}
 		else {
 			ROS_WARN("Failed to load base_diameter parameter");
-			odometry.setBaseDiameter(0.2);
+			odometry_.setBaseDiameter(0.2);
 			return false;
 		}
 
 		if (ros::param::has("wheel_radius")) {
 			float wheel_radius;
 			ros::param::get("wheel_radius", wheel_radius);
-			odometry.setWheelRadius(wheel_radius);
+			odometry_.setWheelRadius(wheel_radius);
 			ROS_INFO("Loaded wheel_radius");
 		}
 		else {
 			ROS_WARN("Failed to load wheel_radius paramter");
-			odometry.setWheelRadius(0.05);
+			odometry_.setWheelRadius(0.05);
 			return false;
 		}
 
 		if (ros::param::has("rotary_encoder/pulse_per_meter")) {
 			float pulse_per_meter;
 			ros::param::get("rotary_encoder/pulse_per_meter", pulse_per_meter);
-			odometry.setPulsePerMeter(pulse_per_meter);
+			odometry_.setPulsePerMeter(pulse_per_meter);
 			ROS_INFO("Load pulse_per_meter");
 		}
 		else {
 			ROS_WARN("Failed to load pulse_per_meter parameter");
-			odometry.setPulsePerMeter(426);
+			odometry_.setPulsePerMeter(426);
 			return false;
 		}
 		return true;
 	}
 	
 	// Callback function for encoders pulse counts
-	void pulseCountsCallback(const std_msgs::Int16MultiArray &msg) {
-		odometry.setPulseCounts(msg.data);
+	void encoder1PulseCallback(const std_msgs::Int16 &msg) {
+		odometry_.setPulseCounts(msg.data, 0);
+	}
+
+	void encoder2PulseCallback(const std_msgs::Int16 &msg) {
+		odometry_.setPulseCounts(msg.data, 1);
+	}
+
+	void encoder3PulseCallback(const std_msgs::Int16 &msg) {
+		odometry_.setPulseCounts(msg.data, 2);
 	}
 
 	// RUN FUNCTION
@@ -123,11 +143,11 @@ class OdometryWrapper {
 			current_time_ = ros::Time::now();
 
 			// update odometry for current cycle.
-			odometry.setDeltaTime((current_time_ - previous_time_).toSec());
-			odometry.update();
+			odometry_.setDeltaTime((current_time_ - previous_time_).toSec());
+			odometry_.update();
 
-			vector<double> base_pose = odometry.getBasePose();
-			vector<double> base_twist = odometry.getBaseTwist();
+			vector<double> base_pose = odometry_.getBasePose();
+			vector<double> base_twist = odometry_.getBaseTwist();
 			
 			// Get quaternion from theta.
 			geometry_msgs::Quaternion odom_quat = 
@@ -145,7 +165,7 @@ class OdometryWrapper {
 			odom_trans.transform.translation.z = 0.0;
 			odom_trans.transform.rotation = odom_quat;
 
-			odom_broadcaster.sendTransform(odom_trans);
+			odom_broadcaster_.sendTransform(odom_trans);
 
 			// Publish to /odom topic.
 			nav_msgs::Odometry odom;
@@ -164,7 +184,7 @@ class OdometryWrapper {
 			odom.twist.twist.linear.y = base_twist[1];
 			odom.twist.twist.angular.z = base_twist[2];
 
-			odom_pub.publish(odom);
+			odom_pub_.publish(odom);
 
 			// Set previous time value to current time.
 			previous_time_ = current_time_;
