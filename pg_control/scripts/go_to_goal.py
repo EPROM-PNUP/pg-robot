@@ -79,13 +79,12 @@ class GoToGoal:
 		self._pose.y = message.pose.pose.position.y
 		
 		orientation_quat = message.pose.pose.orientation
-		orientation_list =
-		[
+		orientation_list = [
 			orientation_quat.x,
 			orientation_quat.y,
 			orientation_quat.z,
 			orientation_quat.w
-		]
+			]
 
 		(roll, pitch, yaw) = euler_from_quaternion(orientation_list)
 
