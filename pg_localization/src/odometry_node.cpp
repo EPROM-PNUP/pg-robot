@@ -75,7 +75,7 @@ class OdometryWrapper {
 		encoder_3_pulse_sub_ = nh.subscribe("wheel_3/encoder_pulse", 1, 
 			&OdometryWrapper::encoder1PulseCallback, this);
 
-		odom_pub_ = nh.advertise<nav_msgs::Odometry>("odom", 10);
+		odom_pub_ = nh.advertise<nav_msgs::Odometry>("odom", 1);
 	}
 
 	// LOAD PARAMETERS FUNCTION.
@@ -137,7 +137,7 @@ class OdometryWrapper {
 	// Continuously running, updating odometry info
 	// every 500 ms.
 	void run() {
-		ros::Rate rate(2);
+		ros::Rate rate(10);
 		
 		while(ros::ok()) {
 			current_time_ = ros::Time::now();
