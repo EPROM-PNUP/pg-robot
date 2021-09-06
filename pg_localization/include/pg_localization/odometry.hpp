@@ -75,8 +75,12 @@ class Odometry {
 
 	void update();
 
+	vector<int16_t> getDeltaPulse();
+	vector<double> getWheelDistance();
+	vector<double> getDisplacement();
 	vector<double> getBasePose();
 	vector<double> getBaseTwist();
+
 };
 
 }

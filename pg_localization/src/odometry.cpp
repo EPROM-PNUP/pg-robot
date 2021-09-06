@@ -39,9 +39,9 @@ Odometry::Odometry() {
 	twist_.assign(3, 0.0);
 	displacement_.assign(3, 0.0);
 
-	pulse_counts_.assign(3, 0.0);
-	last_pulse_counts_.assign(3, 0.0);
-	delta_pulse_.assign(3, 0.0);
+	pulse_counts_.assign(3, 0);
+	last_pulse_counts_.assign(3, 0);
+	delta_pulse_.assign(3, 0);
 	wheel_distance_.assign(3, 0.0);
 
 	delta_time_ = 0.0;
@@ -150,6 +150,18 @@ void Odometry::update() {
 	calcBaseDisplacement();
 	calcBaseTwist();
 	calcBasePose();
+}
+
+vector<int16_t> Odometry::getDeltaPulse() {
+	return delta_pulse_;
+}
+
+vector<double> Odometry::getWheelDistance() {
+	return wheel_distance_;
+}
+
+vector<double> Odometry::getDisplacement() {
+	return displacement_;
 }
 
 vector<double> Odometry::getBasePose() {

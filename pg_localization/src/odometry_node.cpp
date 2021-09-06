@@ -29,6 +29,7 @@
 // Author: Wahyu Mahardika
 
 #include <ros/ros.h>
+#include <ros/console.h>
 #include <tf/transform_broadcaster.h>
 #include <std_msgs/Int16.h>
 #include <nav_msgs/Odometry.h>
@@ -188,6 +189,35 @@ class OdometryWrapper {
 
 			// Set previous time value to current time.
 			previous_time_ = current_time_;
+
+			// ROS Logging
+			vector<int16_t> delta_pulse_log = odometry_.getDeltaPulse();
+			vector<double> wheel_distance_log = odometry_.getWheelDistance();
+			vector<double> displacement_log = odometry_.getDisplacement();
+
+			ROS_DEBUG_NAMED(
+				"delta_pulse",
+				"WHEEL 1 : %i  WHEEL 2 : %i  WHEEL 3 : %i",
+				delta_pulse_log[0],
+				delta_pulse_log[1],
+				delta_pulse_log[2]
+				);
+
+			ROS_DEBUG_NAMED(
+				"wheel_distance",
+				"WHEEL 1 : %lf  WHEEL 2 : %lf WHEEL 3 : %lf",
+				wheel_distance_log[0],
+				wheel_distance_log[1],
+				wheel_distance_log[2]
+				);
+
+			ROS_DEBUG_NAMED(
+				"displacement",
+				"X : %lf  Y : %lf  delta_theta : %lf",
+				displacement_log[0],
+				displacement_log[1],
+				displacement_log[2]
+				);
 
 			ros::spinOnce();
 			rate.sleep();
