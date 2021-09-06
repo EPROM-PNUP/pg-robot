@@ -32,6 +32,7 @@
 #define PG_MOTOR_DRIVER_HPP
 
 #include <cstdint>
+#include <cmath>
 
 namespace pg_ns {
 

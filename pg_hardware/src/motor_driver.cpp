@@ -44,10 +44,6 @@ void MotorDriver::setMaxPWM(int16_t max_pwm) {
 
 void MotorDriver::setPWM(double pwm) {
 	pwm_ = static_cast<int16_t>(pwm);
-
-	if (abs(pwm_) < 10) {
-		pwm_ = 0;
-	}
 }
 
 void MotorDriver::setEncoderPulse(int16_t encoder_pulse) {
@@ -55,6 +51,10 @@ void MotorDriver::setEncoderPulse(int16_t encoder_pulse) {
 }
 
 int16_t MotorDriver::getPWM() {
+	if (abs(pwm_) < 10) {
+		pwm_ = 0;
+	}
+
 	return pwm_;
 }
 
