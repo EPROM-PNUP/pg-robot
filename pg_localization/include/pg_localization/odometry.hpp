@@ -76,6 +76,7 @@ class Odometry {
 	void update();
 
 	vector<int16_t> getDeltaPulse();
+	vector<int16_t> getLastPulseCounts();
 	vector<double> getWheelDistance();
 	vector<double> getDisplacement();
 	vector<double> getBasePose();

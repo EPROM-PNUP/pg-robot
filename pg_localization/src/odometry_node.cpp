@@ -71,10 +71,10 @@ class OdometryWrapper {
 			&OdometryWrapper::encoder1PulseCallback, this);
 
 		encoder_2_pulse_sub_ = nh.subscribe("wheel_2/encoder_pulse", 1, 
-			&OdometryWrapper::encoder1PulseCallback, this);
+			&OdometryWrapper::encoder2PulseCallback, this);
 
 		encoder_3_pulse_sub_ = nh.subscribe("wheel_3/encoder_pulse", 1, 
-			&OdometryWrapper::encoder1PulseCallback, this);
+			&OdometryWrapper::encoder3PulseCallback, this);
 
 		odom_pub_ = nh.advertise<nav_msgs::Odometry>("odom", 1);
 	}
@@ -192,6 +192,7 @@ class OdometryWrapper {
 
 			// ROS Logging
 			vector<int16_t> delta_pulse_log = odometry_.getDeltaPulse();
+			vector<int16_t> last_pulse_counts_log = odometry_.getLastPulseCounts();
 			vector<double> wheel_distance_log = odometry_.getWheelDistance();
 			vector<double> displacement_log = odometry_.getDisplacement();
 
@@ -201,6 +202,14 @@ class OdometryWrapper {
 				delta_pulse_log[0],
 				delta_pulse_log[1],
 				delta_pulse_log[2]
+				);
+
+			ROS_DEBUG_NAMED(
+				"last_pulse_counts",
+				"WHEEL 1 : %i  WHEEL 2 : %i  WHEEL 3 : %i",
+				last_pulse_counts_log[0],
+				last_pulse_counts_log[1],
+				last_pulse_counts_log[2]
 				);
 
 			ROS_DEBUG_NAMED(

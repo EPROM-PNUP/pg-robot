@@ -122,8 +122,8 @@ void Odometry::calcBaseTwist() {
 void Odometry::calcBasePose() {
 	vector<vector<double>> R =
 	{
-		{cos(pose_[2]), -sin(pose_[2]), 0},
-		{sin(pose_[2]),  cos(pose_[2]), 0},
+		{cos(pose_[2]), sin(pose_[2]), 0},
+		{-sin(pose_[2]), cos(pose_[2]), 0},
 		{0, 0, 1}
 	};
 
@@ -154,6 +154,10 @@ void Odometry::update() {
 
 vector<int16_t> Odometry::getDeltaPulse() {
 	return delta_pulse_;
+}
+
+vector<int16_t> Odometry::getLastPulseCounts() {
+	return last_pulse_counts_;
 }
 
 vector<double> Odometry::getWheelDistance() {
