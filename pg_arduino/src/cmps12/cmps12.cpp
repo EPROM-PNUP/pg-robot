@@ -74,6 +74,29 @@ void CMPS12::getRoll() {
 	data_raw.roll_ = Serial3.read();
 }
 
+// GET MAGNETOMETER READING.
+// Read 1 byte at a time. 2 bytes for magnetic filed in x axis,
+// 2 for y axis and 2 for z axis (total 6 bytes).
+void CMPS12::getMag() {
+	Serial3.write(MAG_REG);
+	while(Serial3.available() < 6);
+
+	byte_high_ = Serial3.read();
+	byte_low_ = Serial3.read();
+
+	data_raw.mag_x_ = ((byte_high_ << 8) + byte_low_);
+
+	byte_high_ = Serial3.read();
+	byte_low_ = Serial3.read();
+
+	data_raw.mag_y_ = ((byte_high_ << 8) + byte_low_);
+
+	byte_high_ = Serial3.read();
+	byte_low_ = Serial3.read();
+
+	data_raw.mag_z_ = ((byte_high_ << 8) + byte_low_);
+}
+
 // GET ACCELEROMETER READING.
 // Read 1 byte at a time. 2 bytes for acceleration in x axis,
 // 2 for y axis and 2 for z axis (total 6 bytes).

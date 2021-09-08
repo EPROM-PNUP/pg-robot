@@ -38,6 +38,7 @@
 #define BEARING_REG 0x13
 #define PITCH_REG 0x14
 #define ROLL_REG 0x15
+#define MAG_REG 0x19
 #define ACCEL_REG 0x20
 #define GYRO_REG 0x21
 
@@ -56,6 +57,10 @@ struct ImuDataRaw {
 	int16_t bearing_;
 	int8_t pitch_;
 	int8_t roll_;
+
+	int16_t mag_x_;
+	int16_t mag_y_;
+	int16_t mag_z_;
 
 	int16_t accel_x_;
 	int16_t accel_y_;
@@ -81,6 +86,7 @@ class CMPS12 {
 	void getBearing();
 	void getPitch();
 	void getRoll();
+	void getMag();
 	void getAccel();
 	void getGyro();
 

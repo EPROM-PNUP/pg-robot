@@ -75,6 +75,7 @@ pg_ns::RotaryEncoder re_2(ENCODER_2_PIN_C1, ENCODER_2_PIN_C2);
 pg_ns::RotaryEncoder re_3(ENCODER_3_PIN_C1, ENCODER_3_PIN_C2);
 // IMU Sensor
 pg_ns::CMPS12 imu;
+pg_ns::ImuDataRaw imu_data_raw;
 
 
 ////////////////////////
@@ -129,10 +130,24 @@ ros::Publisher encoder_3_pulse_pub(
 	&encoder_3_pulse
 	);
 
-// IMU Publisher & msg
-std_msgs::Int16MultiArray imu_data_raw_msg;
-ros::Publisher imu_pub("imu_raw", &imu_data_raw_msg);
+// CMPS12 Orientation Publisher & msg
+std_msgs::Int16MultiArray cmps12_orientation_msg;
+ros::Publisher cmps12_orientation_pub(
+	"imu/cmps12/orientation",
+	&cmps12_orientation_msg
+	);
 
+// Magnetometer Publisher & msg
+std_msgs::Int16MultiArray magnetometer_msg;
+ros::Publisher magnetometer_pub("imu/magnetometer/data", &magnetometer_msg);
+
+// Accelerometer Publisher & msg
+std_msgs::Int16MultiArray accelerometer_msg;
+ros::Publisher accelerometer_pub("imu/accelerometer/data", &accelerometer_msg);
+
+// Gyroscope Publisher & msg
+std_msgs::Int16MultiArray gyroscope_msg;
+ros::Publisher gyroscope_pub("imu/gyroscope/data", &gyroscope_msg);
 
 //////////////////////
 // GLOBAL VARIABLES //
@@ -141,8 +156,6 @@ ros::Publisher imu_pub("imu_raw", &imu_data_raw_msg);
 static long pulse_counts_millis_track = 0;
 static long imu_millis_track = 0;
 static long current_millis = 0;
-
-static pg_ns::ImuDataRaw imu_data_raw;
 
 
 ////////////////////////////
@@ -195,12 +208,28 @@ void setup() {
 	nh.advertise(encoder_1_pulse_pub);
 	nh.advertise(encoder_2_pulse_pub);
 	nh.advertise(encoder_3_pulse_pub);
-	nh.advertise(imu_pub);
+	nh.advertise(cmps12_orientation_pub);
+	nh.advertise(magnetometer_pub);
+	nh.advertise(accelerometer_pub);
+	nh.advertise(gyroscope_pub);
 
-	// Initialize imu msg data length
-	int16_t temp_9[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-	imu_data_raw_msg.data_length = 9;
-	imu_data_raw_msg.data = temp_9;
+	int16_t temp_3[3] = {0, 0, 0};
+
+	// Initialize cmps12 orientation msg data length
+	cmps12_orientation_msg.data_length = 3;
+	cmps12_orientation_msg.data = temp_3;
+
+	// Initialize magnetometer msg data length
+	magnetometer_msg.data_length = 3;
+	magnetometer_msg.data = temp_3;
+
+	// Initialize accelerometer msg data length
+	accelerometer_msg.data_length = 3;
+	accelerometer_msg.data = temp_3;
+
+	// Initialize gyroscope msg data length
+	gyroscope_msg.data_length = 3;
+	gyroscope_msg.data = temp_3;
 }
 
 
@@ -228,19 +257,26 @@ void loop() {
 
 		imu_data_raw = imu.getRawData();
 
-		imu_data_raw_msg.data[0] = imu_data_raw.bearing_;
-		imu_data_raw_msg.data[1] = imu_data_raw.pitch_;
-		imu_data_raw_msg.data[2] = imu_data_raw.roll_;
+		cmps12_orientation_msg.data[0] = imu_data_raw.bearing_;
+		cmps12_orientation_msg.data[1] = imu_data_raw.pitch_;
+		cmps12_orientation_msg.data[2] = imu_data_raw.roll_;
 
-		imu_data_raw_msg.data[3] = imu_data_raw.gyro_x_;
-		imu_data_raw_msg.data[4] = imu_data_raw.gyro_y_;
-		imu_data_raw_msg.data[5] = imu_data_raw.gyro_z_;
+		magnetometer_msg.data[0] = imu_data_raw.mag_x_;
+		magnetometer_msg.data[1] = imu_data_raw.mag_y_;
+		magnetometer_msg.data[2] = imu_data_raw.mag_z_;
 
-		imu_data_raw_msg.data[6] = imu_data_raw.accel_x_;
-		imu_data_raw_msg.data[7] = imu_data_raw.accel_y_;
-		imu_data_raw_msg.data[8] = imu_data_raw.accel_z_;
+		accelerometer_msg.data[0] = imu_data_raw.accel_x_;
+		accelerometer_msg.data[1] = imu_data_raw.accel_y_;
+		accelerometer_msg.data[2] = imu_data_raw.accel_z_;
 
-		imu_pub.publish(&imu_data_raw_msg);
+		gyroscope_msg.data[0] = imu_data_raw.gyro_x_;
+		gyroscope_msg.data[1] = imu_data_raw.gyro_y_;
+		gyroscope_msg.data[2] = imu_data_raw.gyro_z_;
+
+		cmps12_orientation_pub.publish(&cmps12_orientation_msg);
+		magnetometer_pub.publish(&magnetometer_msg);
+		accelerometer_pub.publish(&accelerometer_msg);
+		gyroscope_pub.publish(&gyroscope_msg);
 	}
 }
 
