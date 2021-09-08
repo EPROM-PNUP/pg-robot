@@ -133,21 +133,21 @@ ros::Publisher encoder_3_pulse_pub(
 // CMPS12 Orientation Publisher & msg
 std_msgs::Int16MultiArray cmps12_orientation_msg;
 ros::Publisher cmps12_orientation_pub(
-	"imu/cmps12/orientation",
+	"imu/orientation",
 	&cmps12_orientation_msg
 	);
 
 // Magnetometer Publisher & msg
 std_msgs::Int16MultiArray magnetometer_msg;
-ros::Publisher magnetometer_pub("imu/magnetometer/data", &magnetometer_msg);
+ros::Publisher magnetometer_pub("imu/magnetometer", &magnetometer_msg);
 
 // Accelerometer Publisher & msg
 std_msgs::Int16MultiArray accelerometer_msg;
-ros::Publisher accelerometer_pub("imu/accelerometer/data", &accelerometer_msg);
+ros::Publisher accelerometer_pub("imu/accelerometer", &accelerometer_msg);
 
 // Gyroscope Publisher & msg
 std_msgs::Int16MultiArray gyroscope_msg;
-ros::Publisher gyroscope_pub("imu/gyroscope/data", &gyroscope_msg);
+ros::Publisher gyroscope_pub("imu/gyroscope", &gyroscope_msg);
 
 //////////////////////
 // GLOBAL VARIABLES //

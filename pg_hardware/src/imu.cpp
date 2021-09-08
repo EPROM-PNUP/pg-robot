@@ -28,55 +28,83 @@
 //
 // Author: Wahyu Mahardika
 
-#ifndef IMU_FILTER_HPP
-#define IMU_FILTER_HPP
-
-#include <cstdint>
+#include "pg_hardware/imu.hpp"
 
 namespace pg_ns {
 
-struct ImuData {
-	float bearing;
-	float pitch;
-	float roll;
+Imu::Imu() {
+	for (auto &i : cmps12_orientation_) {
+		i = 0.0;
+	}
 
-	float accel_x;
-	float accel_y;
-	float accel_z;
+	for (auto &i : magnetometer_raw_) {
+		i = 0.0;
+	}
 
-	float gyro_x;
-	float gyro_y;
-	float gyro_z;
-};
+	for (auto &i : accelerometer_raw_) {
+		i = 0.0;
+	}
+	
+	for (auto &i : gyroscope_raw_) {
+		i = 0.0;
+	}
+}
 
-class ImuFilter {
-	private:
-	ImuData filtered_data_;
-	const float ACCEL_SCALE_ = 1.0f/100.f;
-	const float GYRO_SCALE_ = 1.0/16.f;
-	const float PI = 3.141592;
-	const float DEG2RAD = PI/180;
+void Imu::setCMPS12Orientation(const vector<int16_t> &cmps12_orientation) {
+	for (uint8_t i = 0; i < 3; i++) {
+		cmps12_orientation_[i] = static_cast<double>(cmps12_orientation[i]);
+	}
 
-	public:
-	ImuFilter();
+	for (auto &i : cmps12_orientation_) {
+		i *= DEG2RAD;
+	}
+}
 
-	void filterOrientation(int16_t bearing, int16_t pitch, int16_t roll);
-	void filterAccel(int16_t accel_x, int16_t accel_y, int16_t accel_z);
-	void filterGyro(int16_t gyro_x, int16_t gyro_y, int16_t gyro_z);
+void Imu::setMagReading(const vector<int16_t> &mag) {
+	for (uint8_t i = 0; i < 3; i++) {
+		magnetometer_raw_[i] = static_cast<double>(mag[i]);
+	}
 
-	float getBearing();
-	float getPitch();
-	float getRoll();
+	for (auto &i : magnetometer_raw_) {
+		i *= MAG_SCALE_;
+	}
+}
 
-	float getAccelX();
-	float getAccelY();
-	float getAccelZ();
+void Imu::setAccelReading(const vector<int16_t> &accel) {
+	for (uint8_t i = 0; i < 3; i++) {
+		accelerometer_raw_[i] = static_cast<double>(accel[i]);
+	}
 
-	float getGyroX();
-	float getGyroY();
-	float getGyroZ();
-};
+	for (auto &i : accelerometer_raw_) {
+		i *= ACCEL_SCALE_;
+	}
+}
+
+void Imu::setGyroReading(const vector<int16_t> &gyro) {
+	for (uint8_t = 0; i < 3; i++) {
+		gyroscope_raw_[i] = static_cast<double>(gyro[i]);
+	}
+
+	for (auto &i : gyroscope_raw_) {
+		i *= GYRO_SCALE_;
+	}
+}
+
+vector<double> Imu::getCMPS12Orientation() {
+	return cmps12_orientation_;
+}
+
+vector<double> Imu::getMagneticField() {
+	return magnetometer_raw_;
+}
+
+vector<double> Imu::getAcceleration() {
+	return accelerometer_raw_;
+}
+
+vector<double> Imu::getAngularVelocity() {
+	return gyroscope_raw_;
+}
 
 }
 
-#endif

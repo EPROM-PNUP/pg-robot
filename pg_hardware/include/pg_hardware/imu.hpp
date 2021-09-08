@@ -28,46 +28,42 @@
 //
 // Author: Wahyu Mahardika
 
-#include "pg_hardware/imu_filter.hpp"
+#ifndef IMU_FILTER_HPP
+#define IMU_FILTER_HPP
+
+#include <cstdint>
+
+using std::vector;
 
 namespace pg_ns {
 
-ImuFilter::ImuFilter() {
-}
+class Imu {
+	private:
+	vector<double> cmps12_orientation_;
+	vecotr<double> magnetometer_raw_;
+	vector<double> accelerometer_raw_;
+	vector<double> gyroscope_raw_;
 
-void ImuFilter::filterOrientation(int16_t bearing, int16_t pitch, int16_t roll) {
-	filtered_data_.bearing = static_cast<float>(bearing);
-	filtered_data_.pitch = static_cast<float>(pitch);
-	filtered_data_.roll = static_cast<float>(roll);
+	const double MAG_SCALE = 1.0/16.0;
+	const double ACCEL_SCALE_ = 1.0/100.0;
+	const double GYRO_SCALE_ = 1.0/900.0;
+	const double PI = 3.141592;
+	const double DEG2RAD = PI/180;
 
-	filtered_data_.bearing *= DEG2RAD;
-	filtered_data_.pitch *= DEG2RAD;
-	filtered_data_.roll *= DEG2RAD;
-}
+	public:
+	Imu();
 
-void ImuFilter::filterAccel(int16_t accel_x, int16_t accel_y, int16_t accel_z) {
-	filtered_data_.accel_x = static_cast<float>(accel_x) * ACCEL_SCALE_;
-	filtered_data_.accel_y = static_cast<float>(accel_y) * ACCEL_SCALE_;
-	filtered_data_.accel_z = static_cast<float>(accel_z) * ACCEL_SCALE_;
-}
+	void setCMPS12Reading(const vector<int16_t> &cmps12_orientation);
+	void setMagReading(const vector<int16_t> &mag);
+	void setAccelReading(const vector<int16_t> &accel);
+	void setGyroReading(const vector<int16_t> &gyro);
 
-void ImuFilter::filterGyro(int16_t gyro_x, int16_t gyro_y, int16_t gyro_z) {
-	filtered_data_.gyro_x = static_cast<float>(gyro_x) * GYRO_SCALE_;
-	filtered_data_.gyro_y = static_cast<float>(gyro_y) * GYRO_SCALE_;
-	filtered_data_.gyro_z = static_cast<float>(gyro_z) * GYRO_SCALE_;
-}
-
-float ImuFilter::getBearing() {return filtered_data_.bearing;}
-float ImuFilter::getPitch() {return filtered_data_.pitch;}
-float ImuFilter::getRoll() {return filtered_data_.roll;}
-
-float ImuFilter::getAccelX() {return filtered_data_.accel_x;}
-float ImuFilter::getAccelY() {return filtered_data_.accel_y;}
-float ImuFilter::getAccelZ() {return filtered_data_.accel_z;}
-
-float ImuFilter::getGyroX() {return filtered_data_.gyro_x;}
-float ImuFilter::getGyroY() {return filtered_data_.gyro_y;}
-float ImuFilter::getGyroZ() {return filtered_data_.gyro_z;}
+	vector<double> getCMPS12Orientation();
+	vector<double> getMagneticField();
+	vector<double> getAcceleration();
+	vector<double> getAngularVelocity();
+};
 
 }
 
+#endif
