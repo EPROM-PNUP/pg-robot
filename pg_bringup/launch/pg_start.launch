@@ -62,6 +62,7 @@
 		</node>
 
 		<node name="imu_node" pkg="pg_hardware" type="imu_node" ns="imu" />
+		<node name="imu_complementary_filter" pkg="imu_complementary_filter" type="complementary_filter_node" ns="imu" />
 
 
 		<!-- Control -->
