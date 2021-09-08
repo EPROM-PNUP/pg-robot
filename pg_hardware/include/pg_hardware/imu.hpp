@@ -32,6 +32,7 @@
 #define IMU_FILTER_HPP
 
 #include <cstdint>
+#include <vector>
 
 using std::vector;
 
@@ -40,11 +41,11 @@ namespace pg_ns {
 class Imu {
 	private:
 	vector<double> cmps12_orientation_;
-	vecotr<double> magnetometer_raw_;
+	vector<double> magnetometer_raw_;
 	vector<double> accelerometer_raw_;
 	vector<double> gyroscope_raw_;
 
-	const double MAG_SCALE = 1.0/16.0;
+	const double MAG_SCALE_ = 1.0/16.0;
 	const double ACCEL_SCALE_ = 1.0/100.0;
 	const double GYRO_SCALE_ = 1.0/900.0;
 	const double PI = 3.141592;

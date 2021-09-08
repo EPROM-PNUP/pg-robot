@@ -5,7 +5,7 @@ add_compile_options(-std=c++11)
 
 add_definitions(-Wall -Werror)
 
-set(IMU_FILTER_LIB imu_filter)
+set(IMU_LIB imu_driver)
 set(MOTOR_DRIVER_LIB motor_driver)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -40,19 +40,19 @@ add_library(${MOTOR_DRIVER_LIB}
   src/motor_driver.cpp
 )
 
-add_library(${IMU_FILTER_LIB}
-  src/imu_filter.cpp
+add_library(${IMU_LIB}
+  src/imu.cpp
 )
 
 add_executable(motor_driver_node src/motor_driver_node.cpp)
-add_executable(imu_filter_node src/imu_filter_node.cpp)
+add_executable(imu_node src/imu_node.cpp)
 
 target_link_libraries(motor_driver_node
   ${MOTOR_DRIVER_LIB}
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(imu_filter_node
-  ${IMU_FILTER_LIB}
+target_link_libraries(imu_node
+  ${IMU_LIB}
   ${catkin_LIBRARIES}
 )

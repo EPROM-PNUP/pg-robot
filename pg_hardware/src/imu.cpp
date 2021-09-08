@@ -50,7 +50,7 @@ Imu::Imu() {
 	}
 }
 
-void Imu::setCMPS12Orientation(const vector<int16_t> &cmps12_orientation) {
+void Imu::setCMPS12Reading(const vector<int16_t> &cmps12_orientation) {
 	for (uint8_t i = 0; i < 3; i++) {
 		cmps12_orientation_[i] = static_cast<double>(cmps12_orientation[i]);
 	}
@@ -81,7 +81,7 @@ void Imu::setAccelReading(const vector<int16_t> &accel) {
 }
 
 void Imu::setGyroReading(const vector<int16_t> &gyro) {
-	for (uint8_t = 0; i < 3; i++) {
+	for (uint8_t i = 0; i < 3; i++) {
 		gyroscope_raw_[i] = static_cast<double>(gyro[i]);
 	}
 

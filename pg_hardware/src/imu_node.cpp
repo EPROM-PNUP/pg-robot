@@ -77,7 +77,7 @@ class ImuWrapper {
 	}
 
 	void orientationCallback(const std_msgs::Int16MultiArray &msg) {
-		imu_.setCMPS12Orientation(msg.data);
+		imu_.setCMPS12Reading(msg.data);
 	}
 
 	void magnetometerCallback(const std_msgs::Int16MultiArray &msg) {
