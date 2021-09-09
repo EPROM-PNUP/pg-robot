@@ -151,6 +151,8 @@ ImuDataRaw CMPS12::getRawData() {
 	getPitch();
 	getRoll();
 
+	getMag();
+
 	getAccel();
 
 	getGyro();

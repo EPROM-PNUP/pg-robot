@@ -60,20 +60,20 @@ class ImuWrapper {
 	ImuWrapper(ros::NodeHandle &nh) {
 		ROS_INFO("Running /imu_node");
 
-		cmps12_orientation_sub_ = nh.subscribe("orientation", 1,
+		cmps12_orientation_sub_ = nh.subscribe("imu/orientation", 1,
 			&ImuWrapper::orientationCallback, this);
 
-		magnetometer_sub_ = nh.subscribe("magnetometer", 1,
+		magnetometer_sub_ = nh.subscribe("imu/magnetometer", 1,
 			&ImuWrapper::magnetometerCallback, this);
 
-		accelerometer_sub_ = nh.subscribe("accelerometer", 1,
+		accelerometer_sub_ = nh.subscribe("imu/accelerometer", 1,
 			&ImuWrapper::accelerometerCallback, this);
 
-		gyroscope_sub_ = nh.subscribe("gyroscope", 1,
+		gyroscope_sub_ = nh.subscribe("imu/gyroscope", 1,
 			&ImuWrapper::gyroscopeCallback, this);
 
-		imu_raw_pub_ = nh.advertise<sensor_msgs::Imu>("imu_raw", 10);
-		mag_pub_ = nh.advertise<sensor_msgs::MagneticField>("mag", 10);
+		imu_raw_pub_ = nh.advertise<sensor_msgs::Imu>("imu/data_raw", 10);
+		mag_pub_ = nh.advertise<sensor_msgs::MagneticField>("imu/mag", 10);
 	}
 
 	void orientationCallback(const std_msgs::Int16MultiArray &msg) {
@@ -93,7 +93,7 @@ class ImuWrapper {
 	}
 
 	void run() {
-		ros::Rate rate(5);
+		ros::Rate rate(10);
 
 		while (ros::ok()) {
 			// Get raw data from cmps12 sensor reading

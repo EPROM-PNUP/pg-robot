@@ -33,21 +33,10 @@
 namespace pg_ns {
 
 Imu::Imu() {
-	for (auto &i : cmps12_orientation_) {
-		i = 0.0;
-	}
-
-	for (auto &i : magnetometer_raw_) {
-		i = 0.0;
-	}
-
-	for (auto &i : accelerometer_raw_) {
-		i = 0.0;
-	}
-	
-	for (auto &i : gyroscope_raw_) {
-		i = 0.0;
-	}
+	cmps12_orientation_.assign(3, 0.0);
+	magnetometer_raw_.assign(3, 0.0);
+	accelerometer_raw_.assign(3, 0.0);
+	gyroscope_raw_.assign(3, 0.0);
 }
 
 void Imu::setCMPS12Reading(const vector<int16_t> &cmps12_orientation) {

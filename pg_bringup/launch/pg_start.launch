@@ -70,8 +70,8 @@
 		</node>
 
 		<!-- IMU driver and filter -->
-		<node name="imu_node" pkg="pg_hardware" type="imu_node" ns="imu" />
-		<node name="imu_complementary_filter" pkg="imu_complementary_filter" type="complementary_filter_node" ns="imu" />
+		<node name="imu_node" pkg="pg_hardware" type="imu_node"/>
+		<node name="imu_complementary_filter" pkg="imu_complementary_filter" type="complementary_filter_node"/>
 
 
 		<!-- LOCALIZATION -->
@@ -79,16 +79,17 @@
 		<!-- Wheel Odometry -->
 		<node name="odometry" pkg="pg_localization" type="odometry_node" />
 
-		<!-- Filtered Odometry -->
+		<!--
 		<node name="robot_pose_ekf" pkg="robot_pose_ekf" type="robot_pose_ekf">
 			<param name="output_frame" value="odom_combined"/>
 			<param name="base_footprint_frame" value="base_footprint"/>
-			<param name="freq" value="10.0"/>
+			<param name="freq" value="20.0"/>
 			<param name="sensor_timeout" value="1.0"/>
 			<param name="odom_used" value="true"/>
 			<param name="imu_used" value="true"/>
 			<param name="vo_used" value="false"/>
 		</node>
+		-->
 
 
 		<!-- CONTROL -->
