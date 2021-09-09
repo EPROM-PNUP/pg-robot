@@ -32,12 +32,18 @@
 
 import rospy
 import actionlib
+
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Pose2D
 from nav_msgs.msg import Odometry
-from pg_msgs.msg import GoToGoalAction
+
 from tf.transformations import euler_from_quaternion
 from math import pow, atan2, sqrt
+
+from pg_msgs.msg import GoToGoalAction
+from pg_msgs.msg import GoToGoalGoal
+from pg_msgs.msg import GoToGoalFeedback
+from pg_msgs.msg import GoToGoalResult
 
 class GoToGoal:
 	def __init__(self):
@@ -65,14 +71,18 @@ class GoToGoal:
 			"cmd_vel",
 			Twist,
 			queue_size=1)
-
-		self.server = actionlib.SimpleActionServer(
+		
+		rospy.loginfo("Starting action servers")
+		self._server = actionlib.SimpleActionServer(
 			"go_to_goal",
 			GoToGoalAction,
 			self.execute,
 			False)
 
-		self.server.start()
+		self._feedback = GoToGoalFeedback()
+		self._result = GoToGoalResult()
+
+		self._server.start()
 	
 	def _pose_callback(self, message):
 		self._pose.x = message.pose.pose.position.x
@@ -113,9 +123,17 @@ class GoToGoal:
 	def execute(self, goal):
 		rate = rospy.Rate(10)
 
+		success = True
+
 		self._goal_pose = goal
 
 		while self._distance_from_goal > self._tolerance_distance:
+			if self._server.is_preemt_requested():
+				rospy.loginfo("go_to_goal: Preempted")
+				self._server.set_preempted()
+				success = False
+				break
+
 			self._euclidian_distance()
 			self._angular_velocity()
 			self._linear_velocity()
@@ -130,13 +148,26 @@ class GoToGoal:
 
 			self._command_velocity_pub.publish(self._command_velocity_msg)
 
+			self._feedback.x = self._pose.x
+			self._feedback.y = self._pose.y
+			self._feedback.theta = self._pose.theta
+
+			self._server.publish_feedback(self._feedback)
+
 			self.rate.sleep()
+
+		if success:
+			self._result.x = self._pose.x
+			self._result.y = self._pose.y
+			self._result.theta = self._pose.theta
+
+			rospy.loginfo("go_to_goal: Succeeded")
 		
-		self.server.set_succeeded()
+			self._server.set_succeeded(self._result)
 
 		self._command_velocity_msg.linear.x = 0.0
 		self._command_velocity_msg.linear.y = 0.0
-		self._commang_velocity_msg.linear.z = 0.0
+		self._command_velocity_msg.linear.z = 0.0
 
 		self._command_velocity_msg.angular.x = 0.0
 		self._command_velocity_msg.angular.y = 0.0

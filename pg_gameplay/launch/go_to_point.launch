@@ -1,0 +1,3 @@
+<launch>
+	<node name="go_to_point_client_py" pkg="pg_gameplay" type="go_to_point.py" ns="marco"/>
+</launch>
