@@ -1,0 +1,5 @@
+motor_driver: {
+  max_pwm: 255,
+  rate: 50,
+}
+

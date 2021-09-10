@@ -4,15 +4,7 @@ base_diameter: 0.2
 wheel_radius: 0.05
 
 base_controller: {
-  timeout: 2,
+  timeout: 1,
   rate: 10,
 }
 
-motor_driver: {
-  max_pwm: 255,
-  proportional: 0.6,
-  integral: 0.0,
-  derivative: 0.0,
-  timeout: 2,
-  rate: 10,
-}

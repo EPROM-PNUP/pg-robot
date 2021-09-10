@@ -4,7 +4,8 @@ rotary_encoder: {
 }
 
 imu_sensor: {
-  bearing_scale: 10,
+  mag_scale: 0.0625,
   accel_scale: 0.01,
-  gyro_scale: 0.0625,
+  gyro_scale: 0.00111111,
+  rate: 20,
 }
