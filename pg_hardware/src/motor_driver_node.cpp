@@ -53,11 +53,13 @@ class MotorDriverWrapper {
 	MotorDriverWrapper(ros::NodeHandle &nh) {
 		ROS_INFO("Running /motor_driver");
 		
-		int max_pwm;
-		ros::param::get("motor_driver/max_pwm", max_pwm);
-
-		// Set maximum pwm signal for each motor
-		motor_driver_.setMaxPWM(max_pwm);
+		// Load parameters from parameter server.
+		if (loadParameters()) {
+			ROS_INFO("Successfully loaded all parameters");
+		}
+		else {
+			ROS_WARN("Unable to load all parameters, using defaults");
+		}
 
 		controller_output_sub_ = nh.subscribe("controller_output",
 			10, &MotorDriverWrapper::controllerOutputCallback, this);
@@ -69,14 +71,37 @@ class MotorDriverWrapper {
 		motor_state_pub_ = nh.advertise<std_msgs::Float64>("motor_state", 10);
 	}
 
+	// LOAD PARAMETERS FUNCTION.
+	// Load necessary parameters from parameter server
+	// (set to defaults if failed).
+	bool loadPrameters() {
+		if (ros::param::has("motor_driver/max_pwm") {
+			int16_t max_pwm;
+			ros::param::get("motor_driver/max_pwm", max_pwm);
+			motor_driver_.setMaxPWM(max_pwm);
+			ROS_INFO("Loaded max_pwm");
+		}
+		else {
+			ROS_WARN("Failed to load max_pwm paramter");
+			motor_driver_.setMaxPWM(255);
+			return false;
+		}
+		return true;
+	}
+
+	// Callback function for wheel velocity controller.
 	void controllerOutputCallback(const std_msgs::Float64 &msg) {
 		motor_driver_.setPWM(msg.data);
 	}
 
+	// Callback function for wheel encoder pulse.
 	void encoderPulseCallback(const std_msgs::Int16 &msg) {
 		motor_driver_.setEncoderPulse(msg.data);
 	}
 
+	// RUN FUNCTION
+	// Continuously running, publishing controlled
+	// pwm signal to motors every 20 ms.
 	void run() {
 		ros::Rate rate(50);
 
