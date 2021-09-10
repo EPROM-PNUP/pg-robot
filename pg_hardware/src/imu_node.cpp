@@ -56,9 +56,19 @@ class ImuWrapper {
 
 	pg_ns::Imu imu_;
 
+	double node_frequency_;
+
 	public:
 	ImuWrapper(ros::NodeHandle &nh) {
 		ROS_INFO("Running /imu_node");
+
+		// Load parameters from parameter server.
+		if (loadParameters()) {
+			ROS_INFO("Successfully loaded all parameters");
+		}
+		else {
+			ROS_WARN("Unable to load all parameters, using defaults");
+		}
 
 		cmps12_orientation_sub_ = nh.subscribe("imu/orientation", 1,
 			&ImuWrapper::orientationCallback, this);
@@ -74,6 +84,22 @@ class ImuWrapper {
 
 		imu_raw_pub_ = nh.advertise<sensor_msgs::Imu>("imu/data_raw", 10);
 		mag_pub_ = nh.advertise<sensor_msgs::MagneticField>("imu/mag", 10);
+	}
+
+	// LOAD PARAMETERS FUNCTION.
+	// Load necessary parameters from parameter server
+	// (set to defaults if failed).
+	bool loadParameters() {
+		if (ros::param::has("imu_sensor/rate")) {
+			ros::param::get("imu_sensor/rate", node_frequency_);
+			ROS_INFO("Loaded node frequency/rate");
+		}
+		else {
+			ROS_WARN("Failed to load node frequency/rate");
+			node_frequency_ = 20;
+		}
+
+		return true;
 	}
 
 	void orientationCallback(const std_msgs::Int16MultiArray &msg) {
@@ -92,8 +118,11 @@ class ImuWrapper {
 		imu_.setGyroReading(msg.data);
 	}
 
+	// RUN FUNCTION
+	// Continuously running, publishing IMU raw
+	// data every 50 ms (20 Hz).
 	void run() {
-		ros::Rate rate(10);
+		ros::Rate rate(node_frequency_);
 
 		while (ros::ok()) {
 			// Get raw data from cmps12 sensor reading

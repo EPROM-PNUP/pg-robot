@@ -118,6 +118,7 @@ class OdometryWrapper {
 			odometry_.setPulsePerMeter(426);
 			return false;
 		}
+
 		return true;
 	}
 	
