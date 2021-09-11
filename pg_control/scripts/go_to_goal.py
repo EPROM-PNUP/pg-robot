@@ -121,7 +121,7 @@ class GoToGoal:
 			)
 
 	def execute(self, goal):
-		rate = rospy.Rate(10)
+		rate = rospy.Rate(20)
 
 		success = True
 
@@ -148,18 +148,18 @@ class GoToGoal:
 
 			self._command_velocity_pub.publish(self._command_velocity_msg)
 
-			self._feedback.x = self._pose.x
-			self._feedback.y = self._pose.y
-			self._feedback.theta = self._pose.theta
+			self._feedback.current_pose.x = self._pose.x
+			self._feedback.current_pose.y = self._pose.y
+			self._feedback.current_pose.theta = self._pose.theta
 
 			self._server.publish_feedback(self._feedback)
 
 			self.rate.sleep()
 
 		if success:
-			self._result.x = self._pose.x
-			self._result.y = self._pose.y
-			self._result.theta = self._pose.theta
+			self._result.result_pose.x = self._pose.x
+			self._result.result_pose.y = self._pose.y
+			self._result.result_pose.theta = self._pose.theta
 
 			rospy.loginfo("go_to_goal: Succeeded")
 		
