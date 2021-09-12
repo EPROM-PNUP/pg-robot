@@ -1,8 +1,9 @@
 <launch>
 
-	<!-- Parameters -->
-	<rosparam command="load" file="$(find pg_bringup)/config/sensors/imu.yaml" ns="imu"/>
+
+	<!-- Rotary Encoder Parameters -->
 	<rosparam command="load" file="$(find pg_bringup)/config/sensors/rotary_encoder.yaml" ns="encoder"/>
+
 
 	<!-- Rosserial -->
 	<node name="serial_node" pkg="rosserial_python" type="serial_node.py">
@@ -10,61 +11,101 @@
 		<param name="baud" value="115200"/>
 	</node>
 
-	<!-- Motor Drivers -->
-	<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node" ns="wheel_1"/>
-	<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node" ns="wheel_2"/>
-	<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node" ns="wheel_3"/>
 
-	<!-- Wheel 1 Velocity Controller -->
-	<node name="controller" pkg="pid" type="controller" ns="wheel_1">
-		<param name="node_name" value="wheel_1_pid"/>
-		<param name="setpoint_topic" value="reference_velocity"/>
-		<param name="topic_from_controller" value="controller_output"/>
-		<param name="topic_from_plant" value="motor_state"/>
-		<param name="Kp" value="0.01"/>
-		<param name="Ki" value="1.6"/>
-		<param name="Kd" value="0.0001"/>
-		<param name="upper_limit" value="255"/>
-		<param name="lower_limit" value="-255"/>
-		<param name="windup_limit" value="255"/>
-		<param name="max_loop_frequency" value="50.0"/>
-		<param name="min_loop_frequency" value="50.0"/>
-	</node>
+	<!-- Wheel 1 -->
+	<group ns="wheel_1">
 
-	<!-- Wheel 2 Velocity Controller -->
-	<node name="controller" pkg="pid" type="controller" ns="wheel_2">
-		<param name="node_name" value="wheel_2_pid"/>
-		<param name="setpoint_topic" value="reference_velocity"/>
-		<param name="topic_from_controller" value="controller_output"/>
-		<param name="topic_from_plant" value="motor_state"/>
-		<param name="Kp" value="0.01"/>
-		<param name="Ki" value="1.6"/>
-		<param name="Kd" value="0.0001"/>
-		<param name="upper_limit" value="255"/>
-		<param name="lower_limit" value="-255"/>
-		<param name="windup_limit" value="255"/>
-		<param name="max_loop_frequency" value="50.0"/>
-		<param name="min_loop_frequency" value="50.0"/>
-	</node>
+		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node">
+			<param name="max_pwm" type="int" value="255"/>
+			<param name="frequency" value="50"/>
+		</node>
 
-	<!-- Wheel 3 Velocity Controller -->
-	<node name="controller" pkg="pid" type="controller" ns="wheel_3" >
-		<param name="node_name" value="wheel_3_pid"/>
-		<param name="setpoint_topic" value="reference_velocity"/>
-		<param name="topic_from_controller" value="controller_output"/>
-		<param name="topic_from_plant" value="motor_state"/>
-		<param name="Kp" value="0.01"/>
-		<param name="Ki" value="1.6"/>
-		<param name="Kd" value="0.0001"/>
-		<param name="upper_limit" value="255"/>
-		<param name="lower_limit" value="-255"/>
-		<param name="windup_limit" value="255"/>
-		<param name="max_loop_frequency" value="50.0"/>
-		<param name="min_loop_frequency" value="50.0"/>
-	</node>
+		<node name="controller" pkg="pid" type="controller">
+			<param name="node_name" value="wheel_1_pid"/>
+			<param name="setpoint_topic" value="reference_velocity"/>
+			<param name="topic_from_controller" value="controller_output"/>
+			<param name="topic_from_plant" value="motor_state"/>
+			<param name="Kp" value="0.01"/>
+			<param name="Ki" value="1.6"/>
+			<param name="Kd" value="0.0001"/>
+			<param name="upper_limit" value="255"/>
+			<param name="lower_limit" value="-255"/>
+			<param name="windup_limit" value="255"/>
+			<param name="max_loop_frequency" value="50.0"/>
+			<param name="min_loop_frequency" value="50.0"/>
+		</node>
+
+	</group>
+
+
+	<!-- Wheel 2 -->
+	<group ns="wheel_2">
+
+		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node">
+			<param name="max_pwm" type="int" value="255"/>
+			<param name="frequency" value="50"/>
+		</node>
+
+		<node name="controller" pkg="pid" type="controller">
+			<param name="node_name" value="wheel_1_pid"/>
+			<param name="setpoint_topic" value="reference_velocity"/>
+			<param name="topic_from_controller" value="controller_output"/>
+			<param name="topic_from_plant" value="motor_state"/>
+			<param name="Kp" value="0.01"/>
+			<param name="Ki" value="1.6"/>
+			<param name="Kd" value="0.0001"/>
+			<param name="upper_limit" value="255"/>
+			<param name="lower_limit" value="-255"/>
+			<param name="windup_limit" value="255"/>
+			<param name="max_loop_frequency" value="50.0"/>
+			<param name="min_loop_frequency" value="50.0"/>
+		</node>
+
+	</group>
+
+
+	<!-- Wheel 3 -->
+	<group ns="wheel_3">
+
+		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node">
+			<param name="max_pwm" type="int" value="255"/>
+			<param name="frequency" value="50"/>
+		</node>
+
+		<node name="controller" pkg="pid" type="controller">
+			<param name="node_name" value="wheel_1_pid"/>
+			<param name="setpoint_topic" value="reference_velocity"/>
+			<param name="topic_from_controller" value="controller_output"/>
+			<param name="topic_from_plant" value="motor_state"/>
+			<param name="Kp" value="0.01"/>
+			<param name="Ki" value="1.6"/>
+			<param name="Kd" value="0.0001"/>
+			<param name="upper_limit" value="255"/>
+			<param name="lower_limit" value="-255"/>
+			<param name="windup_limit" value="255"/>
+			<param name="max_loop_frequency" value="50.0"/>
+			<param name="min_loop_frequency" value="50.0"/>
+		</node>
+
+	</group>
+
 
 	<!-- IMU driver -->
-	<node name="imu_node" pkg="pg_hardware" type="imu_node"/>
+	<group ns="imu">
+
+		<node name="imu_driver" pkg="pg_hardware" type="imu_node">
+			<param name="frequency" value="20"/>
+			<rosparam command="load" file="$(find pg_bringup)/config/sensors/imu.yaml" ns="imu"/>
+			<remap from="imu/orientation" to="orientation"/>
+			<remap from="imu/magnetometer" to="magnetometer"/>
+			<remap from="imu/accelerometer" to="accelerometer"/>
+			<remap from="imu/gyroscope" to="gyroscope"/>
+			<remap from="imu/data_raw" to="data_raw"/>
+			<remap from="imu/mag" to="mag"/>
+		</node>
+
+	</group>
+
 
 	<!-- IMU BNO055 Driver-->
 	<?ignore
