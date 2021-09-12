@@ -3,8 +3,3 @@ robot_name: "Marco"
 base_diameter: 0.2
 wheel_radius: 0.05
 
-base_controller: {
-  timeout: 1,
-  rate: 10,
-}
-
