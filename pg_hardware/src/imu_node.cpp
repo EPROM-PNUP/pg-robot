@@ -60,7 +60,7 @@ class ImuWrapper {
 
 	public:
 	ImuWrapper(ros::NodeHandle &nh) {
-		ROS_INFO("Running /imu_node");
+		ROS_INFO("Running imu_driver");
 
 		// Load parameters from parameter server.
 		if (loadParameters()) {
@@ -90,30 +90,34 @@ class ImuWrapper {
 	// Load necessary parameters from parameter server
 	// (set to defaults if failed).
 	bool loadParameters() {
-		if (ros::param::has("imu_sensor/rate")) {
-			ros::param::get("imu_sensor/rate", node_frequency_);
-			ROS_INFO("Loaded node frequency/rate");
+		if (ros::param::has("~frequency")) {
+			ros::param::get("~frequency", node_frequency_);
+			ROS_INFO("Loaded node frequency");
 		}
 		else {
-			ROS_WARN("Failed to load node frequency/rate");
+			ROS_WARN("Failed to load node frequency");
 			node_frequency_ = 20;
 		}
 
 		return true;
 	}
 
+	// Callback function for imu orientation data topic
 	void orientationCallback(const std_msgs::Int16MultiArray &msg) {
 		imu_.setCMPS12Reading(msg.data);
 	}
 
+	// Callback function for magnetometer raw data topic
 	void magnetometerCallback(const std_msgs::Int16MultiArray &msg) {
 		imu_.setMagReading(msg.data);
 	}
 
+	// Callback function for accelerometer raw data topic
 	void accelerometerCallback(const std_msgs::Int16MultiArray &msg) {
 		imu_.setAccelReading(msg.data);
 	}
 
+	// Callback function for gyroscope raw data topic
 	void gyroscopeCallback(const std_msgs::Int16MultiArray &msg) {
 		imu_.setGyroReading(msg.data);
 	}
@@ -167,7 +171,7 @@ class ImuWrapper {
 };
 
 int main(int argc, char** argv) {
-	ros::init(argc, argv, "imu_node");
+	ros::init(argc, argv, "imu_driver");
 	ros::NodeHandle nh;
 
 	ImuWrapper imu_wrapper(nh);

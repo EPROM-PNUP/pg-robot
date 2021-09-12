@@ -55,7 +55,7 @@ class OdometryWrapper {
 
 	public:
 	OdometryWrapper(ros::NodeHandle &nh) {
-		ROS_INFO("Running /odometry");
+		ROS_INFO("Running odometry");
 
 		current_time_ = ros::Time::now();
 		previous_time_ = ros::Time::now();
@@ -83,9 +83,9 @@ class OdometryWrapper {
 	// Load necessary parameters from parameter server
 	// (set to defaults if failed).
 	bool loadParameters() {
-		if (ros::param::has("base_diameter")) {
+		if (ros::param::has("/robot/base_diameter")) {
 			float base_diameter;
-			ros::param::get("base_diameter", base_diameter);
+			ros::param::get("/robot/base_diameter", base_diameter);
 			odometry_.setBaseDiameter(base_diameter);
 			ROS_INFO("Loaded base_diameter");
 		}
@@ -95,9 +95,9 @@ class OdometryWrapper {
 			return false;
 		}
 
-		if (ros::param::has("wheel_radius")) {
+		if (ros::param::has("/robot/wheel_radius")) {
 			float wheel_radius;
-			ros::param::get("wheel_radius", wheel_radius);
+			ros::param::get("/robot/wheel_radius", wheel_radius);
 			odometry_.setWheelRadius(wheel_radius);
 			ROS_INFO("Loaded wheel_radius");
 		}
@@ -107,14 +107,14 @@ class OdometryWrapper {
 			return false;
 		}
 
-		if (ros::param::has("rotary_encoder/pulse_per_meter")) {
+		if (ros::param::has("/encoder/pulse_per_meter")) {
 			float pulse_per_meter;
-			ros::param::get("rotary_encoder/pulse_per_meter", pulse_per_meter);
+			ros::param::get("/encoder/pulse_per_meter", pulse_per_meter);
 			odometry_.setPulsePerMeter(pulse_per_meter);
-			ROS_INFO("Load pulse_per_meter");
+			ROS_INFO("Load encoder pulse_per_meter");
 		}
 		else {
-			ROS_WARN("Failed to load pulse_per_meter parameter");
+			ROS_WARN("Failed to load encoder pulse_per_meter parameter");
 			odometry_.setPulsePerMeter(426);
 			return false;
 		}
@@ -122,15 +122,17 @@ class OdometryWrapper {
 		return true;
 	}
 	
-	// Callback function for encoders pulse counts
+	// Callback function for wheel 1 encoder pulse counts topic
 	void encoder1PulseCallback(const std_msgs::Int16 &msg) {
 		odometry_.setPulseCounts(msg.data, 0);
 	}
 
+	// Callback function for wheel 2 encoder pulse counts topic
 	void encoder2PulseCallback(const std_msgs::Int16 &msg) {
 		odometry_.setPulseCounts(msg.data, 1);
 	}
 
+	// Callback function for wheel 3 encoder pulse counts topic
 	void encoder3PulseCallback(const std_msgs::Int16 &msg) {
 		odometry_.setPulseCounts(msg.data, 2);
 	}

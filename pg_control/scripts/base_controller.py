@@ -41,13 +41,15 @@ from geometry_msgs.msg import Twist
 class BaseController:
 
 	def __init__(self):
-		rospy.loginfo("Initializing node ...")
+		rospy.loginfo("Running base_controller ...")
 		rospy.init_node('base_controller')
 
 		self._last_received = rospy.get_time()
-		self._wheel_radius = rospy.get_param('wheel_radius')
-		self._timeout = rospy.get_param('base_controller/timeout')
-		self._rate = rospy.get_param('base_controller/rate')
+
+		rospy.loginfo("Loading parameters ...")
+		self._wheel_radius = rospy.get_param('/robot/wheel_radius')
+		self._timeout = rospy.get_param('~timeout', 1)
+		self._rate = rospy.get_param('~frequency', 50)
 
 		self._wheel_velocity = [0.0, 0.0, 0.0]
 		self._body_twist = [0.0, 0.0, 0.0]

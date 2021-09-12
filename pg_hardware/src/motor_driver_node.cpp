@@ -53,7 +53,7 @@ class MotorDriverWrapper {
 
 	public:
 	MotorDriverWrapper(ros::NodeHandle &nh) {
-		ROS_INFO("Running /motor_driver");
+		ROS_INFO("Running motor_driver");
 		
 		// Load parameters from parameter server.
 		if (loadParameters()) {
@@ -77,24 +77,24 @@ class MotorDriverWrapper {
 	// Load necessary parameters from parameter server
 	// (set to defaults if failed).
 	bool loadParameters() {
-		if (ros::param::has("/motor_driver/max_pwm")) {
+		if (ros::param::has("~max_pwm")) {
 			int max_pwm;
-			ros::param::get("/motor_driver/max_pwm", max_pwm);
+			ros::param::get("~max_pwm", max_pwm);
 			motor_driver_.setMaxPWM(max_pwm);
 			ROS_INFO("Loaded max_pwm");
 		}
 		else {
-			ROS_WARN("Failed to load max_pwm paramter");
+			ROS_WARN("Failed to load max_pwm parameter");
 			motor_driver_.setMaxPWM(255);
 			return false;
 		}
 
-		if (ros::param::has("/motor_driver/rate")) {
-			ros::param::get("/motor_driver/rate", node_frequency_);
+		if (ros::param::has("~frequency")) {
+			ros::param::get("~frequency", node_frequency_);
 			ROS_INFO("Loaded node frequency/rate");
 		}
 		else {
-			ROS_WARN("Failed to load node frequency/rate");
+			ROS_WARN("Failed to load node frequency");
 			node_frequency_ = 50;
 		}
 
