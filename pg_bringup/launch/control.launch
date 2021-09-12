@@ -1,0 +1,9 @@
+<launch>
+
+	<!-- Base Controller -->
+	<node name="base_controller" pkg="pg_control" type="base_controller.py"/>
+
+	<!-- Go-To-Goal Control -->
+	<node name="go_to_goal" pkg="pg_control" type="go_to_goal.py"/>
+
+</launch>

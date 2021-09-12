@@ -1,0 +1,9 @@
+<launch>
+
+	<rosparam command="load" file="$(find pg_bringup)/config/common_config.yaml" ns="robot"/>
+
+	<include file="$(find pg_bringup)/launch/hardware.launch"/>
+	<include file="$(find pg_bringup)/launch/localization.launch"/>
+	<include file="$(find pg_bringup)/launch/control.launch"/>
+
+</launch>

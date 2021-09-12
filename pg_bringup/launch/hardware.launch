@@ -1,20 +1,14 @@
 <launch>
 
+	<!-- Parameters -->
+	<rosparam command="load" file="$(find pg_bringup)/config/sensors/imu.yaml" ns="imu"/>
+	<rosparam command="load" file="$(find pg_bringup)/config/sensors/rotary_encoder.yaml" ns="encoder"/>
 
-	<!-- PARAMETER SERVER -->
-	<rosparam command="load" file="$(find pg_bringup)/config/common_config.yaml"/>
-	<rosparam command="load" file="$(find pg_bringup)/config/sensors_config.yaml"/>
-	<rosparam command="load" file="$(find pg_bringup)/config/actuators_config.yaml"/>
-
-
-	<!-- ROSSERIAL -->
+	<!-- Rosserial -->
 	<node name="serial_node" pkg="rosserial_python" type="serial_node.py">
 		<param name="port" value="/dev/ttyACM0"/>
 		<param name="baud" value="115200"/>
 	</node>
-
-
-	<!-- HARDWARE DRIVERS -->
 
 	<!-- Motor Drivers -->
 	<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node" ns="wheel_1"/>
@@ -69,12 +63,11 @@
 		<param name="min_loop_frequency" value="50.0"/>
 	</node>
 
-	<!-- IMU driver and filter -->
-	<!--
+	<!-- IMU driver -->
 	<node name="imu_node" pkg="pg_hardware" type="imu_node"/>
-	<node name="imu_complementary_filter" pkg="imu_complementary_filter" type="complementary_filter_node"/>
-	-->
 
+	<!-- IMU BNO055 Driver-->
+	<?ignore
 	<include file="$(find ros_imu_bno055)/launch/imu.launch">
 		<arg name="serial_port" value="/dev/ttyS0"/>
 		<arg name="frame_id" value="imu_link"/>
@@ -85,32 +78,6 @@
 		<arg name="use_magnetometer" value="false"/>
 		<arg name="use_temperature" value="false"/>
 	</include>
-
-	<!-- LOCALIZATION -->
-	
-	<!-- Wheel Odometry -->
-	<node name="odometry" pkg="pg_localization" type="odometry_node"/>
-
-	<!--
-	<node name="robot_pose_ekf" pkg="robot_pose_ekf" type="robot_pose_ekf">
-		<param name="output_frame" value="odom_combined"/>
-		<param name="base_footprint_frame" value="base_footprint"/>
-		<param name="freq" value="20.0"/>
-		<param name="sensor_timeout" value="1.0"/>
-		<param name="odom_used" value="true"/>
-		<param name="imu_used" value="true"/>
-		<param name="vo_used" value="false"/>
-	</node>
-	-->
-
-
-	<!-- CONTROL -->
-
-	<!-- Base Controller -->
-	<node name="base_controller" pkg="pg_control" type="base_controller.py"/>
-
-	<!-- Go-To-Goal Control -->
-	<node name="go_to_goal" pkg="pg_control" type="go_to_goal.py"/>
-
+	?>
 
 </launch>
