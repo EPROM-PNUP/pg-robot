@@ -51,6 +51,8 @@ void MotorDriver::setEncoderPulse(int16_t encoder_pulse) {
 }
 
 int16_t MotorDriver::getPWM() {
+	// Set pwm value to 0 when 
+	// pwm value drops below 10.
 	if (abs(pwm_) < 10) {
 		pwm_ = 0;
 	}
@@ -58,6 +60,9 @@ int16_t MotorDriver::getPWM() {
 	return pwm_;
 }
 
+// GET STATE FUNCTION.
+// Calculate motor state (angular velocity)
+// within time span of 20 milliseconds.
 double MotorDriver::getState() {
 	int16_t delta_pulse = encoder_pulse_ - previous_encoder_pulse_;
 	state_ = static_cast<double>((delta_pulse * 3000) / 134);
