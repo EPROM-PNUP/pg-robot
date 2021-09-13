@@ -16,6 +16,7 @@ def go_to_goal_client():
 	rospy.loginfo("Waiting for server ...")
 	client.wait_for_server()
 
+	rospy.loginfo("Sending goal ...")
 	goal = GoToGoalGoal()
 
 	goal.goal_pose.x = 1.0
@@ -24,13 +25,17 @@ def go_to_goal_client():
 
 	client.send_goal(goal)
 
-	client.wait_for_result()
+	try:
+		rospy.loginfo("Waiting for result ...")
+		client.wait_for_result()
+	except rospy.ROSInterruptException:
+		rospy.loginfo("Interrupted, exiting ...")	
 
+	rospy.loginfo("Success!")
 	return client.get_result()
 
 if __name__ == '__main__':
 	try:
-		print("start")
 		rospy.init_node('go_to_point_client_py')
 		result = go_to_goal_client()
 	except rospy.ROSInterruptException:

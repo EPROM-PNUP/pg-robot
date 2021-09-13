@@ -51,7 +51,14 @@ class GoToGoal:
 		rospy.init_node("go_to_goal")
 
 		self._pose = Pose2D()
+		self._pose.x = 0.0
+		self._pose.y = 0.0
+		self._pose.theta = 0.0
+
 		self._goal_pose = Pose2D()
+		self._goal_pose.x = 0.0
+		self._goal_pose.y = 0.0
+		self._goal_pose.theta = 0.0
 		
 		self._distance_from_goal = 0.0
 		self._tolerance_distance = 0.2
@@ -76,8 +83,8 @@ class GoToGoal:
 		self._server = actionlib.SimpleActionServer(
 			"go_to_goal",
 			GoToGoalAction,
-			self.execute,
-			False)
+			execute_cb = self.execute,
+			auto_start = False)
 
 		self._feedback = GoToGoalFeedback()
 		self._result = GoToGoalResult()
@@ -102,8 +109,8 @@ class GoToGoal:
 
 	def _euclidian_distance(self):
 		self._distance_from_goal = sqrt(
-			pow((_goal_pose.x - self._pose.x), 2) +
-			pow((_goal_pose.y - self._pose.y), 2)
+			pow((self._goal_pose.x - self._pose.x), 2) +
+			pow((self._goal_pose.y - self._pose.y), 2)
 			)
 
 	def _angular_velocity(self):
@@ -125,10 +132,12 @@ class GoToGoal:
 
 		success = True
 
-		self._goal_pose = goal
+		self._goal_pose = goal.goal_pose
+
+		self._euclidian_distance()
 
 		while self._distance_from_goal > self._tolerance_distance:
-			if self._server.is_preemt_requested():
+			if self._server.is_preempt_requested():
 				rospy.loginfo("go_to_goal: Preempted")
 				self._server.set_preempted()
 				success = False
@@ -140,7 +149,7 @@ class GoToGoal:
 
 			self._command_velocity_msg.linear.x = self._x_linear_vel
 			self._command_velocity_msg.linear.y = self._y_linear_vel
-			self._commang_velocity_msg.linear.z = 0.0
+			self._command_velocity_msg.linear.z = 0.0
 
 			self._command_velocity_msg.angular.x = 0.0
 			self._command_velocity_msg.angular.y = 0.0
@@ -154,7 +163,7 @@ class GoToGoal:
 
 			self._server.publish_feedback(self._feedback)
 
-			self.rate.sleep()
+			rate.sleep()
 
 		if success:
 			self._result.result_pose.x = self._pose.x
