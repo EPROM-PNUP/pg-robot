@@ -47,7 +47,7 @@
 		</node>
 
 		<node name="controller" pkg="pid" type="controller">
-			<param name="node_name" value="wheel_1_pid"/>
+			<param name="node_name" value="wheel_2_pid"/>
 			<param name="setpoint_topic" value="reference_velocity"/>
 			<param name="topic_from_controller" value="controller_output"/>
 			<param name="topic_from_plant" value="motor_state"/>
@@ -73,7 +73,7 @@
 		</node>
 
 		<node name="controller" pkg="pid" type="controller">
-			<param name="node_name" value="wheel_1_pid"/>
+			<param name="node_name" value="wheel_3_pid"/>
 			<param name="setpoint_topic" value="reference_velocity"/>
 			<param name="topic_from_controller" value="controller_output"/>
 			<param name="topic_from_plant" value="motor_state"/>
