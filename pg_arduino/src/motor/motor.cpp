@@ -38,7 +38,7 @@ Motor::Motor(const byte &dir_pin_1, const byte &dir_pin_2) {
 }
 
 // INIT FUNCTION
-// Set both pins as OUTPUT to controll motor.
+// Set both pins as OUTPUT to control motor.
 void Motor::init() {
 	pinMode(this->_dir_pin_1, OUTPUT);
 	pinMode(this->_dir_pin_2, OUTPUT);
