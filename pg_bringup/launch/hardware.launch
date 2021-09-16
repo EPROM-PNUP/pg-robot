@@ -121,4 +121,17 @@
 	</include>
 	?>
 
+	<!-- Dribbler Driver -->
+	<group ns="dribbler">
+
+		<node name="dribbler_driver" pkg="pg_hardware" type="dribbler_driver_node" ns="left">
+			<param name="frequency" value="50"/>
+		</node>
+
+		<node name="dribbler_driver" pkg="pg_hardware" type="dribbler_driver_node" ns="right">
+			<param name="frequency" value="50"/>
+		</node>
+
+	</group>
+
 </launch>

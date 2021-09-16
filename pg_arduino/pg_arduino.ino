@@ -63,10 +63,10 @@
 #define ENCODER_3_PIN_C1 20
 #define ENCODER_3_PIN_C2 21
 
-#define DRIBBLER_LEFT_PIN_A 9
-#define DRIBBLER_LEFT_PIN_B 10
-#define DRIBBLER_RIGHT_PIN_A 11
-#define DRIBBLER_RIGHT_PIN_B 12
+#define DRIBBLER_LEFT_PIN_A 8
+#define DRIBBLER_LEFT_PIN_B 9
+#define DRIBBLER_RIGHT_PIN_A 10
+#define DRIBBLER_RIGHT_PIN_B 11
 
 #define PROXIMITY_PIN 23
 
@@ -109,12 +109,22 @@ void motor3Callback(const std_msgs::Int16 &msg) {
 	motor_3.move(msg.data);
 }
 
-void dribbleLeftCallback(const std_msgs::Int16 &msg) {
-	dribbler_left.dribble(msg.data);
+void dribbleLeftCallback(const std_msgs::Bool &msg) {
+	if (msg.data) {
+		dribbler_left.dribble();
+	}
+	else {
+		dribbler_right.stop();
+	}
 }
 
-void dribbleRightCallback(const std_msgs::Int16 &msg) {
-	dribbler_right.dribble(msg.data);
+void dribbleRightCallback(const std_msgs::Bool &msg) {
+	if (msg.data) {
+		dribbler_right.dribble();
+	}
+	else {
+		dribbler_right.stop();
+	}
 }
 
 
@@ -135,11 +145,11 @@ ros::Subscriber<std_msgs::Int16> motor_3_pwm_sub(
 	"wheel_3/motor_pwm", &motor3Callback);
 
 // Dribbler Command Subscriber
-ros::Subscriber<std_msgs::Int16> dribble_cmd_left_sub(
-	"dribbler/left/pwm", &dribbleLeftCallback);
+ros::Subscriber<std_msgs::Bool> dribble_cmd_left_sub(
+	"dribbler/left/cmd_dribble", &dribbleLeftCallback);
 
-ros::Subscriber<std_msgs::Int16> dribble_cmd_right_sub(
-	"dribbler/right/pwm", &dribbleRightCallback);
+ros::Subscriber<std_msgs::Bool> dribble_cmd_right_sub(
+	"dribbler/right/cmd_dribble", &dribbleRightCallback);
 
 // Encoders Publisher & msg
 std_msgs::Int16 encoder_1_pulse;
@@ -161,11 +171,11 @@ ros::Publisher encoder_3_pulse_pub(
 	);
 
 // CMPS12 Orientation Publisher & msg
-std_msgs::Int16MultiArray cmps12_orientation_msg;
-ros::Publisher cmps12_orientation_pub(
-	"imu/orientation",
-	&cmps12_orientation_msg
-	);
+// std_msgs::Int16MultiArray cmps12_orientation_msg;
+// ros::Publisher cmps12_orientation_pub(
+//  	"imu/orientation",
+//  	&cmps12_orientation_msg
+//  	);
 
 // Magnetometer Publisher & msg
 std_msgs::Int16MultiArray magnetometer_msg;
@@ -246,12 +256,14 @@ void setup() {
 	nh.subscribe(motor_1_pwm_sub);
 	nh.subscribe(motor_2_pwm_sub);
 	nh.subscribe(motor_3_pwm_sub);
+	nh.subscribe(dribble_cmd_left_sub);
+	nh.subscribe(dribble_cmd_right_sub);
 
 	// Initialize publishers
 	nh.advertise(encoder_1_pulse_pub);
 	nh.advertise(encoder_2_pulse_pub);
 	nh.advertise(encoder_3_pulse_pub);
-	nh.advertise(cmps12_orientation_pub);
+	// nh.advertise(cmps12_orientation_pub);
 	nh.advertise(magnetometer_pub);
 	nh.advertise(accelerometer_pub);
 	nh.advertise(gyroscope_pub);
@@ -260,8 +272,8 @@ void setup() {
 	int16_t temp_3[3] = {0, 0, 0};
 
 	// Initialize cmps12 orientation msg data length
-	cmps12_orientation_msg.data_length = 3;
-	cmps12_orientation_msg.data = temp_3;
+	// cmps12_orientation_msg.data_length = 3;
+	// cmps12_orientation_msg.data = temp_3;
 
 	// Initialize magnetometer msg data length
 	magnetometer_msg.data_length = 3;
@@ -301,9 +313,9 @@ void loop() {
 
 		imu_data_raw = imu.getRawData();
 
-		cmps12_orientation_msg.data[0] = imu_data_raw.bearing_;
-		cmps12_orientation_msg.data[1] = imu_data_raw.pitch_;
-		cmps12_orientation_msg.data[2] = imu_data_raw.roll_;
+		// cmps12_orientation_msg.data[0] = imu_data_raw.bearing_;
+		// cmps12_orientation_msg.data[1] = imu_data_raw.pitch_;
+		// cmps12_orientation_msg.data[2] = imu_data_raw.roll_;
 
 		magnetometer_msg.data[0] = imu_data_raw.mag_x_;
 		magnetometer_msg.data[1] = imu_data_raw.mag_y_;
@@ -317,14 +329,16 @@ void loop() {
 		gyroscope_msg.data[1] = imu_data_raw.gyro_y_;
 		gyroscope_msg.data[2] = imu_data_raw.gyro_z_;
 
-		cmps12_orientation_pub.publish(&cmps12_orientation_msg);
+		// cmps12_orientation_pub.publish(&cmps12_orientation_msg);
 		magnetometer_pub.publish(&magnetometer_msg);
 		accelerometer_pub.publish(&accelerometer_msg);
 		gyroscope_pub.publish(&gyroscope_msg);
 	}
 
 	// Publish proximity sensor data
-	if(current_millis - imu_millis_track > 20) {
+	if(current_millis - proxi_millis_track > 20) {
+		proxi_millis_track = current_millis;
+
 		ball_in_range_msg.data = proxi.ballIsInRange();
 		proximity_pub.publish(&ball_in_range_msg);
 	}

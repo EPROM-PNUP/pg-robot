@@ -96,6 +96,7 @@ class MotorDriverWrapper {
 		else {
 			ROS_WARN("Failed to load node frequency");
 			node_frequency_ = 50;
+			return false;
 		}
 
 		return true;

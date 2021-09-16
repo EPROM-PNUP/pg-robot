@@ -7,6 +7,7 @@ add_definitions(-Wall -Werror)
 
 set(IMU_LIB imu_driver)
 set(MOTOR_DRIVER_LIB motor_driver)
+set(DRIBBLER_DRIVER_LIB dribbler_driver)
 
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
@@ -44,8 +45,13 @@ add_library(${IMU_LIB}
   src/imu.cpp
 )
 
+add_library(${DRIBBLER_DRIVER_LIB}
+  src/dribbler_driver.cpp
+)
+
 add_executable(motor_driver_node src/motor_driver_node.cpp)
 add_executable(imu_node src/imu_node.cpp)
+add_executable(dribbler_driver_node src/dribbler_driver_node.cpp)
 
 target_link_libraries(motor_driver_node
   ${MOTOR_DRIVER_LIB}
@@ -56,3 +62,9 @@ target_link_libraries(imu_node
   ${IMU_LIB}
   ${catkin_LIBRARIES}
 )
+
+target_link_libraries(dribbler_driver_node
+  ${DRIBBLER_DRIVER_LIB}
+  ${catkin_LIBRARIES}
+)
+
