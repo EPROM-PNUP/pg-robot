@@ -171,11 +171,11 @@ ros::Publisher encoder_3_pulse_pub(
 	);
 
 // CMPS12 Orientation Publisher & msg
-// std_msgs::Int16MultiArray cmps12_orientation_msg;
-// ros::Publisher cmps12_orientation_pub(
-//  	"imu/orientation",
-//  	&cmps12_orientation_msg
-//  	);
+std_msgs::Int16MultiArray cmps12_orientation_msg;
+ros::Publisher cmps12_orientation_pub(
+ 	"imu/orientation",
+ 	&cmps12_orientation_msg
+ 	);
 
 // Magnetometer Publisher & msg
 std_msgs::Int16MultiArray magnetometer_msg;
@@ -198,10 +198,8 @@ ros::Publisher proximity_pub("dribbler/ball_in_range", &ball_in_range_msg);
 // GLOBAL VARIABLES //
 //////////////////////
 
-static long pulse_counts_millis_track = 0;
-static long imu_millis_track = 0;
-static long proxi_millis_track = 0;
-static long current_millis = 0;
+long current_millis = 0;
+long previous_millis = 0;
 
 
 ////////////////////////////
@@ -249,7 +247,7 @@ void setup() {
 	proxi.init();
 	
 	// Initialize ROS node and baudrate
-	nh.getHardware()->setBaud(115200);
+	nh.getHardware()->setBaud(1000000);
 	nh.initNode();
 
 	// Initialize subscribers 
@@ -257,13 +255,13 @@ void setup() {
 	nh.subscribe(motor_2_pwm_sub);
 	nh.subscribe(motor_3_pwm_sub);
 	nh.subscribe(dribble_cmd_left_sub);
-	nh.subscribe(dribble_cmd_right_sub);
+	// nh.subscribe(dribble_cmd_right_sub);
 
 	// Initialize publishers
 	nh.advertise(encoder_1_pulse_pub);
 	nh.advertise(encoder_2_pulse_pub);
 	nh.advertise(encoder_3_pulse_pub);
-	// nh.advertise(cmps12_orientation_pub);
+	nh.advertise(cmps12_orientation_pub);
 	nh.advertise(magnetometer_pub);
 	nh.advertise(accelerometer_pub);
 	nh.advertise(gyroscope_pub);
@@ -272,8 +270,8 @@ void setup() {
 	int16_t temp_3[3] = {0, 0, 0};
 
 	// Initialize cmps12 orientation msg data length
-	// cmps12_orientation_msg.data_length = 3;
-	// cmps12_orientation_msg.data = temp_3;
+	cmps12_orientation_msg.data_length = 3;
+	cmps12_orientation_msg.data = temp_3;
 
 	// Initialize magnetometer msg data length
 	magnetometer_msg.data_length = 3;
@@ -297,25 +295,21 @@ void loop() {
 	nh.spinOnce();
 
 	current_millis = millis();
-	
-	// Publish encoders pulse counts every 20 ms
-	if(current_millis - pulse_counts_millis_track > 20) {
-		pulse_counts_millis_track = current_millis;
 
+	if ((current_millis - previous_millis) > 20) {
+		previous_millis = current_millis;
+
+		// Publish encoders pulse counts every 20 ms
 		encoder_1_pulse_pub.publish(&encoder_1_pulse);
 		encoder_2_pulse_pub.publish(&encoder_2_pulse);
 		encoder_3_pulse_pub.publish(&encoder_3_pulse);
-	}
 
-	// Publish imu sensor raw data every 20 ms
-	if(current_millis - imu_millis_track > 20) {
-		imu_millis_track = current_millis;
-
+		// Publish IMU raw data
 		imu_data_raw = imu.getRawData();
 
-		// cmps12_orientation_msg.data[0] = imu_data_raw.bearing_;
-		// cmps12_orientation_msg.data[1] = imu_data_raw.pitch_;
-		// cmps12_orientation_msg.data[2] = imu_data_raw.roll_;
+		cmps12_orientation_msg.data[0] = imu_data_raw.bearing_;
+		cmps12_orientation_msg.data[1] = imu_data_raw.pitch_;
+		cmps12_orientation_msg.data[2] = imu_data_raw.roll_;
 
 		magnetometer_msg.data[0] = imu_data_raw.mag_x_;
 		magnetometer_msg.data[1] = imu_data_raw.mag_y_;
@@ -329,16 +323,12 @@ void loop() {
 		gyroscope_msg.data[1] = imu_data_raw.gyro_y_;
 		gyroscope_msg.data[2] = imu_data_raw.gyro_z_;
 
-		// cmps12_orientation_pub.publish(&cmps12_orientation_msg);
+		cmps12_orientation_pub.publish(&cmps12_orientation_msg);
 		magnetometer_pub.publish(&magnetometer_msg);
 		accelerometer_pub.publish(&accelerometer_msg);
 		gyroscope_pub.publish(&gyroscope_msg);
-	}
 
-	// Publish proximity sensor data
-	if(current_millis - proxi_millis_track > 20) {
-		proxi_millis_track = current_millis;
-
+		// Publish proxi data
 		ball_in_range_msg.data = proxi.ballIsInRange();
 		proximity_pub.publish(&ball_in_range_msg);
 	}
