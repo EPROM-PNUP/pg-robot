@@ -61,7 +61,7 @@ class GoToGoal:
 		self._goal_pose.theta = 0.0
 		
 		self._distance_from_goal = 0.0
-		self._tolerance_distance = 0.2
+		self._tolerance_distance = 0.3
 
 		self._VELOCITY = 6.0
 		self._linear_x_vel = 0.0
