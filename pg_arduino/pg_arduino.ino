@@ -63,10 +63,10 @@
 #define ENCODER_3_PIN_C1 20
 #define ENCODER_3_PIN_C2 21
 
-#define DRIBBLER_LEFT_PIN_A 8
-#define DRIBBLER_LEFT_PIN_B 9
-#define DRIBBLER_RIGHT_PIN_A 10
-#define DRIBBLER_RIGHT_PIN_B 11
+#define DRIBBLER_LEFT_PIN_A 10
+#define DRIBBLER_LEFT_PIN_B 11
+#define DRIBBLER_RIGHT_PIN_A 12
+#define DRIBBLER_RIGHT_PIN_B 13
 
 #define PROXIMITY_PIN 23
 
@@ -201,6 +201,9 @@ ros::Publisher proximity_pub("dribbler/ball_in_range", &ball_in_range_msg);
 long current_millis = 0;
 long previous_millis = 0;
 
+uint16_t uint_temp_3[3] = {0, 0, 0};
+int16_t int_temp_3[3] = {0, 0, 0};
+
 
 ////////////////////////////
 // ARDUINO SETUP FUNCTION //
@@ -247,7 +250,7 @@ void setup() {
 	proxi.init();
 	
 	// Initialize ROS node and baudrate
-	nh.getHardware()->setBaud(76800);
+	nh.getHardware()->setBaud(115200);
 	nh.initNode();
 
 	// Initialize subscribers 
@@ -265,25 +268,24 @@ void setup() {
 	nh.advertise(magnetometer_pub);
 	nh.advertise(accelerometer_pub);
 	nh.advertise(gyroscope_pub);
-	// nh.advertise(proximity_pub);
+	nh.advertise(proximity_pub);
 
-	int16_t temp_3[3] = {0, 0, 0};
 
 	// Initialize cmps12 orientation msg data length
 	cmps12_orientation_msg.data_length = 3;
-	cmps12_orientation_msg.data = temp_3;
+	cmps12_orientation_msg.data = uint_temp_3;
 
 	// Initialize magnetometer msg data length
 	magnetometer_msg.data_length = 3;
-	magnetometer_msg.data = temp_3;
+	magnetometer_msg.data = int_temp_3;
 
 	// Initialize accelerometer msg data length
 	accelerometer_msg.data_length = 3;
-	accelerometer_msg.data = temp_3;
+	accelerometer_msg.data = int_temp_3;
 
 	// Initialize gyroscope msg data length
 	gyroscope_msg.data_length = 3;
-	gyroscope_msg.data = temp_3;
+	gyroscope_msg.data = int_temp_3;
 }
 
 
@@ -329,8 +331,8 @@ void loop() {
 		gyroscope_pub.publish(&gyroscope_msg);
 
 		// Publish proxi data
-		// ball_in_range_msg.data = proxi.ballIsInRange();
-		// proximity_pub.publish(&ball_in_range_msg);
+		ball_in_range_msg.data = proxi.ballIsInRange();
+		proximity_pub.publish(&ball_in_range_msg);
 	}
 }
 

@@ -47,7 +47,7 @@ class Imu {
 
 	const double MAG_SCALE_ = 1.0/16.0;
 	const double ACCEL_SCALE_ = 1.0/100.0;
-	const double GYRO_SCALE_ = 1.0/900.0;
+	const double GYRO_SCALE_ = 1.0/16.0;
 	const double PI = 3.141592;
 	const double DEG2RAD = PI/180;
 

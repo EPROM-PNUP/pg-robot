@@ -8,7 +8,7 @@
 	<!-- Rosserial -->
 	<node name="serial_node" pkg="rosserial_python" type="serial_node.py">
 		<param name="port" value="/dev/ttyACM0"/>
-		<param name="baud" value="76800"/>
+		<param name="baud" value="115200"/>
 	</node>
 
 
@@ -102,6 +102,12 @@
 			<remap from="imu/gyroscope" to="gyroscope"/>
 			<remap from="imu/data_raw" to="data_raw"/>
 			<remap from="imu/mag" to="mag"/>
+		</node>
+
+		<node name="imu_complementary_filter" pkg="imu_complementary_filter" type="complementary_filter_node">
+			<remap from="imu/data_raw" to="data_raw"/>
+			<remap from="imu/mag" to="mag"/>
+			<remap from="imu/data" to="data"/>
 		</node>
 
 	</group>

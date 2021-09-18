@@ -54,9 +54,9 @@ namespace pg_ns {
 // RAW DATA STRUCTURE.
 // Used to store raw data from sensor reading.
 struct ImuDataRaw {
-	int16_t bearing_;
-	int8_t pitch_;
-	int8_t roll_;
+	uint16_t bearing_;
+	uint16_t pitch_;
+	uint16_t roll_;
 
 	int16_t mag_x_;
 	int16_t mag_y_;
@@ -73,8 +73,8 @@ struct ImuDataRaw {
 
 class CMPS12 {
 	private:
-	int8_t byte_high_;
-	int8_t byte_low_;
+	byte byte_high_;
+	byte byte_low_;
 
 	ImuDataRaw data_raw;
 

@@ -136,16 +136,16 @@ class ImuWrapper {
 			vector<double> angular_velocity = imu_.getAngularVelocity();
 
 			// Create Quaternion representation from Euler Angles
-			quat_tf_.setRPY(
-				orientation[2],
-				orientation[1],
-				orientation[0]
-			);
+			// quat_tf_.setRPY(
+			// 	orientation[2],
+			// 	orientation[1],
+			// 	orientation[0]
+			// );
 
-			quat_ = tf2::toMsg(quat_tf_);
+			// quat_ = tf2::toMsg(quat_tf_);
 
 			// Pass IMU data to msg object
-			imu_raw_msg_.orientation = quat_;
+			// imu_raw_msg_.orientation = quat_;
 
 			imu_raw_msg_.angular_velocity.x = angular_velocity[0];
 			imu_raw_msg_.angular_velocity.y = angular_velocity[1];
