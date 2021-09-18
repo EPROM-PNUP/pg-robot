@@ -247,14 +247,14 @@ void setup() {
 	proxi.init();
 	
 	// Initialize ROS node and baudrate
-	nh.getHardware()->setBaud(1000000);
+	nh.getHardware()->setBaud(76800);
 	nh.initNode();
 
 	// Initialize subscribers 
 	nh.subscribe(motor_1_pwm_sub);
 	nh.subscribe(motor_2_pwm_sub);
 	nh.subscribe(motor_3_pwm_sub);
-	nh.subscribe(dribble_cmd_left_sub);
+	// nh.subscribe(dribble_cmd_left_sub);
 	// nh.subscribe(dribble_cmd_right_sub);
 
 	// Initialize publishers
@@ -265,7 +265,7 @@ void setup() {
 	nh.advertise(magnetometer_pub);
 	nh.advertise(accelerometer_pub);
 	nh.advertise(gyroscope_pub);
-	nh.advertise(proximity_pub);
+	// nh.advertise(proximity_pub);
 
 	int16_t temp_3[3] = {0, 0, 0};
 
@@ -329,8 +329,8 @@ void loop() {
 		gyroscope_pub.publish(&gyroscope_msg);
 
 		// Publish proxi data
-		ball_in_range_msg.data = proxi.ballIsInRange();
-		proximity_pub.publish(&ball_in_range_msg);
+		// ball_in_range_msg.data = proxi.ballIsInRange();
+		// proximity_pub.publish(&ball_in_range_msg);
 	}
 }
 

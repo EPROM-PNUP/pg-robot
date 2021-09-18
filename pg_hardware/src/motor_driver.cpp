@@ -53,9 +53,9 @@ void MotorDriver::setEncoderPulse(int16_t encoder_pulse) {
 int16_t MotorDriver::getPWM() {
 	// Set pwm value to 0 when 
 	// pwm value drops below 10.
-	// if (abs(pwm_) < 10) {
-	//  	pwm_ = 0;
-	// }
+	if (abs(pwm_) < 10) {
+	 	pwm_ = 0;
+	}
 
 	return pwm_;
 }
