@@ -173,6 +173,10 @@ class GoToGoal:
 			rospy.loginfo("go_to_goal: Succeeded")
 		
 			self._server.set_succeeded(self._result)
+		else:
+			rospy.loginfo("go_to_goal: Failed")
+
+			self._server.set_aborted()
 
 		self._command_velocity_msg.linear.x = 0.0
 		self._command_velocity_msg.linear.y = 0.0

@@ -9,30 +9,32 @@ from pg_msgs.msg import GoToGoalGoal
 def go_to_goal_client():
 	rospy.loginfo("Starting client ...")
 	client = actionlib.SimpleActionClient(
-		'go_to_goal', 
-		GoToGoalAction
-		)
-	
+			'go_to_goal', 
+			GoToGoalAction
+			)
+
 	rospy.loginfo("Waiting for server ...")
 	client.wait_for_server()
 
-	rospy.loginfo("Sending goal ...")
+
+	rospy.loginfo("Input Goal:")
 	goal = GoToGoalGoal()
 
-	goal.goal_pose.x = 1.0
-	goal.goal_pose.y = 1.0
-	goal.goal_pose.theta = 0.0
+	goal.goal_pose.x = float(input("Pose x: "))
+	goal.goal_pose.y = float(input("Pose y: "))
+	goal.goal_pose.theta = float(input("Pose theta: "))
 
 	client.send_goal(goal)
 
-	try:
-		rospy.loginfo("Waiting for result ...")
-		client.wait_for_result()
-	except rospy.ROSInterruptException:
-		rospy.loginfo("Interrupted, exiting ...")	
+	rospy.loginfo("Waiting for result ...")
+	client.wait_for_result()
 
-	rospy.loginfo("Success!")
-	return client.get_result()
+	if rospy.is_shutdown():
+		rospy.loginfo("Interrupted, exiting ...")
+		client.cancel_goal()
+	else:
+		rospy.loginfo("Success!")
+		return client.get_result()
 
 if __name__ == '__main__':
 	try:
