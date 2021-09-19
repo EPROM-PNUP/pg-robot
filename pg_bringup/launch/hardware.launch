@@ -93,6 +93,7 @@
 	<!-- IMU driver -->
 	<group ns="imu">
 
+		<?ignore
 		<node name="imu_driver" pkg="pg_hardware" type="imu_node">
 			<param name="frequency" value="20"/>
 			<rosparam command="load" file="$(find pg_bringup)/config/sensors/imu.yaml" ns="imu"/>
@@ -103,30 +104,38 @@
 			<remap from="imu/data_raw" to="data_raw"/>
 			<remap from="imu/mag" to="mag"/>
 		</node>
+		?>
 
+		<?ignore
 		<node name="imu_complementary_filter" pkg="imu_complementary_filter" type="complementary_filter_node">
 			<remap from="imu/data_raw" to="data_raw"/>
 			<remap from="imu/mag" to="mag"/>
 			<remap from="imu/data" to="data"/>
 			<param name="publish_debug_topics" value="true"/>
 		</node>
+		?>
+
+		<?ignore
+		<include file="$(find ros_imu_bno055)/launch/imu.launch">
+			<arg name="serial_port" value="/dev/ttyS0"/>
+			<arg name="frame_id" value="imu_link"/>
+			<arg name="operation_mode" value="IMU"/>
+			<arg name="oscillator" value="INTERNAL"/>
+			<arg name="reset_orientation" value="true"/>
+			<arg name="frequency" value="50"/>
+			<arg name="use_magnetometer" value="false"/>
+			<arg name="use_temperature" value="false"/>
+		</include>
+		?>
+
+		<node name="imu_node" pkg="imu_bno055" type="bno055_i2c_node" respawn="true" respawn_delay="2">
+			<param name="device" type="string" value="/dev/i2c-1"/>
+			<param name="address" type="int" value="40"/>
+			<param name="frame_id" type="string" value="imu_link"/>
+		</node>
 
 	</group>
 
-
-	<!-- IMU BNO055 Driver-->
-	<?ignore
-	<include file="$(find ros_imu_bno055)/launch/imu.launch">
-		<arg name="serial_port" value="/dev/ttyS0"/>
-		<arg name="frame_id" value="imu_link"/>
-		<arg name="operation_mode" value="IMU"/>
-		<arg name="oscillator" value="INTERNAL"/>
-		<arg name="reset_orientation" value="true"/>
-		<arg name="frequency" value="50"/>
-		<arg name="use_magnetometer" value="false"/>
-		<arg name="use_temperature" value="false"/>
-	</include>
-	?>
 
 	<!-- Dribbler Driver -->
 	<group ns="dribbler">
