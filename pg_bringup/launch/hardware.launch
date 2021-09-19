@@ -108,6 +108,7 @@
 			<remap from="imu/data_raw" to="data_raw"/>
 			<remap from="imu/mag" to="mag"/>
 			<remap from="imu/data" to="data"/>
+			<param name="publish_debug_topics" value="true"/>
 		</node>
 
 	</group>

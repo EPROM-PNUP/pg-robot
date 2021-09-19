@@ -47,6 +47,8 @@ class ImuWrapper {
 
 	ros::Publisher imu_raw_pub_;
 	ros::Publisher mag_pub_;
+	
+	ros::Time current_time_;
 
 	tf2::Quaternion quat_tf_;
 	geometry_msgs::Quaternion quat_;
@@ -129,6 +131,11 @@ class ImuWrapper {
 		ros::Rate rate(node_frequency_);
 
 		while (ros::ok()) {
+			current_time_ = ros::Time::now();
+
+			imu_raw_msg_.header.stamp = current_time_;
+			imu_raw_msg_.header.frame_id = "imu_link";
+
 			// Get raw data from cmps12 sensor reading
 			vector<double> orientation = imu_.getCMPS12Orientation();
 			vector<double> magnetic_field = imu_.getMagneticField();
@@ -136,16 +143,16 @@ class ImuWrapper {
 			vector<double> angular_velocity = imu_.getAngularVelocity();
 
 			// Create Quaternion representation from Euler Angles
-			// quat_tf_.setRPY(
-			// 	orientation[2],
-			// 	orientation[1],
-			// 	orientation[0]
-			// );
+			quat_tf_.setRPY(
+				orientation[2],
+				orientation[1],
+				orientation[0]
+			);
 
-			// quat_ = tf2::toMsg(quat_tf_);
+			quat_ = tf2::toMsg(quat_tf_);
 
 			// Pass IMU data to msg object
-			// imu_raw_msg_.orientation = quat_;
+			imu_raw_msg_.orientation = quat_;
 
 			imu_raw_msg_.angular_velocity.x = angular_velocity[0];
 			imu_raw_msg_.angular_velocity.y = angular_velocity[1];

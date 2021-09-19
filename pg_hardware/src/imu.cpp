@@ -68,9 +68,9 @@ void Imu::setAccelReading(const vector<int16_t> &accel) {
 		i *= ACCEL_SCALE_;
 	}
 
-	for (auto &i : accelerometer_raw_) {
-		i *= 9.8;
-	}
+	// for (auto &i : accelerometer_raw_) {
+	// 	i *= 9.8;
+	// }
 }
 
 void Imu::setGyroReading(const vector<int16_t> &gyro) {
