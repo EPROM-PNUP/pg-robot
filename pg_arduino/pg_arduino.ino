@@ -257,8 +257,8 @@ void setup() {
 	nh.subscribe(motor_1_pwm_sub);
 	nh.subscribe(motor_2_pwm_sub);
 	nh.subscribe(motor_3_pwm_sub);
-	nh.subscribe(dribble_cmd_left_sub);
-	nh.subscribe(dribble_cmd_right_sub);
+	// nh.subscribe(dribble_cmd_left_sub);
+	// nh.subscribe(dribble_cmd_right_sub);
 
 	// Initialize publishers
 	nh.advertise(encoder_1_pulse_pub);
