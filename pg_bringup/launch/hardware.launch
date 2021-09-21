@@ -132,6 +132,7 @@
 			<param name="device" type="string" value="/dev/i2c-1"/>
 			<param name="address" type="int" value="40"/>
 			<param name="frame_id" type="string" value="imu_link"/>
+			<param name="rate" type="double" value="10"/>
 		</node>
 
 	</group>

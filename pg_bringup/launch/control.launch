@@ -4,6 +4,8 @@
 	<node name="base_controller" pkg="pg_control" type="base_controller.py"/>
 
 	<!-- Go-To-Goal Control -->
-	<node name="go_to_goal" pkg="pg_control" type="go_to_goal.py"/>
+	<node name="go_to_goal" pkg="pg_control" type="go_to_goal.py">
+		<remap from="odom" to="robot_pose_ekf/odom_combined"/>
+	</node>
 
 </launch>

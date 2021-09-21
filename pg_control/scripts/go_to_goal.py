@@ -35,6 +35,7 @@ import actionlib
 
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Pose2D
+from geometry_msgs.msg import PoseWithCovarianceStamped
 from nav_msgs.msg import Odometry
 
 from tf.transformations import euler_from_quaternion
@@ -71,7 +72,7 @@ class GoToGoal:
 		self._command_velocity_msg = Twist()
 
 		rospy.loginfo("Subscribing to topics ...")
-		rospy.Subscriber("odom", Odometry, self._pose_callback)
+		rospy.Subscriber("odom", PoseWithCovarianceStamped, self._pose_callback)
 
 		rospy.loginfo("Setting up publisher ...")
 		self._command_velocity_pub = rospy.Publisher(

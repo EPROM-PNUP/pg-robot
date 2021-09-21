@@ -141,7 +141,7 @@ class OdometryWrapper {
 	// Continuously running, updating odometry info
 	// every 500 ms.
 	void run() {
-		ros::Rate rate(20);
+		ros::Rate rate(10);
 		
 		while(ros::ok()) {
 			current_time_ = ros::Time::now();
@@ -190,10 +190,10 @@ class OdometryWrapper {
 
 			for (uint8_t i = 0; i < 36; i++) {
 				if (i == 0 || i == 7 || i == 14) {
-					odom.pose.covariance[i] = 0.01;
+					odom.pose.covariance[i] = 0.2;
 				}
 				else if (i == 21 || i == 28 || i == 35) {
-					odom.pose.covariance[i] += 0.1;	
+					odom.pose.covariance[i] += 0.001;	
 				}
 				else {
 					odom.pose.covariance[i] = 0;
