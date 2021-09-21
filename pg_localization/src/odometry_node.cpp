@@ -193,7 +193,7 @@ class OdometryWrapper {
 					odom.pose.covariance[i] = 0.2;
 				}
 				else if (i == 21 || i == 28 || i == 35) {
-					odom.pose.covariance[i] += 0.001;	
+					odom.pose.covariance[i] = 0.1;	
 				}
 				else {
 					odom.pose.covariance[i] = 0;
