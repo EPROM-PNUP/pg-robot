@@ -68,7 +68,7 @@ class DribblerDriverWrapper {
 		ball_in_range_sub_ = nh.subscribe("/dribbler/ball_in_range",
 			10, &DribblerDriverWrapper::ballInRangeCallback, this);
 
-#ifdef __arm__
+#ifndef __arm__
 
 		cmd_dribble_pub_ = nh.advertise<std_msgs::Bool>("cmd_dribble", 10);
 
