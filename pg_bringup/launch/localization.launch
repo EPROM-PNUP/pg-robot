@@ -1,7 +1,9 @@
 <launch>
 
 	<!-- Wheel Odometry -->
-	<node name="odometry" pkg="pg_localization" type="odometry_node"/>
+	<node name="odometry" pkg="pg_localization" type="odometry_node">
+		<param name="frequency" value="10"/>
+	</node>
 
 	<!-- Pose Kalman Filter -->
 	<node name="robot_pose_ekf" pkg="robot_pose_ekf" type="robot_pose_ekf">
