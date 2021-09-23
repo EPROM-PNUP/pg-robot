@@ -7,6 +7,8 @@ namespace pg_ns {
 DribblerDriver::DribblerDriver(int8_t pin_a, int8_t pin_b) {
 	this->pin_a_ = pin_a;
 	this->pin_b_ = pin_b;
+
+	init();
 }
 
 void DribblerDriver::init() {
