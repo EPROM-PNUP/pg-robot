@@ -40,8 +40,8 @@ class DribblerDriverWrapper {
 	
 #ifdef __arm__
 
-	pg_ns::DribblerDriver dribbler_driver_left_(1, 2);
-	pg_ns::DribblerDriver dribbler_driver_right_(3, 4);
+	pg_ns::DribblerDriver dribbler_driver_left_(21, 22);
+	pg_ns::DribblerDriver dribbler_driver_right_(23, 24);
 
 #else
 
