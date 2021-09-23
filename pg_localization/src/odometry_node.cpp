@@ -30,7 +30,9 @@
 
 #include <ros/ros.h>
 #include <ros/console.h>
+
 #include <tf/transform_broadcaster.h>
+
 #include <std_msgs/Int16.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Quaternion.h>
@@ -52,6 +54,8 @@ class OdometryWrapper {
 	tf::TransformBroadcaster odom_broadcaster_;
 
 	pg_ns::Odometry odometry_;
+
+	double node_frequency_;
 
 	public:
 	OdometryWrapper(ros::NodeHandle &nh) {
@@ -116,6 +120,15 @@ class OdometryWrapper {
 		else {
 			ROS_WARN("Failed to load encoder pulse_per_meter parameter");
 			odometry_.setPulsePerMeter(426);
+			return false;
+		}
+
+		if (ros::param::has("~frequency")) {
+			ros::param::get("~frequency", node_frequency_);
+		}
+		else {
+			ROS_WARN("Frequency not specified");
+			node_frequency_ = 10;
 			return false;
 		}
 
@@ -188,6 +201,7 @@ class OdometryWrapper {
 			odom.twist.twist.linear.y = base_twist[1];
 			odom.twist.twist.angular.z = base_twist[2];
 
+			// Pose covariance
 			for (uint8_t i = 0; i < 36; i++) {
 				if (i == 0 || i == 7 || i == 14) {
 					odom.pose.covariance[i] = 0.2;
@@ -204,44 +218,6 @@ class OdometryWrapper {
 
 			// Set previous time value to current time.
 			previous_time_ = current_time_;
-
-			// ROS Logging
-			vector<int16_t> delta_pulse_log = odometry_.getDeltaPulse();
-			vector<int16_t> last_pulse_counts_log = odometry_.getLastPulseCounts();
-			vector<double> wheel_distance_log = odometry_.getWheelDistance();
-			vector<double> displacement_log = odometry_.getDisplacement();
-
-			ROS_DEBUG_NAMED(
-				"delta_pulse",
-				"WHEEL 1 : %i  WHEEL 2 : %i  WHEEL 3 : %i",
-				delta_pulse_log[0],
-				delta_pulse_log[1],
-				delta_pulse_log[2]
-				);
-
-			ROS_DEBUG_NAMED(
-				"last_pulse_counts",
-				"WHEEL 1 : %i  WHEEL 2 : %i  WHEEL 3 : %i",
-				last_pulse_counts_log[0],
-				last_pulse_counts_log[1],
-				last_pulse_counts_log[2]
-				);
-
-			ROS_DEBUG_NAMED(
-				"wheel_distance",
-				"WHEEL 1 : %lf  WHEEL 2 : %lf WHEEL 3 : %lf",
-				wheel_distance_log[0],
-				wheel_distance_log[1],
-				wheel_distance_log[2]
-				);
-
-			ROS_DEBUG_NAMED(
-				"displacement",
-				"X : %lf  Y : %lf  delta_theta : %lf",
-				displacement_log[0],
-				displacement_log[1],
-				displacement_log[2]
-				);
 
 			ros::spinOnce();
 			rate.sleep();
