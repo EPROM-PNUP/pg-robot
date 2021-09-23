@@ -41,7 +41,7 @@
 #include "src/motor/motor.hpp"
 #include "src/rotary_encoder/rotary_encoder.hpp"
 // #include "src/cmps12/cmps12.hpp"
-#include "src/dribbler/dribbler.hpp"
+// #include "src/dribbler/dribbler.hpp"
 #include "src/proximity/proximity.hpp"
 
 
@@ -63,10 +63,10 @@
 #define ENCODER_3_PIN_C1 20
 #define ENCODER_3_PIN_C2 21
 
-#define DRIBBLER_LEFT_PIN_A 10
-#define DRIBBLER_LEFT_PIN_B 11
-#define DRIBBLER_RIGHT_PIN_A 12
-#define DRIBBLER_RIGHT_PIN_B 13
+// #define DRIBBLER_LEFT_PIN_A 10
+// #define DRIBBLER_LEFT_PIN_B 11
+// #define DRIBBLER_RIGHT_PIN_A 12
+// #define DRIBBLER_RIGHT_PIN_B 13
 
 #define PROXIMITY_PIN 23
 
@@ -79,16 +79,20 @@
 pg_ns::Motor motor_1(MOTOR_1_PIN_A, MOTOR_1_PIN_B);
 pg_ns::Motor motor_2(MOTOR_2_PIN_A, MOTOR_2_PIN_B);
 pg_ns::Motor motor_3(MOTOR_3_PIN_A, MOTOR_3_PIN_B);
+
 // Encoders 1, 2, 3
 pg_ns::RotaryEncoder re_1(ENCODER_1_PIN_C1, ENCODER_1_PIN_C2);
 pg_ns::RotaryEncoder re_2(ENCODER_2_PIN_C1, ENCODER_2_PIN_C2);
 pg_ns::RotaryEncoder re_3(ENCODER_3_PIN_C1, ENCODER_3_PIN_C2);
-// IMU Sensor
+
+// // IMU Sensor
 // pg_ns::CMPS12 imu;
 // pg_ns::ImuDataRaw imu_data_raw;
-// Dribbler Left & Right
-pg_ns::Dribbler dribbler_left(DRIBBLER_LEFT_PIN_A, DRIBBLER_LEFT_PIN_B);
-pg_ns::Dribbler dribbler_right(DRIBBLER_RIGHT_PIN_A, DRIBBLER_RIGHT_PIN_B);
+
+// // Dribbler Left & Right
+// pg_ns::Dribbler dribbler_left(DRIBBLER_LEFT_PIN_A, DRIBBLER_LEFT_PIN_B);
+// pg_ns::Dribbler dribbler_right(DRIBBLER_RIGHT_PIN_A, DRIBBLER_RIGHT_PIN_B);
+
 // Proximity Sensor
 pg_ns::Proximity proxi(PROXIMITY_PIN);
 
@@ -144,12 +148,12 @@ ros::Subscriber<std_msgs::Int16> motor_2_pwm_sub(
 ros::Subscriber<std_msgs::Int16> motor_3_pwm_sub(
 	"wheel_3/motor_pwm", &motor3Callback);
 
-// Dribbler Command Subscriber
-ros::Subscriber<std_msgs::Bool> dribble_cmd_left_sub(
-	"dribbler/left/cmd_dribble", &dribbleLeftCallback);
+// // Dribbler Command Subscriber
+// ros::Subscriber<std_msgs::Bool> dribble_cmd_left_sub(
+// 	"dribbler/left/cmd_dribble", &dribbleLeftCallback);
 
-ros::Subscriber<std_msgs::Bool> dribble_cmd_right_sub(
-	"dribbler/right/cmd_dribble", &dribbleRightCallback);
+// ros::Subscriber<std_msgs::Bool> dribble_cmd_right_sub(
+// 	"dribbler/right/cmd_dribble", &dribbleRightCallback);
 
 // Encoders Publisher & msg
 std_msgs::Int16 encoder_1_pulse;
