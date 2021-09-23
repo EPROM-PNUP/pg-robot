@@ -32,6 +32,8 @@ catkin_package(
 ## Build ##
 ###########
 
+EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
@@ -63,8 +65,16 @@ target_link_libraries(imu_node
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(dribbler_driver_node
-  ${DRIBBLER_DRIVER_LIB}
-  ${catkin_LIBRARIES}
-)
+if (${ARCHITECTURE} MATCHES "arm")
+	target_link_libraries(dribbler_driver_node
+	  ${DRIBBLER_DRIVER_LIB}
+	  ${catkin_LIBRARIES}
+	  -lwiringPi
+	)
+else()
+	target_link_libraries(dribbler_driver_node
+	  ${DRIBBLER_DRIVER_LIB}
+	  ${catkin_LIBRARIES}
+	)
+endif()
 

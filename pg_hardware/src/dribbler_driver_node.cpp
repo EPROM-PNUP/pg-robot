@@ -38,11 +38,18 @@ class DribblerDriverWrapper {
 	private:
 	ros::Subscriber ball_in_range_sub_;
 	
+#ifdef __arm__
+
+	pg_ns::DribblerDriver dribbler_driver_left_(1, 2);
+	pg_ns::DribblerDriver dribbler_driver_right_(3, 4);
+
+#else
+
 	ros::Publisher cmd_dribble_pub_;
-
 	std_msgs::Bool cmd_dribble_msg_;
-
 	pg_ns::DribblerDriver dribbler_driver_;
+
+#endif
 
 	double node_frequency_;
 
@@ -61,7 +68,12 @@ class DribblerDriverWrapper {
 		ball_in_range_sub_ = nh.subscribe("/dribbler/ball_in_range",
 			10, &DribblerDriverWrapper::ballInRangeCallback, this);
 
+#ifdef __arm__
+
 		cmd_dribble_pub_ = nh.advertise<std_msgs::Bool>("cmd_dribble", 10);
+
+#endif
+
 	}
 
 	// LOAD PARAMETERS FUNCTION.
@@ -83,13 +95,32 @@ class DribblerDriverWrapper {
 
 	// Callback function for ball in range topic.
 	void ballInRangeCallback(const std_msgs::Bool &msg) {
+
+#ifdef __arm__
+
 		if (msg.data) {
-			dribbler_driver_.dribble();
+			dribbler_driver_left_.dribble();
+			dribbler_driver_right_.dribble();
+		}
+		else {
+			dribbler_driver_left_.stop();
+			dribbler_driver_right_.stop();
+		}
+
+#else
+
+		if (msg.data) {
+			dribbler_driver_.setDribble();
 		}
 		else {
 			dribbler_driver_.stop();
 		}
+
+#endif
+
 	}
+
+#ifndef __arm__
 
 	// RUN FUNCTION.
 	// Continuously running, publishing pwm signal to
@@ -105,6 +136,9 @@ class DribblerDriverWrapper {
 			rate.sleep();
 		}
 	}
+
+#endif
+
 };
 
 int main(int argc, char** argv) {
@@ -112,7 +146,12 @@ int main(int argc, char** argv) {
 	ros::NodeHandle nh;
 
 	DribblerDriverWrapper dribbler_driver_wrapper(nh);
+
+#ifdef __arm__
+	ros::spin();
+#else
 	dribbler_driver_wrapper.run();
+#endif
 
 	return 0;
 }
