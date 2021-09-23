@@ -8,6 +8,7 @@ add_definitions(-Wall -Werror)
 set(IMU_LIB imu_driver)
 set(MOTOR_DRIVER_LIB motor_driver)
 set(DRIBBLER_DRIVER_LIB dribbler_driver)
+set(KICKER_LIB kicker)
 
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
@@ -51,9 +52,14 @@ add_library(${DRIBBLER_DRIVER_LIB}
   src/dribbler_driver.cpp
 )
 
+add_library(${KICKER_LIB}
+  src/kicker.cpp
+)
+
 add_executable(motor_driver_node src/motor_driver_node.cpp)
 add_executable(imu_node src/imu_node.cpp)
 add_executable(dribbler_driver_node src/dribbler_driver_node.cpp)
+add_executable(kicker_node src/kicker_node.cpp)
 
 target_link_libraries(motor_driver_node
   ${MOTOR_DRIVER_LIB}
@@ -74,6 +80,19 @@ if (${ARCHITECTURE} MATCHES "arm")
 else()
 	target_link_libraries(dribbler_driver_node
 	  ${DRIBBLER_DRIVER_LIB}
+	  ${catkin_LIBRARIES}
+	)
+endif()
+
+if (${ARCHITECTURE} MATCHES "arm")
+	target_link_libraries(kicker_node
+	  ${KICKER_LIB}
+	  ${catkin_LIBRARIES}
+	  -lwiringPi
+	)
+else()
+	target_link_libraries(kicker_node
+	  ${KICKER_LIB}
 	  ${catkin_LIBRARIES}
 	)
 endif()
