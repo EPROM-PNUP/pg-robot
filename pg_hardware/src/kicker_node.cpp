@@ -57,6 +57,8 @@ class KickerWrapper {
 		pg_msgs::KickBall::Response &res
 		)
 	{
+		while(!ball_in_range);
+
 		if (req.kick == true) {
 			if (kicker.isReady()) {
 				kicker.release();
