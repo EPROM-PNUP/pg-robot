@@ -151,5 +151,7 @@
 
 		<node name="kicker_driver" pkg="pg_hardware" type="kicker_node">
 		</node>
+	
+	</group>
 
 </launch>
