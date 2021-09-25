@@ -21,6 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
+  PrepareKicker.srv
   KickBall.srv
 )
 
@@ -34,10 +35,11 @@ generate_messages(
   DEPENDENCIES
   actionlib_msgs
   geometry_msgs
+  std_msgs
 )
 
 catkin_package(
-  CATKIN_DEPENDS actionlib_msgs geometry_msgs message_runtime
+  CATKIN_DEPENDS actionlib_msgs geometry_msgs std_msgs message_runtime
 )
 
 ###########
