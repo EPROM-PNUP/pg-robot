@@ -71,7 +71,7 @@ target_link_libraries(imu_node
   ${catkin_LIBRARIES}
 )
 
-if (${ARCHITECTURE} MATCHES "arm")
+if (${ARCHITECTURE} MATCHES "aarch")
 	target_link_libraries(dribbler_driver_node
 	  ${DRIBBLER_DRIVER_LIB}
 	  ${catkin_LIBRARIES}
@@ -84,7 +84,7 @@ else()
 	)
 endif()
 
-if (${ARCHITECTURE} MATCHES "arm")
+if (${ARCHITECTURE} MATCHES "aarch")
 	target_link_libraries(kicker_node
 	  ${KICKER_LIB}
 	  ${catkin_LIBRARIES}

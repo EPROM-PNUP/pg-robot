@@ -1,7 +1,7 @@
 #ifndef PG_DRIBBLER
 #define PG_DRIBBLER
 
-#ifdef __arm__
+#ifdef __aarch__
 #include <wiringPi.h>
 #endif
 
@@ -9,7 +9,7 @@
 
 namespace pg_ns {
 
-#ifdef __arm__
+#ifdef __aarch__
 
 class DribblerDriver {
 	private:
@@ -19,7 +19,7 @@ class DribblerDriver {
 	public:
 	DribblerDriver();
 
-	void init();
+	void init(int8_t pin_a, int8_t pin_b);
 	void dribble();
 	void stop();
 };

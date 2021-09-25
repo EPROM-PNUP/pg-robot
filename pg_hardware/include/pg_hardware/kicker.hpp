@@ -5,7 +5,7 @@
 
 namespace pg_ns {
 
-#ifdef __arm__
+#ifdef __aarch__
 
 class Kicker {
 	private:
@@ -15,9 +15,9 @@ class Kicker {
 	bool ready_;
 
 	public:
-	Kicker(int8_t charge_pin, int8_t release_pin);
+	Kicker();
 
-	void init();
+	void init(int8_t charge_pin, int8_t release_pin);
 	void charge();
 	void release();
 	bool isReady();

@@ -5,14 +5,14 @@
 
 #include <pg_msgs/KickBall.h>
 
-#ifdef __arm__
+#ifdef __aarch__
 
 class KickerWrapper {
 	private:
 	ros::Subscriber ball_in_range_sub_;
 	ros::ServiceServer kick_service_;
 
-	pg_ns::Kicker kicker(28, 29);
+	pg_ns::Kicker kicker_;
 
 	bool ball_is_in_range_ = false;
 	
@@ -22,6 +22,8 @@ class KickerWrapper {
 		
 		ball_in_range_sub_ = nh.subscribe("/dribbler/ball_in_range",
 			10, &KickerWrapper::ballInRangeCallback, this);
+
+		kicker_.init(28, 29);
 
 		kick_service_ = nh.advertiseService("kick", kick);
 
@@ -89,7 +91,7 @@ int main(int argc, char**argv) {
 	ros::init(argc, argv, "kicker");
 	ros::NodeHandle nh;
 
-#ifdef __arm__
+#ifdef __aarch__
 	KickerWrapper kicker_wrapper(nh);
 
 	ros::spin();

@@ -141,14 +141,15 @@
 	<!-- Dribbler Driver -->
 	<group ns="dribbler">
 
-		<node name="dribbler_driver" pkg="pg_hardware" type="dribbler_driver_node" ns="left">
-			<param name="frequency" value="50"/>
-		</node>
-
-		<node name="dribbler_driver" pkg="pg_hardware" type="dribbler_driver_node" ns="right">
+		<node name="dribbler_driver" pkg="pg_hardware" type="dribbler_driver_node">
 			<param name="frequency" value="50"/>
 		</node>
 
 	</group>
+	
+	<group ns="kicker">
+
+		<node name="kicker_driver" pkg="pg_hardware" type="kicker_node">
+		</node>
 
 </launch>

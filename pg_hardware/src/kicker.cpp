@@ -2,16 +2,15 @@
 
 namespace pg_ns {
 
-#ifdef __arm__
+#ifdef __aarch__
 
-Kicker::Kicker(int8_t charge_pin, int8_t release_pin) {
+Kicker::Kicker() {
+}
+
+void Kicker::init(int8_t charge_pin, int8_t release_pin) {
 	charge_pin_ = charge_pin;
 	release_pin_ = release_pin;
 
-	init();
-}
-
-void Kicker::init() {
 	wiringPiSetupGpio();
 
 	pinMode(charge_pin_, OUTPUT);

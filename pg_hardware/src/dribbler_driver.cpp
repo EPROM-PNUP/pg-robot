@@ -2,16 +2,15 @@
 
 namespace pg_ns {
 
-#ifdef __arm__
+#ifdef __aarch__
 
-DribblerDriver::DribblerDriver(int8_t pin_a, int8_t pin_b) {
+DribblerDriver::DribblerDriver() {
+}
+
+void DribblerDriver::init(int8_t pin_a, int8_t pin_b) {
 	this->pin_a_ = pin_a;
 	this->pin_b_ = pin_b;
 
-	init();
-}
-
-void DribblerDriver::init() {
 	wiringPiSetupGpio();
 
 	pinMode(this->pin_a_, OUTPUT);
