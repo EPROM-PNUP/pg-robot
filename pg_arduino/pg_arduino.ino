@@ -113,23 +113,23 @@ void motor3Callback(const std_msgs::Int16 &msg) {
 	motor_3.move(msg.data);
 }
 
-void dribbleLeftCallback(const std_msgs::Bool &msg) {
-	if (msg.data) {
-		dribbler_left.dribble();
-	}
-	else {
-		dribbler_right.stop();
-	}
-}
+// void dribbleLeftCallback(const std_msgs::Bool &msg) {
+// 	if (msg.data) {
+// 		dribbler_left.dribble();
+// 	}
+// 	else {
+// 		dribbler_right.stop();
+// 	}
+// }
 
-void dribbleRightCallback(const std_msgs::Bool &msg) {
-	if (msg.data) {
-		dribbler_right.dribble();
-	}
-	else {
-		dribbler_right.stop();
-	}
-}
+// void dribbleRightCallback(const std_msgs::Bool &msg) {
+// 	if (msg.data) {
+// 		dribbler_right.dribble();
+// 	}
+// 	else {
+// 		dribbler_right.stop();
+// 	}
+// }
 
 
 ////////////////////////////
@@ -246,9 +246,9 @@ void setup() {
 	// // Initialize imu sensor object
 	// imu.init();
 
-	// Initialize dribbler motor object
-	dribbler_left.init();
-	dribbler_right.init();
+	// // Initialize dribbler motor object
+	// dribbler_left.init();
+	// dribbler_right.init();
 
 	// Initialize proximity sensor
 	proxi.init();
