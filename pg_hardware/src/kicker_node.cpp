@@ -2,14 +2,17 @@
 #include <ros/console.h>
 
 #include <std_msgs/Bool.h>
-
+#include <pg_msgs/PrepareKicker.h>
 #include <pg_msgs/KickBall.h>
 
-#ifdef __aarch__
+#include "pg_hardware/kicker.hpp"
+
+#ifdef __aarch64__
 
 class KickerWrapper {
 	private:
 	ros::Subscriber ball_in_range_sub_;
+	ros::ServiceServer prepare_kicker_service_;
 	ros::ServiceServer kick_service_;
 
 	pg_ns::Kicker kicker_;
@@ -18,40 +21,79 @@ class KickerWrapper {
 	
 	public:
 	KickerWrapper(ros::NodeHandle &nh) {
-		ROS_INFO("Running kicker ...");
+		ROS_INFO("Running kicker_node ...");
 		
 		ball_in_range_sub_ = nh.subscribe("/dribbler/ball_in_range",
 			10, &KickerWrapper::ballInRangeCallback, this);
 
-		kicker_.init(28, 29);
+		kicker_.init(10, 11);
 
-		kick_service_ = nh.advertiseService("kick", kick);
+		prepare_kicker_service_ = nh.advertiseService("prepare_kicker",
+			&KickerWrapper::prepareKicker, this);
 
-		prepareKicker();
+		kick_service_ = nh.advertiseService("kick", 
+			&KickerWrapper::kick, this);
+
+		startKicker();
 	}
 
 	void ballInRangeCallback(const std_msgs::Bool &msg) {
 		ball_is_in_range_ = msg.data;
 	}
 
-	void prepareKicker() {
+	void startKicker() {
 		ros::Time begin_time = ros::Time::now();
-		ros::Duration charge_duration(3.0);
+		ros::Duration charge_duration(6.0);
 
-		kicker.charge();
+		kicker_.charge();
 
 		while (true) {
 			ros::Time current_time = ros::Time::now();
 
-			if (current_time - begin_time < charge_duration.to_sec()) {
+			if (
+				current_time.toSec() - 
+				begin_time.toSec() < 
+				charge_duration.toSec()
+				) 
+			{
 				ROS_INFO("Charging ...");
 			}
 			else {
-				kicker.setReady();
+				kicker_.setReady();
 				ROS_INFO("Charged up");
 				break;
 			}
 		}
+	}
+
+	bool prepareKicker(
+		pg_msgs::PrepareKicker::Request &req,
+		pg_msgs::PrepareKicker::Response &res
+		) 
+	{
+		ros::Time begin_time = ros::Time::now();
+		ros::Duration charge_duration(req.charge_duration);
+
+		kicker_.charge();
+
+		while (true) {
+			ros::Time current_time = ros::Time::now();
+
+			if (
+				current_time.toSec() - 
+				begin_time.toSec() < 
+				charge_duration.toSec()
+				) 
+			{
+				ROS_INFO("Charging ...");
+			}
+			else {
+				kicker_.setReady();
+				ROS_INFO("Charged up");
+				break;
+			}
+		}
+		return true;
 	}
 
 	bool kick(
@@ -59,13 +101,12 @@ class KickerWrapper {
 		pg_msgs::KickBall::Response &res
 		)
 	{
-		while(!ball_in_range);
+		while(!ball_is_in_range_);
 
 		if (req.kick == true) {
-			if (kicker.isReady()) {
-				kicker.release();
+			if (kicker_.isReady()) {
+				kicker_.release();
 				res.kicked = true;
-				prepareKicker();
 				return true;
 			}
 			else {
@@ -91,7 +132,7 @@ int main(int argc, char**argv) {
 	ros::init(argc, argv, "kicker");
 	ros::NodeHandle nh;
 
-#ifdef __aarch__
+#ifdef __aarch64__
 	KickerWrapper kicker_wrapper(nh);
 
 	ros::spin();

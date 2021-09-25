@@ -1,7 +1,7 @@
 #ifndef PG_DRIBBLER
 #define PG_DRIBBLER
 
-#ifdef __aarch__
+#ifdef __aarch64__
 #include <wiringPi.h>
 #endif
 
@@ -9,7 +9,7 @@
 
 namespace pg_ns {
 
-#ifdef __aarch__
+#ifdef __aarch64__
 
 class DribblerDriver {
 	private:
@@ -38,8 +38,8 @@ class DribblerDriver {
 	bool getCommandDribble();
 };
 
-}
-
 #endif
+
+}
 
 #endif

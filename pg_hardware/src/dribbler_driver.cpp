@@ -2,7 +2,7 @@
 
 namespace pg_ns {
 
-#ifdef __aarch__
+#ifdef __aarch64__
 
 DribblerDriver::DribblerDriver() {
 }
@@ -11,7 +11,7 @@ void DribblerDriver::init(int8_t pin_a, int8_t pin_b) {
 	this->pin_a_ = pin_a;
 	this->pin_b_ = pin_b;
 
-	wiringPiSetupGpio();
+	wiringPiSetup();
 
 	pinMode(this->pin_a_, OUTPUT);
 	pinMode(this->pin_b_, OUTPUT);

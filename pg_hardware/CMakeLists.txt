@@ -71,11 +71,15 @@ target_link_libraries(imu_node
   ${catkin_LIBRARIES}
 )
 
-if (${ARCHITECTURE} MATCHES "aarch")
+if (${ARCHITECTURE} MATCHES "aarch64")
 	target_link_libraries(dribbler_driver_node
 	  ${DRIBBLER_DRIVER_LIB}
 	  ${catkin_LIBRARIES}
 	  -lwiringPi
+	  -lm
+	  -lpthread
+	  -lcrypt
+	  -lrt
 	)
 else()
 	target_link_libraries(dribbler_driver_node
@@ -84,11 +88,15 @@ else()
 	)
 endif()
 
-if (${ARCHITECTURE} MATCHES "aarch")
+if (${ARCHITECTURE} MATCHES "aarch64")
 	target_link_libraries(kicker_node
 	  ${KICKER_LIB}
 	  ${catkin_LIBRARIES}
 	  -lwiringPi
+	  -lm
+	  -lpthread
+	  -lcrypt
+	  -lrt
 	)
 else()
 	target_link_libraries(kicker_node
