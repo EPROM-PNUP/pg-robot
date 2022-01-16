@@ -202,9 +202,6 @@ ros::Publisher proximity_pub("dribbler/ball_in_range", &ball_in_range_msg);
 // GLOBAL VARIABLES //
 //////////////////////
 
-long current_millis = 0;
-long previous_millis = 0;
-
 uint16_t uint_temp_3[3] = {0, 0, 0};
 int16_t int_temp_3[3] = {0, 0, 0};
 
@@ -300,44 +297,38 @@ void setup() {
 void loop() {
 	nh.spinOnce();
 
-	current_millis = millis();
+	// Publish encoders pulse counts
+	encoder_1_pulse_pub.publish(&encoder_1_pulse);
+	encoder_2_pulse_pub.publish(&encoder_2_pulse);
+	encoder_3_pulse_pub.publish(&encoder_3_pulse);
 
-	if ((current_millis - previous_millis) > 20) {
-		previous_millis = current_millis;
+	// // Publish IMU raw data
+	// imu_data_raw = imu.getRawData();
 
-		// Publish encoders pulse counts every 20 ms
-		encoder_1_pulse_pub.publish(&encoder_1_pulse);
-		encoder_2_pulse_pub.publish(&encoder_2_pulse);
-		encoder_3_pulse_pub.publish(&encoder_3_pulse);
+	// cmps12_orientation_msg.data[0] = imu_data_raw.bearing_;
+	// cmps12_orientation_msg.data[1] = imu_data_raw.pitch_;
+	// cmps12_orientation_msg.data[2] = imu_data_raw.roll_;
 
-		// // Publish IMU raw data
-		// imu_data_raw = imu.getRawData();
+	// magnetometer_msg.data[0] = imu_data_raw.mag_x_;
+	// magnetometer_msg.data[1] = imu_data_raw.mag_y_;
+	// magnetometer_msg.data[2] = imu_data_raw.mag_z_;
 
-		// cmps12_orientation_msg.data[0] = imu_data_raw.bearing_;
-		// cmps12_orientation_msg.data[1] = imu_data_raw.pitch_;
-		// cmps12_orientation_msg.data[2] = imu_data_raw.roll_;
+	// accelerometer_msg.data[0] = imu_data_raw.accel_x_;
+	// accelerometer_msg.data[1] = imu_data_raw.accel_y_;
+	// accelerometer_msg.data[2] = imu_data_raw.accel_z_;
 
-		// magnetometer_msg.data[0] = imu_data_raw.mag_x_;
-		// magnetometer_msg.data[1] = imu_data_raw.mag_y_;
-		// magnetometer_msg.data[2] = imu_data_raw.mag_z_;
+	// gyroscope_msg.data[0] = imu_data_raw.gyro_x_;
+	// gyroscope_msg.data[1] = imu_data_raw.gyro_y_;
+	// gyroscope_msg.data[2] = imu_data_raw.gyro_z_;
 
-		// accelerometer_msg.data[0] = imu_data_raw.accel_x_;
-		// accelerometer_msg.data[1] = imu_data_raw.accel_y_;
-		// accelerometer_msg.data[2] = imu_data_raw.accel_z_;
+	// cmps12_orientation_pub.publish(&cmps12_orientation_msg);
+	// magnetometer_pub.publish(&magnetometer_msg);
+	// accelerometer_pub.publish(&accelerometer_msg);
+	// gyroscope_pub.publish(&gyroscope_msg);
 
-		// gyroscope_msg.data[0] = imu_data_raw.gyro_x_;
-		// gyroscope_msg.data[1] = imu_data_raw.gyro_y_;
-		// gyroscope_msg.data[2] = imu_data_raw.gyro_z_;
-
-		// cmps12_orientation_pub.publish(&cmps12_orientation_msg);
-		// magnetometer_pub.publish(&magnetometer_msg);
-		// accelerometer_pub.publish(&accelerometer_msg);
-		// gyroscope_pub.publish(&gyroscope_msg);
-
-		// Publish proxi data
-		ball_in_range_msg.data = proxi.ballIsInRange();
-		proximity_pub.publish(&ball_in_range_msg);
-	}
+	// Publish proxi data
+	ball_in_range_msg.data = proxi.ballIsInRange();
+	proximity_pub.publish(&ball_in_range_msg);
 }
 
 
