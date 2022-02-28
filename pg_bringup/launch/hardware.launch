@@ -16,8 +16,6 @@
 	<group ns="wheel_1">
 
 		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node">
-			<param name="max_pwm" type="int" value="255"/>
-			<param name="frequency" value="50"/>
 		</node>
 
 		<node name="controller" pkg="pid" type="controller">
@@ -42,8 +40,6 @@
 	<group ns="wheel_2">
 
 		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node">
-			<param name="max_pwm" type="int" value="255"/>
-			<param name="frequency" value="50"/>
 		</node>
 
 		<node name="controller" pkg="pid" type="controller">
@@ -68,8 +64,6 @@
 	<group ns="wheel_3">
 
 		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node">
-			<param name="max_pwm" type="int" value="255"/>
-			<param name="frequency" value="50"/>
 		</node>
 
 		<node name="controller" pkg="pid" type="controller">

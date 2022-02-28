@@ -38,10 +38,6 @@ MotorDriver::MotorDriver() {
 	state_ = 0.0;
 }
 
-void MotorDriver::setMaxPWM(int16_t max_pwm) {
-	max_pwm_ = max_pwm;
-}
-
 void MotorDriver::setPWM(double pwm) {
 	pwm_ = static_cast<int16_t>(pwm);
 }
@@ -62,10 +58,12 @@ int16_t MotorDriver::getPWM() {
 
 // GET STATE FUNCTION.
 // Calculate motor state (angular velocity)
-// within time span of 20 milliseconds.
 double MotorDriver::getState() {
 	int16_t delta_pulse = encoder_pulse_ - previous_encoder_pulse_;
-	state_ = static_cast<double>((delta_pulse * 3000) / 134);
+	state_ = static_cast<double>(delta_pulse / (20/1.0e3));
+	state_ = (state_ / 134) * 60.0;
+	state_ = (state_ / 60) * (2 * 3.14159265358);
+
 	previous_encoder_pulse_ = encoder_pulse_;
 
 	return state_;

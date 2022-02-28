@@ -39,7 +39,6 @@ namespace pg_ns {
 class MotorDriver {
 	private:
 	int16_t pwm_;
-	int16_t max_pwm_;
 
 	int16_t encoder_pulse_;
 	int16_t previous_encoder_pulse_;
@@ -49,7 +48,6 @@ class MotorDriver {
 	public:
 	MotorDriver();
 
-	void setMaxPWM(int16_t max_pwm);
 	void setPWM(double pwm);
 	void setEncoderPulse(int16_t encoder_pulse);
 
