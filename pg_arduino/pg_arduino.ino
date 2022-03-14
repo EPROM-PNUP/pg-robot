@@ -198,7 +198,7 @@ void loop() {
 
 	current_millis = millis();
 
-	if ((current_millis - previous_millis) > 50) {
+	if ((current_millis - previous_millis) > 40) {
 	
 		previous_millis = current_millis;
 

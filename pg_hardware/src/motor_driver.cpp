@@ -36,6 +36,8 @@ MotorDriver::MotorDriver() {
 	pwm_ = 0;
 	encoder_pulse_ = 0;
 	state_ = 0.0;
+	previous_state_ = 0.0;
+	filtered_state_ = 0.0;
 }
 
 void MotorDriver::setPWM(double pwm) {
@@ -49,9 +51,9 @@ void MotorDriver::setEncoderPulse(int16_t encoder_pulse) {
 int16_t MotorDriver::getPWM() {
 	// Set pwm value to 0 when 
 	// pwm value drops below 10.
-	if (abs(pwm_) < 16) {
-		pwm_ = 0;
-	}
+	// if (abs(pwm_) < 16) {
+	//  	pwm_ = 0;
+	// }
 
 	return pwm_;
 }
@@ -60,13 +62,20 @@ int16_t MotorDriver::getPWM() {
 // Calculate motor state (angular velocity)
 double MotorDriver::getState() {
 	int16_t delta_pulse = encoder_pulse_ - previous_encoder_pulse_;
-	state_ = static_cast<double>(delta_pulse / (50/1.0e3));
+	state_ = static_cast<double>(delta_pulse / (40/1.0e3));
 	state_ = (state_ / 134) * 60.0;
 	state_ = (state_ / 60) * (2 * 3.14159265358);
+	
+	// Low-pass filter 25 Hz cutoff
+	filtered_state_ =
+		(0.854*filtered_state_)+
+		(0.0728*state_)+
+		(0.0728*previous_state_);
 
 	previous_encoder_pulse_ = encoder_pulse_;
+	previous_state_ = state_;
 
-	return state_;
+	return filtered_state_;
 }
 
 }

@@ -44,6 +44,8 @@ class MotorDriver {
 	int16_t previous_encoder_pulse_;
 
 	double state_;
+	double previous_state_;
+	double filtered_state_;
 
 	public:
 	MotorDriver();

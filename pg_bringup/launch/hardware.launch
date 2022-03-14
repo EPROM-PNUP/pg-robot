@@ -23,12 +23,11 @@
 			<param name="setpoint_topic" value="reference_velocity"/>
 			<param name="topic_from_controller" value="controller_output"/>
 			<param name="topic_from_plant" value="motor_state"/>
-			<param name="Kp" value="6.0"/>
-			<param name="Ki" value="0.04"/>
+			<param name="Kp" value="10.0"/>
+			<param name="Ki" value="0.1"/>
 			<param name="Kd" value="0.00"/>
-			<param name="upper_limit" value="255"/>
-			<param name="lower_limit" value="-255"/>
-			<param name="windup_limit" value="255"/>
+			<param name="upper_limit" value="255.0"/>
+			<param name="bottom_limit" value="-255.0"/>
 			<param name="max_loop_frequency" value="150.0"/>
 			<param name="min_loop_frequency" value="10.0"/>
 		</node>
@@ -47,14 +46,13 @@
 			<param name="setpoint_topic" value="reference_velocity"/>
 			<param name="topic_from_controller" value="controller_output"/>
 			<param name="topic_from_plant" value="motor_state"/>
-			<param name="Kp" value="6.0"/>
-			<param name="Ki" value="0.04"/>
+			<param name="Kp" value="0.0"/>
+			<param name="Ki" value="0.00"/>
 			<param name="Kd" value="0.00"/>
-			<param name="upper_limit" value="255"/>
-			<param name="lower_limit" value="-255"/>
-			<param name="windup_limit" value="255"/>
+			<param name="upper_limit" value="255.0"/>
+			<param name="bottom_limit" value="-255.0"/>
 			<param name="max_loop_frequency" value="150.0"/>
-			<param name="min_loop_frequency" value="20.0"/>
+			<param name="min_loop_frequency" value="10.0"/>
 		</node>
 
 	</group>
@@ -71,12 +69,11 @@
 			<param name="setpoint_topic" value="reference_velocity"/>
 			<param name="topic_from_controller" value="controller_output"/>
 			<param name="topic_from_plant" value="motor_state"/>
-			<param name="Kp" value="6.0"/>
-			<param name="Ki" value="0.04"/>
+			<param name="Kp" value="0.0"/>
+			<param name="Ki" value="0.00"/>
 			<param name="Kd" value="0.00"/>
-			<param name="upper_limit" value="255"/>
-			<param name="lower_limit" value="-255"/>
-			<param name="windup_limit" value="255"/>
+			<param name="upper_limit" value="255.0"/>
+			<param name="bottom_limit" value="-255.0"/>
 			<param name="max_loop_frequency" value="150.0"/>
 			<param name="min_loop_frequency" value="10.0"/>
 		</node>
