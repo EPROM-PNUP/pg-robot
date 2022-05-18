@@ -28,7 +28,7 @@
 //
 // Author: Wahyu Mahardika
 
-#include "pg_hardware/motor_driver.hpp"
+#include "pg_motor_driver/motor_driver.hpp"
 
 namespace pg_ns {
 

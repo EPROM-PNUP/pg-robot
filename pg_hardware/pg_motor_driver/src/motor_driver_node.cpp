@@ -35,7 +35,7 @@
 #include <std_msgs/Int16.h>
 #include <geometry_msgs/Twist.h>
 
-#include "pg_hardware/motor_driver.hpp"
+#include "pg_motor_driver/motor_driver.hpp"
 
 class MotorDriverWrapper {
 	private:

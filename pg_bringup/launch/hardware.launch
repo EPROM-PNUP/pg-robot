@@ -15,7 +15,7 @@
 	<!-- Wheel 1 -->
 	<group ns="wheel_1">
 
-		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node">
+		<node name="motor_driver" pkg="pg_motor_driver" type="motor_driver_node">
 		</node>
 
 		<node name="controller" pkg="pid" type="controller">
@@ -38,7 +38,7 @@
 	<!-- Wheel 2 -->
 	<group ns="wheel_2">
 
-		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node">
+		<node name="motor_driver" pkg="pg_motor_driver" type="motor_driver_node">
 		</node>
 
 		<node name="controller" pkg="pid" type="controller">
@@ -46,8 +46,8 @@
 			<param name="setpoint_topic" value="reference_velocity"/>
 			<param name="topic_from_controller" value="controller_output"/>
 			<param name="topic_from_plant" value="motor_state"/>
-			<param name="Kp" value="0.0"/>
-			<param name="Ki" value="0.00"/>
+			<param name="Kp" value="10.0"/>
+			<param name="Ki" value="0.1"/>
 			<param name="Kd" value="0.00"/>
 			<param name="upper_limit" value="255.0"/>
 			<param name="bottom_limit" value="-255.0"/>
@@ -61,7 +61,7 @@
 	<!-- Wheel 3 -->
 	<group ns="wheel_3">
 
-		<node name="motor_driver" pkg="pg_hardware" type="motor_driver_node">
+		<node name="motor_driver" pkg="pg_motor_driver" type="motor_driver_node">
 		</node>
 
 		<node name="controller" pkg="pid" type="controller">
@@ -69,8 +69,8 @@
 			<param name="setpoint_topic" value="reference_velocity"/>
 			<param name="topic_from_controller" value="controller_output"/>
 			<param name="topic_from_plant" value="motor_state"/>
-			<param name="Kp" value="0.0"/>
-			<param name="Ki" value="0.00"/>
+			<param name="Kp" value="10.0"/>
+			<param name="Ki" value="0.1"/>
 			<param name="Kd" value="0.00"/>
 			<param name="upper_limit" value="255.0"/>
 			<param name="bottom_limit" value="-255.0"/>
@@ -118,18 +118,21 @@
 			<arg name="use_temperature" value="false"/>
 		</include>
 		?>
-
+		
+		<?ignore
 		<node name="imu_node" pkg="imu_bno055" type="bno055_i2c_node" respawn="true" respawn_delay="2">
 			<param name="device" type="string" value="/dev/i2c-1"/>
 			<param name="address" type="int" value="40"/>
 			<param name="frame_id" type="string" value="imu_link"/>
 			<param name="rate" type="double" value="10"/>
 		</node>
+		?>
 
 	</group>
 
 
 	<!-- Dribbler Driver -->
+	<?ignore
 	<group ns="dribbler">
 
 		<node name="dribbler_driver" pkg="pg_hardware" type="dribbler_driver_node">
@@ -144,5 +147,6 @@
 		</node>
 	
 	</group>
+	?>
 
 </launch>
