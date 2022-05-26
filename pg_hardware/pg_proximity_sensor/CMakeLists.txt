@@ -2,7 +2,20 @@ cmake_minimum_required(VERSION 3.0.2)
 project(pg_proximity_sensor)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
+
+## Set Wall
+add_definitions(-Wall -Werror)
+
+## Get architecture info
+EXECUTE_PROCESS(
+  COMMAND uname -m
+  COMMAND tr -d '\n'
+  OUTPUT_VARIABLE ARCHITECTURE
+)
+
+## Set kicker library variable
+set(PROXIMITY_LIB proximity)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -14,7 +27,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -103,10 +116,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES pg_proximity_sensor
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES pg_proximity_sensor
+  CATKIN_DEPENDS roscpp rospy std_msgs
 )
 
 ###########
@@ -116,14 +128,14 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/pg_proximity_sensor.cpp
-# )
+add_library(${PROXIMITY_LIB}
+  src/proximity_sensor.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -133,7 +145,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/pg_proximity_sensor_node.cpp)
+add_executable(proximity_node src/proximity_sensor_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,9 +158,22 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+if (${ARCHITECTURE} MATCHES "aarch64")
+  target_link_libraries(proximity_node
+    ${catkin_LIBRARIES}
+    ${PROXIMITY_LIB}
+    -lwiringPi
+    -lm
+    -lpthread
+    -lcrypt
+    -lrt
+  )
+else()
+  target_link_libraries(proximity_node
+    ${catkin_LIBRARIES}
+	${PROXIMITY_LIB}
+  )
+endif()
 
 #############
 ## Install ##
