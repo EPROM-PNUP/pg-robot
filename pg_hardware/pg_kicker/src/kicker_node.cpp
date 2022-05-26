@@ -5,7 +5,7 @@
 #include <pg_msgs/PrepareKicker.h>
 #include <pg_msgs/KickBall.h>
 
-#include "pg_hardware/kicker.hpp"
+#include "pg_kicker/kicker.hpp"
 
 #ifdef __aarch64__
 

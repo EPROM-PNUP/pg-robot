@@ -1,4 +1,4 @@
-launch>
+<launch>
 
         <rosparam command="load" file="$(find pg_bringup)/config/common/common_config.yaml" ns="robot"/>
 

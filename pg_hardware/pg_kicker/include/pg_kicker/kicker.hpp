@@ -2,7 +2,9 @@
 #define PG_KICKER
 
 #ifdef __aarch64__
+extern "C" {
 #include <wiringPi.h>
+}
 #endif
 
 #include <cstdint>

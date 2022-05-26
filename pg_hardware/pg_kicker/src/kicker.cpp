@@ -1,4 +1,4 @@
-#include "pg_hardware/kicker.hpp"
+#include "pg_kicker/kicker.hpp"
 
 namespace pg_ns {
 
