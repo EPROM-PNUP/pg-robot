@@ -7,6 +7,14 @@ add_compile_options(-std=c++11)
 ## Set Wall
 add_definitions(-Wall -Werror)
 
+## Get architecture info
+EXECUTE_PROCESS(
+  COMMAND uname -m
+  COMMAND tr -d '\n'
+  OUTPUT_VARIABLE ARCHITECTURE
+)
+
+## Set kicker library variable
 set(KICKER_LIB kicker)
 
 ## Find catkin macros and libraries
@@ -112,7 +120,6 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES pg_kicker
   CATKIN_DEPENDS roscpp rospy std_msgs
-  DEPENDS system_lib
 )
 
 ###########
@@ -152,15 +159,22 @@ add_executable(kicker_node src/kicker_node.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(kicker_node
-  ${catkin_LIBRARIES}
-  ${KICKER_LIB}
-  -lwiringPi
-  -lm
-  -lpthread
-  -lcrypt
-  -lrt
-)
+if (${ARCHITECTURE} MATCHES "aarch64")
+  target_link_libraries(kicker_node
+    ${catkin_LIBRARIES}
+    ${KICKER_LIB}
+    -lwiringPi
+    -lm
+    -lpthread
+    -lcrypt
+    -lrt
+  )
+else()
+  target_link_libraries(kicker_node
+    ${catkin_LIBRARIES}
+	${KICKER_LIB}
+  )
+endif()
 
 #############
 ## Install ##

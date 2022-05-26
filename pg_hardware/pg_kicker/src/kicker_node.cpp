@@ -14,9 +14,9 @@ class KickerWrapper {
 	ros::Subscriber ball_in_range_sub_;
 	ros::ServiceServer prepare_kicker_service_;
 	ros::ServiceServer kick_service_;
-
 	pg_ns::Kicker kicker_;
-
+	uint8_t charge_pin_;
+	uint8_t release_pin_;
 	bool ball_is_in_range_ = false;
 	
 	public:
@@ -26,7 +26,14 @@ class KickerWrapper {
 		ball_in_range_sub_ = nh.subscribe("/dribbler/ball_in_range",
 			10, &KickerWrapper::ballInRangeCallback, this);
 
-		kicker_.init(10, 11);
+		if (loadParameters()) {
+			ROS_INFO("Succesfully loaded all parameters");
+		}
+		else {
+			ROS_WARN("Unable to load parameters");
+		}
+
+		kicker_.init(charge_pin_, release_pin_);
 
 		prepare_kicker_service_ = nh.advertiseService("prepare_kicker",
 			&KickerWrapper::prepareKicker, this);
@@ -36,6 +43,28 @@ class KickerWrapper {
 
 		startKicker();
 	}
+
+	bool loadParameters() {
+		if (ros::param::has("/gpio/kicker/charge")) {
+			ros::param::get("/gpio/kicker/charge", charge_pin_);
+			ROS_INFO("Loaded kicker charge pin");
+		}
+		else {
+			ROS_WARN("Failed to load kicker charge pin parameter");
+			return false;
+		}
+
+		if (ros::param::has("/gpio/kicker/release")) {
+			ros::param::get("/gpio/kicker/release", release_pin_);
+			ROS_INFO("Loaded kicker release pin");
+		}
+		else {
+			ROS_WARN("Failed to load kicker release pin parameter");
+			return false;
+		}
+		return true;
+	}
+
 
 	void ballInRangeCallback(const std_msgs::Bool &msg) {
 		ball_is_in_range_ = msg.data;
