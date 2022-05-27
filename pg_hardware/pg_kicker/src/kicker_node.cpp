@@ -15,8 +15,8 @@ class KickerWrapper {
 	ros::ServiceServer prepare_kicker_service_;
 	ros::ServiceServer kick_service_;
 	pg_ns::Kicker kicker_;
-	uint8_t charge_pin_;
-	uint8_t release_pin_;
+	int charge_pin_;
+	int release_pin_;
 	bool ball_is_in_range_ = false;
 	
 	public:

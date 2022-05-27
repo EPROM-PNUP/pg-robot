@@ -11,7 +11,7 @@ class ProxiWrapper {
 		ros::Publisher ball_state_pub_;
 		std_msgs::Bool ball_state_msg_;
 		pg_ns::Proxi proxi;
-		uint8_t proxi_pin_;
+		int proxi_pin_ = 25;
 	
 	public:
 		ProxiWrapper(ros::NodeHandle &nh) {
@@ -45,6 +45,7 @@ class ProxiWrapper {
 			while (ros::ok()) {
 				ball_state_msg_.data = proxi.ballInRange();
 				ball_state_pub_.publish(ball_state_msg_);
+				ROS_DEBUG("ball in range : %d", proxi.ballInRange());
 				ros::spinOnce();
 				rate.sleep();
 			}

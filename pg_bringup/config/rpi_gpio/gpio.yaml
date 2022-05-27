@@ -4,13 +4,13 @@ proximity: 25
 
 dribbler: {
   left: {
-	  a: 21
-	  b: 22
-  }
+    a: 21,
+    b: 22,
+  },
   right: {
-	  a: 23
-	  b: 24
-  }
+    a: 23,
+    b: 24,
+  },
 }
 
 kicker: {

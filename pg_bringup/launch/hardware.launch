@@ -1,6 +1,9 @@
 <launch>
 
 
+	<!-- GPIO Pin Parameters -->
+	<rosparam command="load" file="$(find pg_bringup)/config/rpi_gpio/gpio.yaml" ns="gpio"/>
+
 	<!-- Rotary Encoder Parameters -->
 	<rosparam command="load" file="$(find pg_bringup)/config/sensors/rotary_encoder.yaml" ns="encoder"/>
 
@@ -134,19 +137,17 @@
 	<!-- Dribbler Driver -->
 	<?ignore
 	<group ns="dribbler">
-
 		<node name="dribbler_driver" pkg="pg_hardware" type="dribbler_driver_node">
 			<param name="frequency" value="50"/>
 		</node>
-
-	</group>
-	
-	<group ns="kicker">
-
-		<node name="kicker_driver" pkg="pg_hardware" type="kicker_node">
-		</node>
-	
 	</group>
 	?>
+	
+	<group ns="kicker">
+		<node name="kicker_driver" pkg="pg_kicker" type="kicker_node">
+		</node>
+	</group>
+
+	<node name="proximity_publisher" pkg="pg_proximity_sensor" type="proximity_node"/>
 
 </launch>

@@ -21,7 +21,7 @@ class Proxi {
 		Proxi();
 		void init(uint8_t pin);
 		bool ballInRange();
-}
+};
 #else
 
 #endif
