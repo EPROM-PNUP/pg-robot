@@ -7,12 +7,13 @@ namespace pg_ns {
 DribblerDriver::DribblerDriver() {
 }
 
-void DribblerDriver::init(int8_t pin_a, int8_t pin_b) {
-	this->pin_a_ = pin_a;
-	this->pin_b_ = pin_b;
+void DribblerDriver::setupPin(int pin_a, int pin_b) {
+	pin_a_ = pin_a;
+	pin_b_ = pin_b;
+}
 
-	wiringPiSetup();
-
+void DribblerDriver::init() {
+	wiringPiSetupGpio();
 	pinMode(this->pin_a_, OUTPUT);
 	pinMode(this->pin_b_, OUTPUT);
 }

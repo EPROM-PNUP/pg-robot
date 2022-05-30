@@ -69,14 +69,10 @@ class DribblerDriverWrapper {
 			10, &DribblerDriverWrapper::ballInRangeCallback, this);
 
 #ifdef __aarch64__
-	
-		dribbler_driver_left_.init(21, 22);
-		dribbler_driver_right_.init(23, 24);
-
+		dribbler_driver_left_.init();
+		dribbler_driver_right_.init();
 #else
-
 		cmd_dribble_pub_ = nh.advertise<std_msgs::Bool>("cmd_dribble", 10);
-
 #endif
 
 	}
@@ -95,14 +91,40 @@ class DribblerDriverWrapper {
 			return false;
 		}
 
+#ifdef __aarch64__
+		if (ros::param::has("/gpio/dribbler/left")) {
+			int pin_a, pin_b;
+			ros::param::get("/gpio/dribbler/left/a", pin_a);
+			ros::param::get("/gpio/dribbler/left/b", pin_a);
+			dribbler_driver_left_.setPin(pin_a, pin_b);
+			ROS_INFO("Loaded left dribbler pin parameters");
+		}
+		else {
+			ROS_WARN("Failed to load left dribbler parameters");
+			dribbler_driver_left_.setPin(21, 22);
+			return false;
+		}
+
+		if (ros::param::has("/gpio/dribbler/right")) {
+			int pin_a, pin_b;
+			ros::param::get("/gpio/dribbler/right/a", pin_a);
+			ros::param::get("/gpio/dribbler/right/b", pin_a);
+			dribbler_driver_right_.setPin(pin_a, pin_b);
+			ROS_INFO("Loaded right dribbler pin parameters");
+		}
+		else {
+			ROS_WARN("Failed to load right dribbler parameters");
+			dribbler_driver_right_.setPin(23, 24);
+			return false;
+		}
+#endif
+
 		return true;
 	}
 
 	// Callback function for ball in range topic.
 	void ballInRangeCallback(const std_msgs::Bool &msg) {
-
 #ifdef __aarch64__
-
 		if (msg.data) {
 			dribbler_driver_left_.dribble();
 			dribbler_driver_right_.dribble();
@@ -111,22 +133,17 @@ class DribblerDriverWrapper {
 			dribbler_driver_left_.stop();
 			dribbler_driver_right_.stop();
 		}
-
 #else
-
 		if (msg.data) {
 			dribbler_driver_.setDribble();
 		}
 		else {
 			dribbler_driver_.stop();
 		}
-
 #endif
-
 	}
 
 #ifndef __aarch64__
-
 	// RUN FUNCTION.
 	// Continuously running, publishing pwm signal to
 	// dribbler motor every 20 ms (50 Hz).
@@ -141,22 +158,17 @@ class DribblerDriverWrapper {
 			rate.sleep();
 		}
 	}
-
 #endif
-
 };
 
 int main(int argc, char** argv) {
 	ros::init(argc, argv, "dribbler_driver");
 	ros::NodeHandle nh;
-
 	DribblerDriverWrapper dribbler_driver_wrapper(nh);
-
 #ifdef __aarch64__
 	ros::spin();
 #else
 	dribbler_driver_wrapper.run();
 #endif
-
 	return 0;
 }

@@ -19,7 +19,8 @@ class DribblerDriver {
 	public:
 	DribblerDriver();
 
-	void init(int8_t pin_a, int8_t pin_b);
+	void setupPin(int pin_a, int pin_b);
+	void init();
 	void dribble();
 	void stop();
 };
