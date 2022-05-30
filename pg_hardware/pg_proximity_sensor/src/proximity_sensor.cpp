@@ -9,7 +9,7 @@ Proxi::Proxi() {
 
 void Proxi::init(uint8_t pin) {
 	pin_ = pin;
-	wiringPiSetup();
+	wiringPiSetupGpio();
 	pinMode(pin_, INPUT);
 }
 

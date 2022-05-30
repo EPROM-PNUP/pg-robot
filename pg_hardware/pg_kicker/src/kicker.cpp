@@ -11,7 +11,7 @@ void Kicker::init(int8_t charge_pin, int8_t release_pin) {
 	charge_pin_ = charge_pin;
 	release_pin_ = release_pin;
 
-	wiringPiSetup();
+	wiringPiSetupGpio();
 
 	pinMode(charge_pin_, OUTPUT);
 	pinMode(release_pin_, OUTPUT);
