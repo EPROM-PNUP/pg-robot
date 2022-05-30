@@ -14,7 +14,7 @@ void Proxi::init(uint8_t pin) {
 }
 
 bool Proxi::ballInRange() {
-	if (digitalRead(pin_) == HIGH) {
+	if (digitalRead(pin_) == LOW) {
 		return true;
 	}
 	else {
