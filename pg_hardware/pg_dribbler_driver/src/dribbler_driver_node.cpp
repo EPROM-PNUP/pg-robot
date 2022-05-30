@@ -32,7 +32,7 @@
 #include <ros/console.h>
 #include <std_msgs/Bool.h>
 
-#include "pg_hardware/dribbler_driver.hpp"
+#include "pg_dribbler_driver/dribbler_driver.hpp"
 
 class DribblerDriverWrapper {
 	private:
@@ -95,26 +95,26 @@ class DribblerDriverWrapper {
 		if (ros::param::has("/gpio/dribbler/left")) {
 			int pin_a, pin_b;
 			ros::param::get("/gpio/dribbler/left/a", pin_a);
-			ros::param::get("/gpio/dribbler/left/b", pin_a);
-			dribbler_driver_left_.setPin(pin_a, pin_b);
+			ros::param::get("/gpio/dribbler/left/b", pin_b);
+			dribbler_driver_left_.setupPin(pin_a, pin_b);
 			ROS_INFO("Loaded left dribbler pin parameters");
 		}
 		else {
 			ROS_WARN("Failed to load left dribbler parameters");
-			dribbler_driver_left_.setPin(21, 22);
+			dribbler_driver_left_.setupPin(21, 22);
 			return false;
 		}
 
 		if (ros::param::has("/gpio/dribbler/right")) {
 			int pin_a, pin_b;
 			ros::param::get("/gpio/dribbler/right/a", pin_a);
-			ros::param::get("/gpio/dribbler/right/b", pin_a);
-			dribbler_driver_right_.setPin(pin_a, pin_b);
+			ros::param::get("/gpio/dribbler/right/b", pin_b);
+			dribbler_driver_right_.setupPin(pin_a, pin_b);
 			ROS_INFO("Loaded right dribbler pin parameters");
 		}
 		else {
 			ROS_WARN("Failed to load right dribbler parameters");
-			dribbler_driver_right_.setPin(23, 24);
+			dribbler_driver_right_.setupPin(23, 24);
 			return false;
 		}
 #endif

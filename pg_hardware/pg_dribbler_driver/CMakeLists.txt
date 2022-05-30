@@ -132,7 +132,7 @@ include_directories(
 )
 
 ## Declare a C++ library
-add_library(${PROJECT_NAME}
+add_library(${DRIBBLER_LIB}
   src/dribbler_driver.cpp
 )
 
