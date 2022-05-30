@@ -2,7 +2,19 @@ cmake_minimum_required(VERSION 3.0.2)
 project(pg_dribbler_driver)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
+
+## Set Wall
+add_definitions(-Wall -Werror)
+
+EXECUTE_PROCESS(
+  COMMAND uname -m
+  COMMAND tr -d '\n'
+  OUTPUT_VARIABLE ARCHITECTURE
+)
+
+## Set dribbler library variable
+set(DRIBBLER_LIB dribbler)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -14,7 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -103,10 +115,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES pg_dribbler_driver
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES pg_dribbler_driver
+  CATKIN_DEPENDS roscpp rospy std_msgs
 )
 
 ###########
@@ -116,14 +127,14 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/pg_dribbler_driver.cpp
-# )
+add_library(${PROJECT_NAME}
+  src/dribbler_driver.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -133,7 +144,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/pg_dribbler_driver_node.cpp)
+add_executable(dribbler_node src/dribbler_driver_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,9 +157,22 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+if (${ARCHITECTURE} MATCHES "aarch64")
+  target_link_libraries(dribbler_node
+    ${catkin_LIBRARIES}
+    ${DRIBBLER_LIB}
+    -lwiringPi
+    -lm
+    -lpthread
+    -lcrypt
+    -lrt
+  )
+else()
+  target_link_libraries(dribbler_node
+    ${catkin_LIBRARIES}
+	${DRIBBLER_LIB}
+  )
+endif()
 
 #############
 ## Install ##
