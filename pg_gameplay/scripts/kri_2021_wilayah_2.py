@@ -15,6 +15,7 @@ cmd_vel_pub = rospy.Publisher(
 vel_rate = rospy.Rate(50)
 
 vel_msg = Twist()
+rospy.init_node("kri_2021_node")
 
 def move(cmd_vel, duration):
     begin_time = rospy.get_time()
@@ -80,7 +81,6 @@ def mission_1():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node("kri_2021_node")
         
         while True:
             print("--- KRI 2021 Wilayah II ---")

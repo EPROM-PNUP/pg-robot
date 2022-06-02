@@ -1,6 +1,9 @@
 mode: BCM
 
-proximity: 25
+proximity: {
+  long: 5,
+  short: 6,
+} 
 
 dribbler: {
   left: {

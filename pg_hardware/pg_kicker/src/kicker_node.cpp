@@ -72,7 +72,7 @@ class KickerWrapper {
 
 	void startKicker() {
 		ros::Time begin_time = ros::Time::now();
-		ros::Duration charge_duration(6.0);
+		ros::Duration charge_duration(15.0);
 
 		kicker_.charge();
 
