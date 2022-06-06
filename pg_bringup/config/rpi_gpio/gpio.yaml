@@ -1,23 +1,23 @@
 mode: BCM
 
 proximity: {
-  long: 5,
-  short: 6,
+  long: 14,
+  short: 25,
 } 
 
 dribbler: {
   left: {
-    a: 21,
-    b: 22,
+    a: 16,
+    b: 26,
   },
   right: {
-    a: 23,
-    b: 24,
+    a: 20,
+    b: 21,
   },
 }
 
 kicker: {
-  charge: 10,
-  release: 11,
+  charge: 7,
+  release: 8,
 }
 

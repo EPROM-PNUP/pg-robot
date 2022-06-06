@@ -130,16 +130,19 @@ class KickerWrapper {
 		pg_msgs::KickBall::Response &res
 		)
 	{
-		while(!ball_is_in_range_);
-
-		if (req.kick == true) {
-			if (kicker_.isReady()) {
-				kicker_.release();
-				res.kicked = true;
-				return true;
+		if (ball_is_in_range_) {
+			if (req.kick == true) {
+				if (kicker_.isReady()) {
+					kicker_.release();
+					res.kicked = true;
+					return true;
+				}
+				else {
+					ROS_ERROR("Kicker is not ready");
+					return false;
+				}
 			}
 			else {
-				ROS_ERROR("Kicker is not ready");
 				return false;
 			}
 		}
