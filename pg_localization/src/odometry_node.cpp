@@ -154,7 +154,7 @@ class OdometryWrapper {
 	// Continuously running, updating odometry info
 	// every 500 ms.
 	void run() {
-		ros::Rate rate(10);
+		ros::Rate rate(25);
 		
 		while(ros::ok()) {
 			current_time_ = ros::Time::now();

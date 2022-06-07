@@ -2,7 +2,7 @@
 
 	<!-- Wheel Odometry -->
 	<node name="odometry" pkg="pg_localization" type="odometry_node">
-		<param name="frequency" value="10"/>
+		<param name="frequency" value="25"/>
 	</node>
 
 	<!-- Pose Kalman Filter -->

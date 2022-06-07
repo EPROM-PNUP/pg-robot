@@ -100,15 +100,13 @@
 		</node>
 		?>
 
-		<?ignore
 		<node name="imu_complementary_filter" pkg="imu_complementary_filter" type="complementary_filter_node">
 			<remap from="imu/data_raw" to="data_raw"/>
 			<remap from="imu/mag" to="mag"/>
 			<remap from="imu/data" to="data"/>
 			<param name="publish_debug_topics" value="true"/>
 		</node>
-		?>
-
+	
 		<?ignore
 		<include file="$(find ros_imu_bno055)/launch/imu.launch">
 			<arg name="serial_port" value="/dev/ttyS0"/>
@@ -122,14 +120,13 @@
 		</include>
 		?>
 		
-		<?ignore
+		
 		<node name="imu_node" pkg="imu_bno055" type="bno055_i2c_node" respawn="true" respawn_delay="2">
 			<param name="device" type="string" value="/dev/i2c-1"/>
 			<param name="address" type="int" value="40"/>
 			<param name="frame_id" type="string" value="imu_link"/>
 			<param name="rate" type="double" value="10"/>
 		</node>
-		?>
 
 	</group>
 

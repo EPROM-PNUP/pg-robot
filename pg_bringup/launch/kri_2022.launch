@@ -1,0 +1,6 @@
+<launch>
+	
+	<include file="$(find pg_bringup)/launch/robot.launch"/>
+	<node name="position_tracker" pkg="image_processing" type="ball_tracking.py"/>
+
+</launch>
